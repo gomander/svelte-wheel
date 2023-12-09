@@ -4,18 +4,57 @@ export default class WheelPainter {
   wheelScale = 0.85
 
   draw(context: CanvasRenderingContext2D, wheel: Wheel) {
-    context.fillStyle = 'white'
-    context.font = '20px monospace'
-    context.fillText(JSON.stringify(wheel), 0, 20)
+    context.font = '30px monospace'
     this.drawWheel(context, wheel)
   }
 
   drawWheel(context: CanvasRenderingContext2D, wheel: Wheel) {
-    const { width, height } = context.canvas
+    this.drawSlices(context, wheel)
+  }
+
+  drawSlices(context: CanvasRenderingContext2D, wheel: Wheel) {
     context.save()
-    context.translate(width / 2, height / 2)
-    context.ellipse(0, 0, width / 2 * this.wheelScale, height / 2 * this.wheelScale, 0, 0, 2 * Math.PI)
-    context.fill()
+    context.translate(context.canvas.width / 2, context.canvas.height / 2)
+    wheel.entries.forEach((_entry, index) => {
+      this.drawSlice(context, wheel, index)
+      context.rotate(-2 * Math.PI / wheel.entries.length)
+    })
     context.restore()
+  }
+
+  drawSlice(context: CanvasRenderingContext2D, wheel: Wheel, index: number) {
+    const { width, height } = context.canvas
+    const radius = Math.min(width, height) / 2 * this.wheelScale
+    const radians = 2 * Math.PI / wheel.entries.length
+    const bgColor = wheel.config.colors[index % wheel.config.colors.length]
+    this.drawSliceBg(context, radius, radians, bgColor)
+    this.drawText(context, wheel.entries[index].text, radius, 'black')
+  }
+
+  drawSliceBg(
+    context: CanvasRenderingContext2D,
+    radius: number,
+    radians: number,
+    color: string
+  ) {
+    context.beginPath()
+    context.moveTo(0, 0)
+    context.arc(0, 0, radius, -radians / 2, radians / 2)
+    context.lineTo(0, 0)
+    context.fillStyle = color
+    context.fill()
+  }
+
+  drawText(
+    context: CanvasRenderingContext2D,
+    text: string,
+    radius: number,
+    color: string
+  ) {
+    context.lineJoin = 'round'
+    context.textBaseline = 'middle'
+    context.textAlign = 'end'
+    context.fillStyle = color
+    context.fillText(text, radius * 15 / 16, 0)
   }
 }

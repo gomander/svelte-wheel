@@ -31,6 +31,7 @@ export default class WheelPainter {
   drawWheel(context: CanvasRenderingContext2D, wheel: Wheel) {
     context.save()
     this.drawSlices(context, wheel)
+    this.drawCenter(context)
     context.restore()
   }
 
@@ -78,5 +79,15 @@ export default class WheelPainter {
     context.textAlign = 'end'
     context.fillStyle = color
     context.fillText(text, radius * 15 / 16, 0)
+  }
+
+  drawCenter(context: CanvasRenderingContext2D) {
+    const { width, height } = context.canvas
+    const radius = Math.min(width, height) / 4 * this.wheelScale
+    context.translate(width / 2, height / 2)
+    context.beginPath()
+    context.arc(0, 0, radius / 2, 0, 2 * Math.PI)
+    context.fillStyle = 'white'
+    context.fill()
   }
 }

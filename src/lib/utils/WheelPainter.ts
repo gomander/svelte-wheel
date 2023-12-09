@@ -1,26 +1,25 @@
 import type Wheel from '$lib/utils/Wheel'
 
 export default class WheelPainter {
-  wheelScale = 0.85
-
   draw(context: CanvasRenderingContext2D, wheel: Wheel) {
     this.drawShadow(context)
     context.font = '30px monospace'
     this.drawWheel(context, wheel)
+    this.drawPointer(context)
   }
 
   drawShadow(context: CanvasRenderingContext2D) {
     const { width, height } = context.canvas
     const x = width / 2
     const y = height / 2
-    const wheelRadius = Math.min(width, height) / 2 * this.wheelScale
+    const radius = this.getWheelRadius(context)
     const gradient = context.createRadialGradient(
       x,
       y,
-      wheelRadius,
+      radius,
       x,
-      y + wheelRadius / 75,
-      wheelRadius + wheelRadius / 25
+      y + radius / 75,
+      radius * 26 / 25
     )
     gradient.addColorStop(0, 'rgba(0, 0, 0, 0.25)')
     gradient.addColorStop(1, 'transparent')
@@ -46,8 +45,7 @@ export default class WheelPainter {
   }
 
   drawSlice(context: CanvasRenderingContext2D, wheel: Wheel, index: number) {
-    const { width, height } = context.canvas
-    const radius = Math.min(width, height) / 2 * this.wheelScale
+    const radius = this.getWheelRadius(context)
     const radians = 2 * Math.PI / wheel.entries.length
     const bgColor = wheel.config.colors[index % wheel.config.colors.length]
     this.drawSliceBg(context, radius, radians, bgColor)
@@ -83,11 +81,31 @@ export default class WheelPainter {
 
   drawCenter(context: CanvasRenderingContext2D) {
     const { width, height } = context.canvas
-    const radius = Math.min(width, height) / 4 * this.wheelScale
+    const radius = this.getWheelRadius(context) * 2 / 5
     context.translate(width / 2, height / 2)
     context.beginPath()
     context.arc(0, 0, radius / 2, 0, 2 * Math.PI)
     context.fillStyle = 'white'
     context.fill()
+  }
+
+  drawPointer(context: CanvasRenderingContext2D) {
+    const { width, height } = context.canvas
+    context.shadowColor = 'black'
+    context.shadowOffsetY = 4
+    context.shadowBlur = 10
+    context.fillStyle = 'white'
+    context.strokeStyle = 'black'
+    context.moveTo(width * 19 / 20, height * 19 / 40)
+    context.beginPath()
+    context.lineTo(width * 19 / 20, height * 21 / 40)
+    context.lineTo(width * 9 / 10, height / 2)
+    context.lineTo(width * 19 / 20, height * 19 / 40)
+    context.fill()
+    context.stroke()
+  }
+
+  getWheelRadius(context: CanvasRenderingContext2D) {
+    return Math.min(context.canvas.width, context.canvas.height) / 2 * 0.85
   }
 }

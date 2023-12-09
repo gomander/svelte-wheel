@@ -1,17 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import Wheel from '$lib/utils/Wheel'
+  import WheelPainter from '$lib/utils/WheelPainter'
 
   let canvas: HTMLCanvasElement
   const wheel = new Wheel()
+  const painter = new WheelPainter()
 
   onMount(() => {
     const context = canvas.getContext('2d')!
-    context.fillStyle = 'black'
-    context.fillRect(0, 0, canvas.width, canvas.height)
-    context.fillStyle = 'white'
-    context.font = '20px monospace'
-    context.fillText(JSON.stringify(wheel), 0, 20)
+    painter.draw(context, wheel)
   })
 </script>
 

@@ -4,12 +4,34 @@ export default class WheelPainter {
   wheelScale = 0.85
 
   draw(context: CanvasRenderingContext2D, wheel: Wheel) {
+    this.drawShadow(context)
     context.font = '30px monospace'
     this.drawWheel(context, wheel)
   }
 
+  drawShadow(context: CanvasRenderingContext2D) {
+    const { width, height } = context.canvas
+    const x = width / 2
+    const y = height / 2
+    const wheelRadius = Math.min(width, height) / 2 * this.wheelScale
+    const gradient = context.createRadialGradient(
+      x,
+      y,
+      wheelRadius,
+      x,
+      y + wheelRadius / 75,
+      wheelRadius + wheelRadius / 25
+    )
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.25)')
+    gradient.addColorStop(1, 'transparent')
+    context.fillStyle = gradient
+    context.fillRect(0, 0, width, height)
+  }
+
   drawWheel(context: CanvasRenderingContext2D, wheel: Wheel) {
+    context.save()
     this.drawSlices(context, wheel)
+    context.restore()
   }
 
   drawSlices(context: CanvasRenderingContext2D, wheel: Wheel) {

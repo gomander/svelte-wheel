@@ -14,9 +14,14 @@
   const ticker = new Ticker()
   let animationFrameId = 0
 
+  const refreshPainter = () => {
+    painter.refresh()
+    if (context) painter.draw(context, wheel)
+  }
+
   const refreshPainterOnFontLoad = async () => {
     await document.fonts.load('16px Quicksand')
-    painter.refresh()
+    refreshPainter()
   }
 
   onMount(() => {
@@ -25,8 +30,14 @@
     tick(0)
   })
 
-  $: wheel.setConfig($wheelStore.config)
-  $: wheel.setEntries($wheelStore.entries)
+  $: {
+    wheel.setConfig($wheelStore.config)
+    refreshPainter()
+  }
+  $: {
+    wheel.setEntries($wheelStore.entries)
+    refreshPainter()
+  }
 
   const click = (e: MouseEvent) => {
     const center = canvas.clientWidth / 2

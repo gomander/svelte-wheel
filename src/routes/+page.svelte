@@ -1,6 +1,7 @@
 <script>
   import Toolbar from '$lib/components/Toolbar.svelte'
   import Wheel from '$lib/components/Wheel.svelte'
+  import EntriesTextbox from '$lib/components/EntriesTextbox.svelte'
   import { wheelStore } from '$lib/stores/WheelStore'
 </script>
 
@@ -18,7 +19,7 @@
     </div>
 
     <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">
-      Editor
+      <EntriesTextbox />
     </div>
   </div>
 </div>

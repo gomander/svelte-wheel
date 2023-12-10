@@ -1,9 +1,9 @@
+import { getFont } from '$lib/utils/FontPicker'
 import type Wheel from '$lib/utils/Wheel'
 
 export default class WheelPainter {
   draw(context: CanvasRenderingContext2D, wheel: Wheel) {
     this.drawShadow(context)
-    context.font = '30px monospace'
     this.drawWheel(context, wheel)
     this.drawPointer(context)
   }
@@ -37,6 +37,14 @@ export default class WheelPainter {
   drawSlices(context: CanvasRenderingContext2D, wheel: Wheel) {
     context.save()
     context.translate(context.canvas.width / 2, context.canvas.height / 2)
+    const radius = this.getWheelRadius(context)
+    context.font = getFont(
+      context,
+      wheel.entries.map(entry => entry.text),
+      radius,
+      radius / 3,
+      2 * Math.PI / wheel.entries.length
+    )
     wheel.entries.forEach((_entry, index) => {
       this.drawSlice(context, wheel, index)
       context.rotate(-2 * Math.PI / wheel.entries.length)
@@ -80,11 +88,9 @@ export default class WheelPainter {
   }
 
   drawCenter(context: CanvasRenderingContext2D) {
-    const { width, height } = context.canvas
-    const radius = this.getWheelRadius(context) * 2 / 5
-    context.translate(width / 2, height / 2)
+    context.translate(context.canvas.width / 2, context.canvas.height / 2)
     context.beginPath()
-    context.arc(0, 0, radius / 2, 0, 2 * Math.PI)
+    context.arc(0, 0, this.getWheelRadius(context) / 5, 0, 2 * Math.PI)
     context.fillStyle = 'white'
     context.fill()
   }

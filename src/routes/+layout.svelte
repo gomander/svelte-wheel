@@ -7,4 +7,8 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
 </script>
 
+<svelte:head>
+  <title>Svelte Wheel</title>
+</svelte:head>
+
 <slot />

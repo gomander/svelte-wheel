@@ -38,9 +38,12 @@
   }
 </script>
 
-<canvas
-  width="700"
-  height="700"
-  bind:this={canvas}
-  on:click={click}
-/>
+<div class="flex-1 aspect-square max-w-full">
+  <canvas
+    width="700"
+    height="700"
+    bind:this={canvas}
+    on:click={click}
+    class="w-full h-auto"
+  />
+</div>

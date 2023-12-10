@@ -1,12 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import Wheel from '$lib/utils/Wheel'
+  import Wheel, { type Entry } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
 
   let canvas: HTMLCanvasElement
   let context: CanvasRenderingContext2D
-  const wheel = new Wheel()
+
+  const onStopped = (winner: Entry) => console.log('winner:', winner.text)
+  const wheel = new Wheel({ onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()
   let animationFrameId = 0
@@ -22,6 +24,13 @@
     tick(0)
   })
 
+  const click = (e: MouseEvent) => {
+    const center = canvas.clientWidth / 2
+    const { x, y } = { x: e.offsetX - center, y: e.offsetY - center }
+    if ((x ** 2 + y ** 2) ** 0.5 > center * 0.85) return
+    wheel.click()
+  }
+
   const tick = (ms: number) => {
     ticker.catchUp(ms, () => wheel.tick())
     painter.draw(context, wheel)
@@ -33,4 +42,5 @@
   width="700"
   height="700"
   bind:this={canvas}
+  on:click={click}
 />

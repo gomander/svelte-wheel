@@ -1,3 +1,5 @@
+import type { Context } from '$lib/utils/WheelPainter'
+
 /**
  * Gets the largest font size that will fit on the wheel for all the given texts
  * @param context 2D canvas context
@@ -8,7 +10,7 @@
  * @returns CSS font string
  */
 export const getFont = (
-  context: CanvasRenderingContext2D,
+  context: Context,
   texts: string[],
   wheelRadius: number,
   hubRadius: number,
@@ -24,7 +26,7 @@ export const getFont = (
       minFontSize = fontSize
     }
   })
-  return `${minFontSize}px ${fontName}`
+  return `500 ${minFontSize}px ${fontName}`
 }
 
 /**
@@ -38,7 +40,7 @@ export const getFont = (
  * @returns The ideal font size
  */
 const getFontSize = (
-  context: CanvasRenderingContext2D,
+  context: Context,
   displayText: string,
   fontName: string,
   wheelRadius: number,
@@ -70,7 +72,7 @@ const getFontSize = (
  * @returns Ideal font size
  */
 const bisectSearch = (
-  context: CanvasRenderingContext2D,
+  context: Context,
   wheelRadius: number,
   hubRadius: number,
   smallestAngle: number,
@@ -89,7 +91,7 @@ const bisectSearch = (
         hubRadius,
         smallestAngle / 2,
         text,
-        `${fontSize}px ${fontName}`,
+        `500 ${fontSize}px ${fontName}`,
         fontSize
       )
     ) {
@@ -113,7 +115,7 @@ const bisectSearch = (
  * @returns Whether or not the text fits
  */
 const textFits = (
-  context: CanvasRenderingContext2D,
+  context: Context,
   radius: number,
   innerRadius: number,
   angle: number,

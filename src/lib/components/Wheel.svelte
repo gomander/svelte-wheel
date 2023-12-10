@@ -11,8 +11,14 @@
   const ticker = new Ticker()
   let animationFrameId = 0
 
+  const refreshWheelOnFontLoad = async () => {
+    await document.fonts.load('16px Quicksand')
+    painter.refresh()
+  }
+
   onMount(() => {
     context = canvas.getContext('2d')!
+    refreshWheelOnFontLoad()
     tick(0)
   })
 

@@ -2,3 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
+
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/Quicksand-VariableFont_wght.ttf');
+}
+
+:root [data-theme="skeleton"] {
+  --theme-font-family-base: 'Quicksand', sans-serif;
+  --theme-font-family-heading: 'Quicksand', sans-serif;
+}

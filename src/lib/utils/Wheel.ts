@@ -11,6 +11,17 @@ export default class Wheel {
     this.state = props?.state ?? initialWheelState
     this.entries = props?.entries ?? defaultEntries
   }
+
+  tick() {
+    if (this.state.phase === 'demo') {
+      let newAngle = this.state.angle + this.state.speed
+      if (newAngle >= 360) newAngle -= 360
+      this.state = {
+        ...this.state,
+        angle: newAngle
+      }
+    }
+  }
 }
 
 export interface Entry {

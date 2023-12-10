@@ -3,6 +3,7 @@ import type Wheel from '$lib/utils/Wheel'
 
 export default class WheelPainter {
   draw(context: CanvasRenderingContext2D, wheel: Wheel) {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     this.drawShadow(context)
     this.drawWheel(context, wheel)
     this.drawPointer(context)
@@ -29,6 +30,9 @@ export default class WheelPainter {
 
   drawWheel(context: CanvasRenderingContext2D, wheel: Wheel) {
     context.save()
+    context.translate(context.canvas.width / 2, context.canvas.height / 2)
+    context.rotate(wheel.state.angle)
+    context.translate(-context.canvas.width / 2, -context.canvas.height / 2)
     this.drawSlices(context, wheel)
     this.drawCenter(context)
     context.restore()
@@ -96,6 +100,7 @@ export default class WheelPainter {
   }
 
   drawPointer(context: CanvasRenderingContext2D) {
+    context.save()
     const { width, height } = context.canvas
     context.shadowColor = 'black'
     context.shadowOffsetY = 4
@@ -109,6 +114,7 @@ export default class WheelPainter {
     context.lineTo(width * 19 / 20, height * 19 / 40)
     context.fill()
     context.stroke()
+    context.restore()
   }
 
   getWheelRadius(context: CanvasRenderingContext2D) {

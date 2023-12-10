@@ -29,6 +29,14 @@ export default class Wheel {
     }
     this.state = newState
   }
+
+  setConfig(config: WheelConfig) {
+    this.config = config
+  }
+
+  setEntries(entries: Entry[]) {
+    this.entries = entries
+  }
 }
 
 export interface Entry {

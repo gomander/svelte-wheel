@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import { wheelStore } from '$lib/stores/WheelStore'
   import Wheel, { type Entry } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
@@ -8,21 +9,24 @@
   let context: CanvasRenderingContext2D
 
   const onStopped = (winner: Entry) => console.log('winner:', winner.text)
-  const wheel = new Wheel({ onStopped })
+  const wheel = new Wheel({ ...$wheelStore, onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()
   let animationFrameId = 0
 
-  const refreshWheelOnFontLoad = async () => {
+  const refreshPainterOnFontLoad = async () => {
     await document.fonts.load('16px Quicksand')
     painter.refresh()
   }
 
   onMount(() => {
     context = canvas.getContext('2d')!
-    refreshWheelOnFontLoad()
+    refreshPainterOnFontLoad()
     tick(0)
   })
+
+  $: wheel.setConfig($wheelStore.config)
+  $: wheel.setEntries($wheelStore.entries)
 
   const click = (e: MouseEvent) => {
     const center = canvas.clientWidth / 2

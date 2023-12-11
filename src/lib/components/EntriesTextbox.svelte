@@ -10,7 +10,7 @@
     const lines = text.split('\n')
     const entries: Entry[] = lines.map((text, index) => {
       let id = $wheelStore.entries.at(index)?.id
-      if (!id || $wheelStore.entries[index]?.text !== text) id = getNewId()
+      if (!id || $wheelStore.entries.at(index)?.text !== text) id = getNewId()
       return { text, id }
     })
     wheelStore.setEntries(entries)

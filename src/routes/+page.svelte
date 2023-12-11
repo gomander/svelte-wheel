@@ -1,8 +1,29 @@
-<script>
+<script lang="ts">
+  import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton'
   import Toolbar from '$lib/components/Toolbar.svelte'
   import Wheel from '$lib/components/Wheel.svelte'
   import EntriesTextbox from '$lib/components/EntriesTextbox.svelte'
   import { wheelStore } from '$lib/stores/WheelStore'
+  import type { Entry } from '$lib/utils/Wheel'
+
+  const modalStore = getModalStore()
+
+	const winnerModal: ModalSettings = {
+		type: 'component',
+		component: 'winnerDialog',
+		meta: { color: '', winner: { text: '', id: '' } }
+	}
+
+	const openWinnerModal = async (
+		e: CustomEvent<{ winner: Entry, color?: string }>
+	) => {
+		if (!$wheelStore.config.displayWinnerDialog) return
+		await new Promise(r => setTimeout(r, 100))
+		winnerModal.title = $wheelStore.config.winnerMessage
+		winnerModal.body = e.detail.winner.text
+		winnerModal.meta = e.detail
+		modalStore.trigger(winnerModal)
+	}
 </script>
 
 <div class="min-h-screen flex flex-col">
@@ -15,7 +36,7 @@
     </div>
 
     <div class="col-span-2 flex-1 flex flex-col justify-center items-center">
-      <Wheel />
+      <Wheel on:stop={openWinnerModal} />
     </div>
 
     <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">

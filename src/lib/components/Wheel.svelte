@@ -1,14 +1,20 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, createEventDispatcher } from 'svelte'
   import { wheelStore } from '$lib/stores/WheelStore'
   import Wheel, { type Entry } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
 
+  const dispatch = createEventDispatcher<{
+    stop: { winner: Entry, color?: string }
+  }>()
+
   let canvas: HTMLCanvasElement
   let context: CanvasRenderingContext2D
 
-  const onStopped = (winner: Entry) => console.log('winner:', winner.text)
+  const onStopped = (winner: Entry, color?: string) => {
+    dispatch('stop', { winner, color })
+  }
   const wheel = new Wheel({ ...$wheelStore, onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()

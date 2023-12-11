@@ -7,7 +7,7 @@ export default class Wheel {
   config: WheelConfig
   state: WheelState
   entries: Entry[]
-  onStopped: (winner: Entry) => void
+  onStopped: (winner: Entry, color?: string) => void
 
   constructor(props?: Partial<Wheel>) {
     this.config = props?.config ?? new WheelConfig()
@@ -25,7 +25,7 @@ export default class Wheel {
     const newState = tick(oldState, this.config.spinTime)
     if (newState.phase !== oldState.phase && newState.phase === 'stopped') {
       const entry = getEntryAtPointer(this)
-      this.onStopped(entry)
+      this.onStopped(entry, getColorAtPointer(this))
     }
     this.state = newState
   }
@@ -54,20 +54,14 @@ const getEntryAtPointer = (wheel: Wheel) => (
   wheel.entries[getIndexAtPointer(wheel)]
 )
 
+const getColorAtPointer = (wheel: Wheel) => (
+  wheel.config.colors[getIndexAtPointer(wheel) % wheel.config.colors.length]
+)
+
 export const getNewId = () => (
   crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
 )
 
 export const defaultEntries: Entry[] = [
-  { text: 'Ali' },
-  { text: 'Beatriz' },
-  { text: 'Charles' },
-  { text: 'Diya' },
-  { text: 'Eric' },
-  { text: 'Fatima' },
-  { text: 'Gabriel' },
-  { text: 'Hanna' }
-].map(entry => ({
-  ...entry,
-  id: getNewId()
-}))
+  'Ali', 'Beatriz', 'Charles', 'Diya', 'Eric', 'Fatima', 'Gabriel', 'Hanna'
+].map(text => ({ text, id: getNewId() }))

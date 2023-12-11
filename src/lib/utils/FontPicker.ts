@@ -157,3 +157,22 @@ const boxFits = (
     )
   ) >= width
 }
+
+/**
+ * Chooses either black or white text based on the background color
+ * @param bgColor Hex color string
+ * @returns Black or white hex color string
+ */
+export const getTextColor = (bgColor: string) => {
+  const color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor
+  const uicolors = [
+    Number(`0x${color.substring(0, 2)}`) / 255,
+    Number(`0x${color.substring(2, 4)}`) / 255,
+    Number(`0x${color.substring(4, 6)}`) / 255
+  ]
+  const c = uicolors.map(
+    col => col <= 0.03928 ? col / 12.92 : ((col + 0.055) / 1.055) ** 2.4
+  )
+  const L = (0.2126 * c[0]) + (0.7152 * c[1]) + (0.0722 * c[2])
+  return L > 0.179 ? '#000000' : '#FFFFFF'
+}

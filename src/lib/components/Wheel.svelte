@@ -19,7 +19,6 @@
   const wheel = new Wheel({ ...$wheelStore, onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()
-  let animationFrameId = 0
 
   const refreshPainter = () => {
     painter.refresh()
@@ -57,7 +56,7 @@
   const tick = (ms: number) => {
     ticker.catchUp(ms, () => wheel.tick())
     painter.draw(context, wheel)
-    animationFrameId = requestAnimationFrame(tick)
+    requestAnimationFrame(tick)
   }
 </script>
 

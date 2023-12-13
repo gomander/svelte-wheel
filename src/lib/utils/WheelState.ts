@@ -8,7 +8,7 @@ export interface WheelState {
 }
 
 type Phase = 'demo' | 'accelerating' | 'decelerating' | 'stopped'
-type WheelStateFn = (state: WheelState, ...args: any) => WheelState
+type WheelStateFn = (state: WheelState) => WheelState
 
 const DEMO_SPEED = 0.005
 const STOP_SPEED = 0.00015
@@ -20,7 +20,7 @@ export const initialWheelState: WheelState = {
   ticksInPhase: 0
 }
 
-export const click: WheelStateFn = (state: WheelState) => {
+export const click = (state: WheelState): WheelState => {
   const handleClickForPhase: Record<Phase, WheelStateFn> = {
     demo: (state: WheelState) => goToPhase(state, 'accelerating'),
     accelerating: (state: WheelState) => state,
@@ -30,7 +30,7 @@ export const click: WheelStateFn = (state: WheelState) => {
   return handleClickForPhase[state.phase](state)
 }
 
-export const tick: WheelStateFn = (state: WheelState, spinTime: number) => {
+export const tick = (state: WheelState, spinTime: number): WheelState => {
   const processTickForPhase: Record<Phase, WheelStateFn> = {
     demo: (state: WheelState) => ({ ...state, speed: DEMO_SPEED }),
     accelerating: (state: WheelState) => tickAcceleratingPhase(state, spinTime),
@@ -44,36 +44,36 @@ export const tick: WheelStateFn = (state: WheelState, spinTime: number) => {
   )
 }
 
-const increaseAngle: WheelStateFn = (state: WheelState) => {
+const increaseAngle = (state: WheelState): WheelState => {
   let angle = state.angle + state.speed
   if (angle >= 2 * Math.PI) angle -= 2 * Math.PI
   return { ...state, angle }
 }
 
-const increaseTicksInPhase: WheelStateFn = (state: WheelState) => (
+const increaseTicksInPhase = (state: WheelState): WheelState => (
   { ...state, ticksInPhase: state.ticksInPhase + 1 }
 )
 
-const tickAcceleratingPhase: WheelStateFn = (
+const tickAcceleratingPhase = (
   state: WheelState, spinTime: number
-) => state.ticksInPhase >= getAccelTicks(spinTime)
+): WheelState => state.ticksInPhase >= getAccelTicks(spinTime)
   ? goToDeceleratingPhase(state)
   : { ...state, speed: state.speed + getAccelRate() }
 
-const tickDeceleratingPhase: WheelStateFn = (
+const tickDeceleratingPhase = (
   state: WheelState, spinTime: number
-) => state.ticksInPhase >= getDecelTicks(spinTime)
+): WheelState => state.ticksInPhase >= getDecelTicks(spinTime)
   ? goToPhase(state, 'stopped')
   : { ...state, speed: state.speed * getDecelRate(spinTime) }
 
-const goToDeceleratingPhase: WheelStateFn = (state: WheelState) => ({
+const goToDeceleratingPhase = (state: WheelState): WheelState => ({
   ...state,
   angle: Math.random() * 2 * Math.PI,
   phase: 'decelerating',
   ticksInPhase: 0
 })
 
-const goToPhase: WheelStateFn = (state: WheelState, phase: Phase) => (
+const goToPhase = (state: WheelState, phase: Phase): WheelState => (
   { ...state, phase, ticksInPhase: 0 }
 )
 

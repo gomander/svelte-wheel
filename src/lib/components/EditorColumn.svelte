@@ -2,6 +2,7 @@
   import { TabGroup, Tab } from '@skeletonlabs/skeleton'
 	import EditorButtons from '$lib/components/EditorButtons.svelte'
 	import EntriesTextbox from '$lib/components/EntriesTextbox.svelte'
+  import ResultsButtons from '$lib/components/ResultsButtons.svelte'
 	import ResultsTextbox from '$lib/components/ResultsTextbox.svelte'
 
 	let openTab = 0
@@ -33,6 +34,8 @@
 
       <EntriesTextbox />
     {:else if openTab === 1}
+      <ResultsButtons />
+
       <ResultsTextbox />
     {/if}
   </svelte:fragment>

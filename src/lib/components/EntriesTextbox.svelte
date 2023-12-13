@@ -8,11 +8,25 @@
 
   const setEntries = () => {
     const lines = text.split('\n')
+    let changeStartIndex = lines.length
     const entries: Entry[] = lines.map((text, index) => {
       let id = $wheelStore.entries.at(index)?.id
-      if (!id || $wheelStore.entries.at(index)?.text !== text) id = getNewId()
+      if (!id || $wheelStore.entries.at(index)?.text !== text) {
+        if (index < changeStartIndex) changeStartIndex = index
+        id = getNewId()
+      }
       return { text, id }
     })
+    if (lines.length !== $wheelStore.entries.length) {
+      const stopIndex = lines.length > $wheelStore.entries.length
+        ? changeStartIndex - entries.length
+        : changeStartIndex - entries.length - 1
+      for (let i = -1; i > stopIndex; i--) {
+        if ($wheelStore.entries.at(i)?.text === entries.at(i)?.text) {
+          entries.at(i)!.id = $wheelStore.entries.at(i)!.id
+        } else break
+      }
+    }
     wheelStore.setEntries(entries)
   }
 </script>

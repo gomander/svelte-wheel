@@ -27,6 +27,7 @@
 
   const refreshPainterOnFontLoad = async () => {
     await document.fonts.load('16px Quicksand')
+    await document.fonts.ready
     refreshPainter()
   }
 

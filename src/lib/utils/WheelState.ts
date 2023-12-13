@@ -1,3 +1,5 @@
+import { FPS } from '$lib/utils/Ticker'
+
 export interface WheelState {
   angle: number
   speed: number
@@ -10,7 +12,6 @@ type WheelStateFn = (state: WheelState, ...args: any) => WheelState
 
 const DEMO_SPEED = 0.005
 const STOP_SPEED = 0.00015
-const FPS = 60
 
 export const initialWheelState: WheelState = {
   angle: 0,
@@ -44,9 +45,9 @@ export const tick: WheelStateFn = (state: WheelState, spinTime: number) => {
 }
 
 const increaseAngle: WheelStateFn = (state: WheelState) => {
-  let newAngle = state.angle + state.speed
-  if (newAngle >= 2 * Math.PI) newAngle -= 2 * Math.PI
-  return { ...state, angle: newAngle }
+  let angle = state.angle + state.speed
+  if (angle >= 2 * Math.PI) angle -= 2 * Math.PI
+  return { ...state, angle }
 }
 
 const increaseTicksInPhase: WheelStateFn = (state: WheelState) => (
@@ -55,19 +56,15 @@ const increaseTicksInPhase: WheelStateFn = (state: WheelState) => (
 
 const tickAcceleratingPhase: WheelStateFn = (
   state: WheelState, spinTime: number
-) => (
-  state.ticksInPhase >= getAccelTicks(spinTime)
-    ? goToDeceleratingPhase(state)
-    : { ...state, speed: state.speed + getAccelRate() }
-)
+) => state.ticksInPhase >= getAccelTicks(spinTime)
+  ? goToDeceleratingPhase(state)
+  : { ...state, speed: state.speed + getAccelRate() }
 
 const tickDeceleratingPhase: WheelStateFn = (
   state: WheelState, spinTime: number
-) => (
-  state.ticksInPhase >= getDecelTicks(spinTime)
-    ? goToPhase(state, 'stopped')
-    : { ...state, speed: state.speed * getDecelRate(spinTime) }
-)
+) => state.ticksInPhase >= getDecelTicks(spinTime)
+  ? goToPhase(state, 'stopped')
+  : { ...state, speed: state.speed * getDecelRate(spinTime) }
 
 const goToDeceleratingPhase: WheelStateFn = (state: WheelState) => ({
   ...state,
@@ -90,12 +87,8 @@ const getDecelTicks = (spinTime: number) => (
   spinTime * FPS - getAccelTicks(spinTime)
 )
 
-const getDecelRate = (spinTime: number) => (
-  Math.exp(
-    Math.log(
-      STOP_SPEED / (
-        DEMO_SPEED + getAccelTicks(spinTime) * getAccelRate()
-      )
-    ) / getDecelTicks(spinTime)
-  )
+const getDecelRate = (spinTime: number) => Math.exp(
+  Math.log(
+    STOP_SPEED / (DEMO_SPEED + getAccelTicks(spinTime) * getAccelRate())
+  ) / getDecelTicks(spinTime)
 )

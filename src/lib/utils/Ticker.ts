@@ -6,7 +6,7 @@ export default class Ticker {
   constructor() {
     this.lastFrameTimeMs = 0
     this.delta = 0
-    this.timestep = 1000 / 60
+    this.timestep = 1000 / FPS
   }
 
   catchUp(ms: number, tick: () => void) {
@@ -29,3 +29,5 @@ export default class Ticker {
     return retVal
   }
 }
+
+export const FPS = 60

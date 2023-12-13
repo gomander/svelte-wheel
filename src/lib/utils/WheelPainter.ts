@@ -1,10 +1,11 @@
-import { getFont } from '$lib/utils/FontPicker'
+import FontPicker, { truncateText } from '$lib/utils/FontPicker'
 import type Wheel from '$lib/utils/Wheel'
 
 export type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
 
 export default class WheelPainter {
   imageCache = new Map<string, HTMLCanvasElement | OffscreenCanvas>()
+  fontPicker = new FontPicker()
 
   refresh() {
     const shadowImage = this.imageCache.get('shadow')
@@ -12,6 +13,7 @@ export default class WheelPainter {
     this.imageCache.clear()
     if (shadowImage) this.imageCache.set('shadow', shadowImage)
     if (pointerImage) this.imageCache.set('pointer', pointerImage)
+    this.fontPicker.clearFontCache()
   }
 
   draw(context: Context, wheel: Wheel) {
@@ -77,7 +79,7 @@ export default class WheelPainter {
     context.save()
     context.translate(context.canvas.width / 2, context.canvas.height / 2)
     const radius = getWheelRadius(context)
-    context.font = getFont(
+    context.font = this.fontPicker.getFont(
       context,
       wheel.entries.map(entry => entry.text),
       radius,
@@ -124,7 +126,7 @@ export default class WheelPainter {
     context.textBaseline = 'middle'
     context.textAlign = 'end'
     context.fillStyle = color
-    context.fillText(text, radius * 15 / 16, 0)
+    context.fillText(truncateText(text), radius * 15 / 16, 0)
   }
 
   drawCenter(context: Context) {
@@ -170,12 +172,10 @@ export default class WheelPainter {
   }
 }
 
-const getWheelRadius = (context: Context) => {
-  return Math.min(context.canvas.width, context.canvas.height) / 2 * 0.85
-}
+const getWheelRadius = (context: Context) => Math.min(
+  context.canvas.width, context.canvas.height
+) / 2 * 0.85
 
-const createInMemoryImage = (context: Context) => {
-  return new OffscreenCanvas(
-    context.canvas.width, context.canvas.height
-  ).getContext('2d')!
-}
+const createInMemoryImage = (context: Context) => new OffscreenCanvas(
+  context.canvas.width, context.canvas.height
+).getContext('2d')!

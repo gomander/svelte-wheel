@@ -1,32 +1,69 @@
 import type { Context } from '$lib/utils/WheelPainter'
 
-/**
- * Gets the largest font size that will fit on the wheel for all the given texts
- * @param context 2D canvas context
- * @param texts Array of texts to fit on the wheel
- * @param wheelRadius Outer radius of the wheel
- * @param hubRadius Inner radius of the wheel
- * @param smallestAngle Angle of the smallest slice on the wheel
- * @returns CSS font string
- */
-export const getFont = (
-  context: Context,
-  texts: string[],
-  wheelRadius: number,
-  hubRadius: number,
-  smallestAngle: number
-) => {
-  let minFontSize = 200
-  const fontName = 'Quicksand'
-  texts.forEach(text => {
-    const fontSize = getFontSize(
-      context, text, fontName, wheelRadius, hubRadius, smallestAngle
+export default class FontPicker {
+  resultCache = new Map<string, string>()
+
+  /**
+   * Gets the largest font size that will fit on the wheel for all the given texts
+   * @param context 2D canvas context
+   * @param texts Array of texts to fit on the wheel
+   * @param wheelRadius Outer radius of the wheel
+   * @param hubRadius Inner radius of the wheel
+   * @param smallestAngle Angle of the smallest slice on the wheel
+   * @returns CSS font string
+   */
+  getFont(
+    context: Context,
+    texts: string[],
+    wheelRadius: number,
+    hubRadius: number,
+    smallestAngle: number
+  ) {
+    const cachedResult = this.getCachedResult(
+      texts, wheelRadius, hubRadius, smallestAngle
     )
-    if (fontSize < minFontSize) {
-      minFontSize = fontSize
-    }
-  })
-  return `500 ${minFontSize}px ${fontName}`
+    if (cachedResult) return cachedResult
+    let minFontSize = 200
+    const fontName = 'Quicksand'
+    texts.forEach(text => {
+      const fontSize = getFontSize(
+        context, text, fontName, wheelRadius, hubRadius, smallestAngle
+      )
+      if (fontSize < minFontSize) {
+        minFontSize = fontSize
+      }
+    })
+    const font = `500 ${minFontSize}px ${fontName}`
+    this.cacheResult(texts, wheelRadius, hubRadius, smallestAngle, font)
+    return font
+  }
+
+  getCachedResult(
+    texts: string[],
+    wheelRadius: number,
+    hubRadius: number,
+    smallestAngle: number
+  ) {
+    return this.resultCache.get(
+      getCacheKey(texts, wheelRadius, hubRadius, smallestAngle)
+    )
+  }
+
+  cacheResult(
+    texts: string[],
+    wheelRadius: number,
+    hubRadius: number,
+    smallestAngle: number,
+    font: string
+  ) {
+    this.resultCache.set(
+      getCacheKey(texts, wheelRadius, hubRadius, smallestAngle), font
+    )
+  }
+
+  clearFontCache() {
+    this.resultCache.clear()
+  }
 }
 
 /**
@@ -46,18 +83,16 @@ const getFontSize = (
   wheelRadius: number,
   hubRadius: number,
   smallestAngle: number
-) => {
-  return bisectSearch(
-    context,
-    wheelRadius,
-    hubRadius,
-    smallestAngle,
-    fontName,
-    displayText,
-    3,
-    200
-  )
-}
+) => bisectSearch(
+  context,
+  wheelRadius,
+  hubRadius,
+  smallestAngle,
+  fontName,
+  displayText,
+  3,
+  200
+)
 
 /**
  * Finds the largest possible font size using a bisect search
@@ -125,7 +160,7 @@ const textFits = (
 ) => {
   if (!text) return true
   context.font = font
-  const width = context.measureText(text).width
+  const { width } = context.measureText(truncateText(text))
   return boxFits(angle, radius, innerRadius, width, height)
 }
 
@@ -144,19 +179,27 @@ const boxFits = (
   innerRadius: number,
   width: number,
   height: number
-) => {
-  // This was taken from StackOverflow. I cannot explain it, but it works.
-  return (
-    (
-      radius ** 2 -
-      (height / 2) ** 2
-    ) ** (1 / 2) -
-    Math.max(
-      height * Math.cos(angle) / (2 * Math.sin(angle)),
-      innerRadius
-    )
-  ) >= width
-}
+) => (
+  (radius ** 2 - (height / 2) ** 2) ** 0.5 - Math.max(
+    height * Math.cos(angle) / (2 * Math.sin(angle)), innerRadius
+  )
+) >= width
+
+const getCacheKey = (
+  texts: string[],
+  wheelRadius: number,
+  hubRadius: number,
+  smallestAngle: number
+) => JSON.stringify({ texts, wheelRadius, hubRadius, smallestAngle })
+
+/**
+ * Truncates a text to a maximum length of 18 characters
+ * @param text Text to be truncated
+ * @returns Truncated text
+ */
+export const truncateText = (text: string) => text.length > 18
+  ? text.substring(0, 17) + '…'
+  : text
 
 /**
  * Chooses either black or white text based on the background color
@@ -173,6 +216,6 @@ export const getTextColor = (bgColor: string) => {
   const c = uicolors.map(
     col => col <= 0.03928 ? col / 12.92 : ((col + 0.055) / 1.055) ** 2.4
   )
-  const L = (0.2126 * c[0]) + (0.7152 * c[1]) + (0.0722 * c[2])
+  const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
   return L > 0.179 ? '#000000' : '#FFFFFF'
 }

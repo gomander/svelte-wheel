@@ -1,4 +1,4 @@
-import FontPicker, { truncateText } from '$lib/utils/FontPicker'
+import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
 import type Wheel from '$lib/utils/Wheel'
 
 export type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
@@ -99,7 +99,9 @@ export default class WheelPainter {
     const radians = 2 * Math.PI / wheel.entries.length
     const bgColor = wheel.config.colors[index % wheel.config.colors.length]
     this.drawSliceBg(context, radius, radians, bgColor)
-    this.drawText(context, wheel.entries[index].text, radius, 'black')
+    this.drawText(
+      context, wheel.entries[index].text, radius, getTextColor(bgColor)
+    )
   }
 
   drawSliceBg(

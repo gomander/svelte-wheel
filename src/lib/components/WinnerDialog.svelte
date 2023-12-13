@@ -1,8 +1,16 @@
 <script lang="ts">
   import { getModalStore } from '@skeletonlabs/skeleton'
+  import { wheelStore } from '$lib/stores/WheelStore'
   import { getTextColor } from '$lib/utils/FontPicker'
 
   const modalStore = getModalStore()
+
+  const remove = () => {
+    wheelStore.setEntries(
+      $wheelStore.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
+    )
+    modalStore.close()
+  }
 </script>
 
 {#if $modalStore[0]}
@@ -29,6 +37,13 @@
         on:click={modalStore.close}
       >
         Close
+      </button>
+
+      <button
+        class="btn variant-soft-warning"
+        on:click={remove}
+      >
+        Remove
       </button>
     </footer>
   </article>

@@ -14,6 +14,7 @@
 
   const onStopped = (winner: Entry, color?: string) => {
     dispatch('stop', { winner, color })
+    wheelStore.setWinners([...$wheelStore.winners, winner])
   }
   const wheel = new Wheel({ ...$wheelStore, onStopped })
   const painter = new WheelPainter()

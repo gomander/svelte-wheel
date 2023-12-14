@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { popup } from '@skeletonlabs/skeleton'
+  import { fullscreenStore } from '$lib/stores/FullscreenStore'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
 
   const dispatch = createEventDispatcher<{ new: null }>()
@@ -25,12 +26,23 @@
   </div>
 
   <div class="hidden lg:flex items-center">
-    <button
-      class="btn btn-sm text-lg hover:variant-soft-primary"
-      on:click={() => dispatch('new')}
-    >
-      <i class="fas fa-file" />
-      <span>New</span>
-    </button>
+    {#if !$fullscreenStore.active}
+      <button
+        class="btn btn-sm text-lg hover:variant-soft-primary"
+        on:click={() => dispatch('new')}
+      >
+        <i class="fas fa-file" />
+        <span>New</span>
+      </button>
+    {/if}
+
+    {#if $fullscreenStore.supported}
+      <button
+        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        on:click={() => fullscreenStore.toggleFullscreen()}
+      >
+        <i class="fas fa-{$fullscreenStore.active ? 'compress' : 'expand'}" />
+      </button>
+    {/if}
   </div>
 </header>

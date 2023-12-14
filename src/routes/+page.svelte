@@ -4,6 +4,7 @@
   import Wheel from '$lib/components/Wheel.svelte'
   import EditorColumn from '$lib/components/EditorColumn.svelte'
   import { wheelStore } from '$lib/stores/WheelStore'
+	import { fullscreenStore } from '$lib/stores/FullscreenStore'
   import type { Entry } from '$lib/utils/Wheel'
 
   const modalStore = getModalStore()
@@ -31,8 +32,10 @@
 
   <div class="flex-grow flex flex-col xl:grid grid-cols-4">
     <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col">
-      <h2 class="text-3xl">{$wheelStore.config.title}</h2>
-      <p class="text-lg">{$wheelStore.config.description}</p>
+      {#if !$fullscreenStore.active}
+        <h2 class="text-3xl">{$wheelStore.config.title}</h2>
+        <p class="text-lg">{$wheelStore.config.description}</p>
+      {/if}
     </div>
 
     <div class="col-span-2 flex-1 flex flex-col justify-center items-center">
@@ -40,7 +43,9 @@
     </div>
 
     <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">
-      <EditorColumn />
+      {#if !$fullscreenStore.active}
+        <EditorColumn />
+			{/if}
     </div>
   </div>
 </div>

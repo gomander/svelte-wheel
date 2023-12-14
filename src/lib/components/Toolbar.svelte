@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { popup } from '@skeletonlabs/skeleton'
+  import { popup, LightSwitch } from '@skeletonlabs/skeleton'
   import { fullscreenStore } from '$lib/stores/FullscreenStore'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
 
@@ -44,5 +44,7 @@
         <i class="fas fa-{$fullscreenStore.active ? 'compress' : 'expand'}" />
       </button>
     {/if}
+
+    <LightSwitch />
   </div>
 </header>

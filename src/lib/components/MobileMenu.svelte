@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
+  import { LightSwitch } from '@skeletonlabs/skeleton'
 
   const dispatch = createEventDispatcher<{ new: null }>()
 </script>
@@ -12,4 +13,9 @@
     <i class="fas fa-file w-6" />
     <span class="flex-grow text-left">New</span>
   </button>
+
+  <div class="btn text-xl">
+    <LightSwitch />
+    <span class="flex-grow text-left">Theme</span>
+  </div>
 </div>

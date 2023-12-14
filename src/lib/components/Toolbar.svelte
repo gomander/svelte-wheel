@@ -1,5 +1,36 @@
-<header class="px-4 py-2 bg-surface-200-700-token shadow-2xl">
+<script lang="ts">
+  import { createEventDispatcher } from 'svelte'
+  import { popup } from '@skeletonlabs/skeleton'
+  import MobileMenu from '$lib/components/MobileMenu.svelte'
+
+  const dispatch = createEventDispatcher<{ new: null }>()
+</script>
+
+<header class="px-4 py-2 bg-surface-200-700-token shadow-2xl flex justify-between items-center">
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
   </a>
+
+  <div class="block lg:hidden">
+    <button
+      class="btn btn-icon-sm text-xl hover:variant-soft-primary"
+      use:popup={{ event: 'click', target: 'mobileMenu' }}
+    >
+      <i class="fas fa-bars" />
+    </button>
+
+    <div data-popup="mobileMenu">
+      <MobileMenu on:new={() => dispatch('new')} />
+    </div>
+  </div>
+
+  <div class="hidden lg:flex items-center">
+    <button
+      class="btn btn-sm text-lg hover:variant-soft-primary"
+      on:click={() => dispatch('new')}
+    >
+      <i class="fas fa-file" />
+      <span>New</span>
+    </button>
+  </div>
 </header>

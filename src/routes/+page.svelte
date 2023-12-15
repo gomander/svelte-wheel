@@ -30,7 +30,7 @@
 <div class="min-h-screen flex flex-col">
   <Toolbar on:new={wheelStore.reset} />
 
-  <div class="flex-grow flex flex-col xl:grid grid-cols-4">
+  <main class="flex-grow flex flex-col xl:grid grid-cols-4">
     <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col">
       {#if !$fullscreenStore.active}
         <h2 class="text-3xl">{$wheelStore.config.title}</h2>
@@ -47,5 +47,5 @@
         <EditorColumn />
 			{/if}
     </div>
-  </div>
+  </main>
 </div>

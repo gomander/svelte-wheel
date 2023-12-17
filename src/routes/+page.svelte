@@ -6,6 +6,7 @@
   import { wheelStore } from '$lib/stores/WheelStore'
 	import { fullscreenStore } from '$lib/stores/FullscreenStore'
   import type { Entry } from '$lib/utils/Wheel'
+  import AboutCards from '$lib/components/AboutCards.svelte'
 
   const modalStore = getModalStore()
 
@@ -65,3 +66,11 @@
     </div>
   </main>
 </div>
+
+{#if !$fullscreenStore.active}
+  <hr />
+
+  <aside class="p-4 flex justify-center">
+    <AboutCards />
+  </aside>
+{/if}

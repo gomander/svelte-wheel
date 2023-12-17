@@ -10,4 +10,5 @@
   autocomplete="off"
   readonly
   bind:value={text}
+  aria-label="Results"
 />

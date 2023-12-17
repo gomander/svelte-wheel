@@ -39,4 +39,5 @@
   bind:this={textarea}
   bind:value={text}
   on:input={setEntries}
+  aria-label="Entries"
 />

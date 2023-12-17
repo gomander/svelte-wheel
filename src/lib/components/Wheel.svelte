@@ -46,10 +46,15 @@
     refreshPainter()
   }
 
-  const click = (e: MouseEvent) => {
-    const center = canvas.clientWidth / 2
-    const { x, y } = { x: e.offsetX - center, y: e.offsetY - center }
-    if ((x ** 2 + y ** 2) ** 0.5 > center * 0.85) return
+  const click = (e: MouseEvent | KeyboardEvent) => {
+    if (e instanceof MouseEvent) {
+      const center = canvas.clientWidth / 2
+      const { x, y } = { x: e.offsetX - center, y: e.offsetY - center }
+      if ((x ** 2 + y ** 2) ** 0.5 > center * 0.85) return
+    }
+    if (e instanceof KeyboardEvent) {
+      if (e.key !== 'Enter' && e.key !== ' ') return
+    }
     wheel.click()
   }
 
@@ -66,6 +71,9 @@
     height="700"
     bind:this={canvas}
     on:click={click}
-    class="w-full h-auto"
+    on:keydown={click}
+    class="w-full h-auto rounded-full outline-offset-[-1rem]"
+    aria-label="Wheel"
+    tabindex="0"
   />
 </div>

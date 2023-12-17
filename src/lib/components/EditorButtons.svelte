@@ -21,6 +21,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={sortEntries}
+    aria-label="Sort"
   >
     <i class="fas fa-arrow-down-a-z" />
     <span>Sort</span>
@@ -29,6 +30,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={shuffleEntries}
+    aria-label="Shuffle"
   >
     <i class="fas fa-shuffle" />
     <span>Shuffle</span>

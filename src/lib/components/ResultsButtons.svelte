@@ -26,6 +26,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={sortWinners}
+    aria-label="Sort"
   >
     <i class="fas fa-arrow-down-a-z" />
     <span>Sort</span>
@@ -34,6 +35,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={resetEntries}
+    aria-label="Reset"
   >
     <i class="fas fa-rotate-left" />
     <span>Reset</span>
@@ -42,6 +44,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={clearWinners}
+    aria-label="Clear"
   >
     <i class="fas fa-x" />
     <span>Clear</span>

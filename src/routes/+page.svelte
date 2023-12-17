@@ -9,21 +9,21 @@
 
   const modalStore = getModalStore()
 
-	const winnerModal: ModalSettings = {
-		type: 'component',
-		component: 'winnerDialog',
-		meta: { color: '', winner: { text: '', id: '' } }
-	}
+	const createWinnerModal = (
+    data: { winner: Entry, color?: string }
+  ): ModalSettings => ({
+    type: 'component',
+    component: 'winnerDialog',
+    title: $wheelStore.config.winnerMessage,
+    body: data.winner.text,
+    meta: data
+  })
 
 	const openWinnerModal = async (
 		e: CustomEvent<{ winner: Entry, color?: string }>
 	) => {
 		if (!$wheelStore.config.displayWinnerDialog) return
-		await new Promise(r => setTimeout(r, 100))
-		winnerModal.title = $wheelStore.config.winnerMessage
-		winnerModal.body = e.detail.winner.text
-		winnerModal.meta = e.detail
-		modalStore.trigger(winnerModal)
+		modalStore.trigger(createWinnerModal(e.detail))
 	}
 </script>
 

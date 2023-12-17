@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.5.3",
+    "browser-fs-access": "^0.35.0",
     "firebase-admin": "^11.11.1"
   }
 }

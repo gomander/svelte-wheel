@@ -1,0 +1,70 @@
+<script lang="ts">
+  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
+  import { fileOpen } from 'browser-fs-access'
+  import { wheelStore } from '$lib/stores/WheelStore'
+
+  const modalStore = getModalStore()
+  const toastStore = getToastStore()
+
+  const openLocalFile = async () => {
+    try {
+      const file = await fileOpen({
+        mimeTypes: ['application/json'],
+        extensions: ['.wheel']
+      })
+      const fileContent = await file.text()
+      const { config, entries, winners } = JSON.parse(fileContent)
+      wheelStore.setConfig(config)
+      wheelStore.setEntries(entries)
+      wheelStore.setWinners(winners)
+      modalStore.close()
+      toastStore.trigger({
+        message: 'Wheel loaded successfully!',
+        background: 'variant-filled-primary'
+      })
+    } catch (e) {
+      console.error(e)
+      toastStore.trigger({
+        message: 'Error loading wheel',
+        background: 'variant-filled-error'
+      })
+    }
+  }
+</script>
+
+{#if $modalStore[0]}
+  <article class="card w-modal-slim shadow-xl overflow-hidden">
+    <header class="p-4 text-2xl font-semibold flex items-center gap-2">
+      <i class="fas fa-folder-open" />
+      <h1>Open a wheel</h1>
+    </header>
+
+    <div class="px-4 flex flex-col gap-4">
+      <button
+        class="btn variant-filled-primary flex flex-col gap-2"
+        disabled
+        on:click={() => null}
+      >
+        <i class="fas fa-cloud text-4xl" />
+        <span>Open from the cloud</span>
+      </button>
+
+      <button
+        class="btn variant-filled"
+        on:click={openLocalFile}
+      >
+        <i class="fas fa-hard-drive text-4xl" />
+        <span>Open a local file</span>
+      </button>
+    </div>
+
+    <footer class="p-4 flex justify-end gap-2 md:gap-4">
+      <button
+        class="btn variant-soft"
+        on:click={modalStore.close}
+      >
+        Cancel
+      </button>
+    </footer>
+  </article>
+{/if}

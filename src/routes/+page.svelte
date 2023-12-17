@@ -25,16 +25,32 @@
 		if (!$wheelStore.config.displayWinnerDialog) return
 		modalStore.trigger(createWinnerModal(e.detail))
 	}
+
+  const openOpenDialog = () => {
+    modalStore.trigger({ type: 'component', component: 'openDialog' })
+  }
+
+  const openSaveDialog = () => {
+    modalStore.trigger({ type: 'component', component: 'saveDialog' })
+  }
 </script>
 
 <div class="min-h-screen flex flex-col">
-  <Toolbar on:new={wheelStore.reset} />
+  <Toolbar
+    on:new={wheelStore.reset}
+    on:open={openOpenDialog}
+    on:save={openSaveDialog}
+  />
 
   <main class="flex-grow flex flex-col xl:grid grid-cols-4">
     <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col">
       {#if !$fullscreenStore.active}
-        <h2 class="text-3xl">{$wheelStore.config.title}</h2>
-        <p class="text-lg">{$wheelStore.config.description}</p>
+        <h2 class="text-3xl" aria-label="Wheel title">
+          {$wheelStore.config.title}
+        </h2>
+        <p class="text-lg" aria-label="Wheel description">
+          {$wheelStore.config.description}
+        </p>
       {/if}
     </div>
 

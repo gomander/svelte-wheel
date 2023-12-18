@@ -27,14 +27,20 @@
 		modalStore.trigger(createWinnerModal(e.detail))
 	}
 
-  const openOpenDialog = () => {
-    modalStore.trigger({ type: 'component', component: 'openDialog' })
-  }
+  const openOpenDialog = () => modalStore.trigger({
+    type: 'component', component: 'openDialog'
+  })
 
-  const openSaveDialog = () => {
-    modalStore.trigger({ type: 'component', component: 'saveDialog' })
-  }
+  const openSaveDialog = () => modalStore.trigger({
+    type: 'component', component: 'saveDialog'
+  })
 </script>
+
+<svelte:head>
+  <title>
+    {$wheelStore.config.title && `${$wheelStore.config.title} -` } Svelte Wheel
+  </title>
+</svelte:head>
 
 <div class="min-h-screen flex flex-col">
   <Toolbar

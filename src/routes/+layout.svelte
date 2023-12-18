@@ -26,10 +26,6 @@
   onMount(fullscreenStore.initialize)
 </script>
 
-<svelte:head>
-  <title>Svelte Wheel</title>
-</svelte:head>
-
 <Modal components={modalRegistry} />
 
 <slot />

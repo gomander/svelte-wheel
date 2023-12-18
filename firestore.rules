@@ -2,6 +2,20 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
+    }
+    match /wheel-meta/{wheel} {
+    	allow read: if resource.data.visibility == 'public';
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow create: if request.auth != null;
+    }
+    match /wheels/{wheel} {
+    	allow read: if get(/databases/$(database)/documents/wheel-meta/$(wheel)).data.visibility == 'public';
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow create: if request.auth != null;
+    }
     match /{document=**} {
       allow read, write: if false;
     }

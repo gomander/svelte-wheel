@@ -1,4 +1,7 @@
 import { initializeApp } from 'firebase-admin/app'
-import { firebaseConfig } from '$lib/server/Firebase'
+import { getFirestore } from 'firebase-admin/firestore'
+import { firebaseConfig } from '$lib/utils/Firebase'
 
 const app = initializeApp(firebaseConfig)
+
+const firestore = getFirestore(app)

@@ -23,6 +23,7 @@
     "@tailwindcss/forms": "~0.5.7",
     "@tailwindcss/typography": "~0.5.10",
     "@types/node": "^20.10.4",
+    "@types/uuid": "^9.0.7",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "svelte": "^4.2.8",
@@ -37,6 +38,7 @@
   "dependencies": {
     "@floating-ui/dom": "^1.5.3",
     "browser-fs-access": "^0.35.0",
-    "firebase-admin": "^11.11.1"
+    "firebase-admin": "^11.11.1",
+    "uuid": "^9.0.1"
   }
 }

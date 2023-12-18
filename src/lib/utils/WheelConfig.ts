@@ -16,4 +16,4 @@ export default class WheelConfig {
   }
 }
 
-const defaultColors = ['#6693fa', '#eb6574', '#f5d273', '#6be88a']
+export const defaultColors = ['#6693fa', '#eb6574', '#f5d273', '#6be88a']

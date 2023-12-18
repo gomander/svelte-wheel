@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid'
 import WheelConfig from '$lib/utils/WheelConfig'
 import {
   initialWheelState, click, tick, type WheelState
@@ -58,9 +59,7 @@ const getColorAtPointer = (wheel: Wheel) => (
   wheel.config.colors[getIndexAtPointer(wheel) % wheel.config.colors.length]
 )
 
-export const getNewId = () => (
-  crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
-)
+export const getNewId = () => uuid().split('-')[0]
 
 export const defaultEntries: Entry[] = [
   'Ali', 'Beatriz', 'Charles', 'Diya', 'Eric', 'Fatima', 'Gabriel', 'Hanna'

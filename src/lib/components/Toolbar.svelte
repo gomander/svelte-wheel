@@ -7,7 +7,8 @@
   const dispatch = createEventDispatcher<{
     new: null,
     open: null,
-    save: null
+    save: null,
+    login: null
   }>()
 </script>
 
@@ -61,6 +62,14 @@
         aria-label="Save"
       >
         <i class="fas fa-floppy-disk" />
+      </button>
+
+      <button
+        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        on:click={() => dispatch('login')}
+        aria-label="Login"
+      >
+        <i class="fas fa-user" />
       </button>
     {/if}
 

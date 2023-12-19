@@ -1,16 +1,20 @@
 <script lang="ts">
-  import { goto } from '$app/navigation'
-  import { ProgressRadial } from '@skeletonlabs/skeleton'
+  import { onNavigate } from '$app/navigation'
+  import { getModalStore, ProgressRadial } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
   import { signInUser } from '$lib/utils/Firebase.js'
+  import { FirebaseError } from 'firebase/app'
+
+  const modalStore = getModalStore()
 
   const user = {
-    email: '',
-    password: ''
+    email: $modalStore[0].meta?.email ?? '',
+    password: $modalStore[0].meta?.password ?? ''
   }
 
   let loading = false
 
+  let formError: string | null = null
   let errors: Record<string, string[] | undefined> = { }
 
   const loginSchema = z.object({
@@ -21,6 +25,7 @@
   const logIn = async () => {
     if (loading) return
     loading = true
+    formError = null
 
     try {
       loginSchema.parse(user)
@@ -32,24 +37,43 @@
     try {
       await signInUser(user.email, user.password)
       loading = false
+      modalStore.close()
     } catch (error) {
       loading = false
-      return console.log(error)
+      if (error instanceof FirebaseError && error.code === 'auth/invalid-credential') {
+        user.password = ''
+        formError = 'Invalid email or password'
+      }
     }
-
-    goto('/')
   }
+
+  const resetPassword = () => {
+    modalStore.close()
+    modalStore.trigger({ type: 'component', component: 'resetPasswordDialog' })
+  }
+
+  const signUp = () => {
+    modalStore.close()
+    modalStore.trigger({
+      type: 'component',
+      component: 'signUpDialog',
+      meta: user
+    })
+  }
+
+  onNavigate(modalStore.close)
 </script>
 
-<svelte:head>
-  <title>Log in - Svelte Wheel</title>
-</svelte:head>
-
-<main class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
+{#if $modalStore[0]}
+<article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
   <header class="h3 flex items-center gap-2">
     <i class="fas fa-user" />
     <h1>Log in</h1>
   </header>
+
+  {#if formError}
+    <div class="alert variant-soft-error">{formError}</div>
+  {/if}
 
   <form
     class="flex flex-col gap-4"
@@ -58,7 +82,6 @@
     <label class="label">
       <span>Email</span>
 
-      <!-- svelte-ignore a11y-autofocus -->
       <input
         type="email"
         name="email"
@@ -67,7 +90,6 @@
         required
         bind:value={user.email}
         placeholder="name@domain.com"
-        autofocus={true}
         class="input"
       />
 
@@ -98,10 +120,37 @@
       {/if}
     </label>
 
-    <div class="flex justify-end">
+    <div class="flex flex-wrap justify-between gap-2">
+      <button
+        type="button"
+        class="btn btn-sm variant-soft"
+        on:click={resetPassword}
+      >
+        Forgot password
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-sm variant-soft"
+        on:click={signUp}
+      >
+        Don't have an account? Sign up
+      </button>
+    </div>
+
+    <footer class="flex justify-end gap-2">
+      <button
+        type="button"
+        class="btn btn-sm variant-soft"
+        on:click={modalStore.close}
+      >
+        Close
+      </button>
+
       <button
         class="btn variant-filled-primary"
         disabled={loading}
+        aria-busy={loading}
       >
         {#if loading}
           <ProgressRadial width="w-6" />
@@ -109,12 +158,7 @@
           Log in
         {/if}
       </button>
-    </div>
+    </footer>
   </form>
-</main>
-
-<aside class="flex justify-center mt-4">
-  <a href="/signup" class="text-sm">
-    Need an account? Sign up
-  </a>
-</aside>
+</article>
+{/if}

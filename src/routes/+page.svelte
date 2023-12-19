@@ -34,6 +34,10 @@
   const openSaveDialog = () => modalStore.trigger({
     type: 'component', component: 'saveDialog'
   })
+
+  const openLoginDialog = async () => modalStore.trigger({
+    type: 'component', component: 'loginDialog'
+  })
 </script>
 
 <svelte:head>
@@ -47,6 +51,7 @@
     on:new={wheelStore.reset}
     on:open={openOpenDialog}
     on:save={openSaveDialog}
+    on:login={openLoginDialog}
   />
 
   <main class="flex-grow flex flex-col xl:grid grid-cols-4">

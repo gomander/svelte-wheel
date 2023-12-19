@@ -1,6 +1,7 @@
 import { initializeApp, getApp, getApps } from 'firebase/app'
 import {
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  sendPasswordResetEmail, confirmPasswordReset, signOut
 } from 'firebase/auth'
 import {
   getFirestore, collection, doc, setDoc, updateDoc
@@ -47,12 +48,22 @@ export const signInUser = async (email: string, password: string) => {
   const userCredential = await signInWithEmailAndPassword(
     auth, email, password
   )
-  await updateDoc(doc(db, 'users', userCredential.user.uid), {
-    lastActive: new Date()
-  })
+  updateUserLastActive(userCredential.user.uid)
   return userCredential.user
 }
 
-export const signOutUser = async () => await auth.signOut()
+export const updateUserLastActive = (uid: string) => (
+  updateDoc(doc(db, 'users', uid), { lastActive: new Date() })
+)
+
+export const resetPassword = (email: string) => (
+  sendPasswordResetEmail(auth, email)
+)
+
+export const confirmResetPassword = (code: string, newPassword: string) => (
+  confirmPasswordReset(auth, code, newPassword)
+)
+
+export const signOutUser = () => signOut(auth)
 
 export const getCurrentUser = () => auth.currentUser

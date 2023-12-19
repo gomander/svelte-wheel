@@ -1,24 +1,23 @@
 <script lang="ts">
   import { onNavigate } from '$app/navigation'
-  import { getModalStore, ProgressRadial } from '@skeletonlabs/skeleton'
+  import {
+    getModalStore, getToastStore, ProgressRadial
+  } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
   import { registerUser, signIn } from '$lib/utils/Firebase.js'
   import { FirebaseError } from 'firebase/app'
 
   const modalStore = getModalStore()
+  const toastStore = getToastStore()
 
   let form: HTMLFormElement
 
-  const user = {
-    email: $modalStore[0].meta?.email ?? '',
-    password: $modalStore[0].meta?.password ?? '',
-    confirmPassword: ''
-  }
-
   let loading = false
-
   let formError: string | null = null
   let errors: Record<string, string[] | undefined> = { }
+
+  let passwordInput: HTMLInputElement
+  let showPassword = false
 
   const registerSchema = z.object({
     email: z.string().min(6, 'Invalid email').max(
@@ -26,17 +25,18 @@
     ).email(),
     password: z.string().min(
       8, 'Password must be at least 8 characters'
-    ).max(64, 'Password must be at most 64 characters').trim(),
-    confirmPassword: z.string().min(
-      8, 'Password must be at least 8 characters'
     ).max(64, 'Password must be at most 64 characters').trim()
-  }).refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match', path: ['confirmPassword']
   })
 
   const signUp = async () => {
     if (loading) return
     loading = true
+
+    const formData = new FormData(form)
+    const user = {
+      email: String(formData.get('email')),
+      password: String(formData.get('password'))
+    }
 
     try {
       registerSchema.parse(user)
@@ -50,13 +50,16 @@
       await signIn(user.email, user.password)
       loading = false
       modalStore.close()
+      toastStore.trigger({
+        message: 'Account created successfully',
+        background: 'variant-filled-primary'
+      })
     } catch (error) {
       loading = false
       if (
         error instanceof FirebaseError &&
         error.code === 'auth/email-already-in-use'
       ) {
-        user.confirmPassword = ''
         form.reset()
         formError = 'Email already in use'
       }
@@ -64,9 +67,15 @@
   }
 
   const login = () => {
+    const formData = new FormData(form)
     modalStore.close()
     modalStore.trigger({
-      type: 'component', component: 'loginDialog', meta: user
+      type: 'component',
+      component: 'loginDialog',
+      meta: {
+        email: String(formData.get('email')),
+        password: String(formData.get('password'))
+      }
     })
   }
 
@@ -98,8 +107,7 @@
           minlength="6"
           maxlength="64"
           required
-          bind:value={user.email}
-          placeholder="name@domain.com"
+          value={$modalStore[0].meta?.email ?? ''}
           class="input"
         />
 
@@ -113,39 +121,30 @@
       <label class="label">
         <span>Password</span>
 
-        <input
-          type="password"
-          name="password"
-          minlength="8"
-          maxlength="64"
-          required
-          bind:value={user.password}
-          class="input"
-        />
+        <div class="input-group grid-cols-[1fr_auto]">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            minlength="8"
+            maxlength="64"
+            required
+            value={$modalStore[0].meta?.password ?? ''}
+            bind:this={passwordInput}
+          />
+
+          <button
+            type="button"
+            class="btn variant-soft rounded-none"
+            on:click={() => showPassword = !showPassword}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'} w-6" />
+          </button>
+        </div>
 
         {#if errors.password}
           <span class="text-sm text-error-400-500-token">
             {errors.password[0]}
-          </span>
-        {/if}
-      </label>
-
-      <label class="label">
-        <span>Confirm password</span>
-
-        <input
-          type="password"
-          name="password"
-          minlength="8"
-          maxlength="64"
-          required
-          bind:value={user.confirmPassword}
-          class="input"
-        />
-
-        {#if errors.confirmPassword}
-          <span class="text-sm text-error-400-500-token">
-            {errors.confirmPassword[0]}
           </span>
         {/if}
       </label>

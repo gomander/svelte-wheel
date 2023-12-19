@@ -13,13 +13,11 @@
   const emailValidator = z.string().email()
 
   let loading = false
-  let formError: string | null = null
   let errors: Record<string, string[] | undefined> = { }
 
   const resetPassword = async () => {
     if (loading) return
     loading = true
-    formError = null
 
     try {
       emailValidator.parse(email)
@@ -34,11 +32,14 @@
       modalStore.close()
       toastStore.trigger({
         message: 'Password reset email sent',
-        background: 'variant-filled-success'
+        background: 'variant-filled-primary'
       })
     } catch (error) {
       loading = false
-      formError = 'Something went wrong, please try again later'
+      toastStore.trigger({
+        message: 'Something went wrong, please try again later',
+        background: 'variant-filled-error'
+      })
     }
   }
 </script>
@@ -49,10 +50,6 @@
       <i class="fas fa-key" />
       <h1>Reset password</h1>
     </header>
-
-    {#if formError}
-      <div class="alert variant-soft-error">{formError}</div>
-    {/if}
 
     <form
       class="flex flex-col gap-4"

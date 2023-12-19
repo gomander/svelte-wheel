@@ -2,7 +2,7 @@
 	import '../app.postcss'
   import { onMount } from 'svelte'
 	import {
-    initializeStores, Modal, storePopup, type ModalComponent
+    initializeStores, Modal, Toast, storePopup, type ModalComponent
   } from '@skeletonlabs/skeleton'
 	import {
     computePosition, autoUpdate, flip, shift, offset, arrow
@@ -31,6 +31,8 @@
 
   onMount(fullscreenStore.initialize)
 </script>
+
+<Toast />
 
 <Modal components={modalRegistry} />
 

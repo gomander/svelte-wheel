@@ -2,7 +2,9 @@
   import { ProgressRadial } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
 
-  export let onSubmit: (user: { email: string, password: string }) => Promise<void>
+  export let onSubmit: (
+    user: { email: string, password: string }
+  ) => Promise<void>
   export let formError: string | null
 
   let form: HTMLFormElement
@@ -13,15 +15,12 @@
   let showPassword = false
 
   const userSchema = z.object({
-    email: z.string().min(6, 'Invalid email').max(
-      64, 'Email must be at most 64 characters'
-    ).email(),
-    password: z.string().min(
-      8, 'Password must be at least 8 characters'
-    ).max(64, 'Password must be at most 64 characters').trim()
+    email: z.string().email(),
+    password: z.string().min(8, 'Password must be at least 8 characters').trim()
   })
 
   const submit = async () => {
+    if (loading) return
     formError = null
     loading = true
     const formData = new FormData(form)
@@ -33,6 +32,7 @@
       userSchema.parse(user)
     } catch (error) {
       if (error instanceof z.ZodError) errors = error.flatten().fieldErrors
+      return loading = false
     }
     await onSubmit(user)
     loading = false
@@ -61,9 +61,7 @@
     />
 
     {#if errors.email}
-      <span class="text-sm text-error-400-500-token">
-        {errors.email[0]}
-      </span>
+      <span class="text-sm text-error-400-500-token">{errors.email[0]}</span>
     {/if}
   </label>
 
@@ -84,6 +82,7 @@
         type="button"
         class="btn variant-soft rounded-none"
         on:click={() => showPassword = !showPassword}
+        title={showPassword ? 'Hide password' : 'Show password'}
         aria-label={showPassword ? 'Hide password' : 'Show password'}
       >
         <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'} w-6" />
@@ -91,26 +90,24 @@
     </div>
 
     {#if errors.password}
-      <span class="text-sm text-error-400-500-token">
-        {errors.password[0]}
-      </span>
+      <span class="text-sm text-error-400-500-token">{errors.password[0]}</span>
     {/if}
   </label>
+
+  <slot />
+
+  <footer class="flex justify-end gap-2">
+    <slot name="footer-buttons" />
+
+    <button
+      class="btn variant-filled-primary"
+      aria-busy={loading}
+    >
+      {#if loading}
+        <ProgressRadial width="w-6" />
+      {:else}
+        Submit
+      {/if}
+    </button>
+  </footer>
 </form>
-
-<slot />
-
-<div class="flex justify-end gap-2">
-  <slot name="footer-buttons" />
-
-  <button
-    class="btn variant-filled-primary"
-    on:click={submit}
-  >
-    {#if loading}
-      <ProgressRadial width="w-6" />
-    {:else}
-      <slot name="submit-button" />
-    {/if}
-  </button>
-</div>

@@ -45,10 +45,7 @@
       <h1>Log in</h1>
     </header>
 
-    <EmailPasswordForm
-      {onSubmit}
-      {formError}
-    >
+    <EmailPasswordForm {onSubmit} {formError}>
       <div class="flex flex-wrap justify-between gap-2">
         <button
           type="button"
@@ -69,13 +66,12 @@
 
       <button
         slot="footer-buttons"
+        type="button"
         class="btn variant-soft"
         on:click={modalStore.close}
       >
         Close
       </button>
-
-      <span slot="submit-button">Log in</span>
     </EmailPasswordForm>
   </article>
 {/if}

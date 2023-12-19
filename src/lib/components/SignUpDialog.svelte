@@ -41,12 +41,10 @@
       <h1>Sign up</h1>
     </header>
 
-    <EmailPasswordForm
-      {onSubmit}
-      {formError}
-    >
+    <EmailPasswordForm {onSubmit} {formError}>
       <div>
         <button
+          type="button"
           class="btn btn-sm variant-soft"
           on:click={login}
         >
@@ -56,13 +54,12 @@
 
       <button
         slot="footer-buttons"
+        type="button"
         class="btn variant-soft"
         on:click={modalStore.close}
       >
         Close
       </button>
-
-      <span slot="submit-button">Sign up</span>
     </EmailPasswordForm>
   </article>
 {/if}

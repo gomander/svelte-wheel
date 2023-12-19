@@ -8,24 +8,20 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let email = $modalStore[0].meta?.email ?? ''
-
+  let email = ''
   const emailValidator = z.string().email()
-
   let loading = false
   let errors: Record<string, string[] | undefined> = { }
 
   const resetPassword = async () => {
     if (loading) return
     loading = true
-
     try {
       emailValidator.parse(email)
     } catch (error) {
       if (error instanceof z.ZodError) errors = error.flatten().fieldErrors
       return loading = false
     }
-
     try {
       await sendPasswordResetEmail(email)
       loading = false
@@ -65,7 +61,6 @@
           maxlength="64"
           required
           bind:value={email}
-          placeholder="name@domain.com"
           class="input"
         />
 
@@ -87,7 +82,6 @@
 
         <button
           class="btn variant-filled-primary"
-          disabled={loading}
           aria-busy={loading}
         >
           {#if loading}

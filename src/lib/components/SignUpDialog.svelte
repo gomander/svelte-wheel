@@ -2,7 +2,7 @@
   import { onNavigate } from '$app/navigation'
   import { getModalStore, ProgressRadial } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
-  import { registerUser, signInUser } from '$lib/utils/Firebase.js'
+  import { registerUser, signIn } from '$lib/utils/Firebase.js'
   import { FirebaseError } from 'firebase/app'
 
   const modalStore = getModalStore()
@@ -47,7 +47,7 @@
 
     try {
       await registerUser(user.email, user.password)
-      await signInUser(user.email, user.password)
+      await signIn(user.email, user.password)
       loading = false
       modalStore.close()
     } catch (error) {

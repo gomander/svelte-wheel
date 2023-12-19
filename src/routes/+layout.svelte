@@ -14,7 +14,7 @@
   import SaveLocalDialog from '$lib/components/SaveLocalDialog.svelte'
   import LoginDialog from '$lib/components/LoginDialog.svelte'
   import SignUpDialog from '$lib/components/SignUpDialog.svelte'
-  // import ResetPasswordDialog from '$lib/components/ResetPasswordDialog.svelte'
+  import ResetPasswordDialog from '$lib/components/ResetPasswordDialog.svelte'
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
 	initializeStores()
@@ -26,7 +26,7 @@
     saveLocalDialog: { ref: SaveLocalDialog },
     loginDialog: { ref: LoginDialog },
     signUpDialog: { ref: SignUpDialog },
-    // resetPasswordDialog: { ref: ResetPasswordDialog }
+    resetPasswordDialog: { ref: ResetPasswordDialog }
 	}
 
   onMount(fullscreenStore.initialize)

@@ -12,6 +12,7 @@
   import OpenDialog from '$lib/components/OpenDialog.svelte'
   import SaveDialog from '$lib/components/SaveDialog.svelte'
   import SaveLocalDialog from '$lib/components/SaveLocalDialog.svelte'
+  import AccountDialog from '$lib/components/AccountDialog.svelte'
   import LoginDialog from '$lib/components/LoginDialog.svelte'
   import SignUpDialog from '$lib/components/SignUpDialog.svelte'
   import ResetPasswordDialog from '$lib/components/ResetPasswordDialog.svelte'
@@ -24,6 +25,7 @@
     openDialog: { ref: OpenDialog },
     saveDialog: { ref: SaveDialog },
     saveLocalDialog: { ref: SaveLocalDialog },
+    accountDialog: { ref: AccountDialog },
     loginDialog: { ref: LoginDialog },
     signUpDialog: { ref: SignUpDialog },
     resetPasswordDialog: { ref: ResetPasswordDialog }

@@ -8,7 +8,7 @@
     new: null,
     open: null,
     save: null,
-    login: null
+    account: null
   }>()
 </script>
 
@@ -44,6 +44,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('new')}
         aria-label="New"
+        title="New"
       >
         <i class="fas fa-file" />
       </button>
@@ -52,6 +53,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('open')}
         aria-label="Open"
+        title="Open"
       >
         <i class="fas fa-folder-open" />
       </button>
@@ -60,14 +62,16 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('save')}
         aria-label="Save"
+        title="Save"
       >
         <i class="fas fa-floppy-disk" />
       </button>
 
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => dispatch('login')}
-        aria-label="Login"
+        on:click={() => dispatch('account')}
+        aria-label="Account"
+        title="Account"
       >
         <i class="fas fa-user" />
       </button>
@@ -78,6 +82,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => fullscreenStore.toggleFullscreen()}
         aria-label="Toggle fullscreen"
+        title="Toggle fullscreen"
       >
         <i class="fas fa-{$fullscreenStore.active ? 'compress' : 'expand'}" />
       </button>

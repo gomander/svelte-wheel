@@ -1,0 +1,86 @@
+<script lang="ts">
+  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
+  import {
+    getCurrentUser, sendEmailVerificationEmail, signOut
+  } from '$lib/utils/Firebase'
+
+  const modalStore = getModalStore()
+  const toastStore = getToastStore()
+
+  const authUser = getCurrentUser()
+
+  if (!authUser) {
+    modalStore.close()
+    modalStore.trigger({ type: 'component', component: 'loginDialog' })
+  }
+
+  const logOut = () => {
+    signOut()
+    modalStore.close()
+    toastStore.trigger({
+      message: 'Logged out',
+      background: 'variant-soft',
+      timeout: 1000,
+      hideDismiss: true
+    })
+  }
+</script>
+
+{#if $modalStore[0]}
+  <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
+    <header class="h3 flex items-center gap-2">
+      <i class="fas fa-user" />
+      <h1>Account</h1>
+    </header>
+
+    {#if !authUser?.emailVerified}
+      <aside class="alert variant-soft-warning">
+        <i class="fas fa-exclamation-triangle" />
+
+        <p class="alert-message">Your email address is not verified.</p>
+
+        <button
+          class="btn btn-sm variant-filled"
+          on:click={sendEmailVerificationEmail}
+        >
+          Send verification email
+        </button>
+      </aside>
+    {/if}
+
+    <section class="flex flex-col gap-2">
+      {#if authUser?.displayName}
+        <div>
+          {authUser?.displayName}
+        </div>
+      {/if}
+
+      {#if authUser?.email}
+        <div>
+          Email: <pre>{authUser?.email}</pre>
+        </div>
+      {/if}
+
+      <div>
+        User ID: <pre>{authUser?.uid}</pre>
+      </div>
+
+      <div>
+        <button
+          class="btn variant-soft-warning"
+          on:click={logOut}
+        >
+          Log out
+        </button>
+      </div>
+    </section>
+
+    <footer class="flex justify-end gap-2">
+      <button
+        class="btn variant-filled"
+        on:click={modalStore.close}
+      >
+        Close
+      </button>
+  </article>
+{/if}

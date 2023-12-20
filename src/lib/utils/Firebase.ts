@@ -2,10 +2,10 @@ import { initializeApp, getApp, getApps } from 'firebase/app'
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   sendPasswordResetEmail as firebaseAuthSendPasswordResetEmail,
-  signOut as firebaseAuthSignOut
+  signOut as firebaseAuthSignOut, sendEmailVerification
 } from 'firebase/auth'
 import {
-  getFirestore, collection, doc, setDoc, updateDoc
+  getFirestore, collection, doc, setDoc, updateDoc, getDoc
 } from 'firebase/firestore'
 import {
   PUBLIC_FIREBASE_API_KEY, PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -13,6 +13,14 @@ import {
   PUBLIC_FIREBASE_MESSAGING_SENDER_ID, PUBLIC_FIREBASE_APP_ID,
   PUBLIC_FIREBASE_MEASUREMENT_ID
 } from '$env/static/public'
+
+interface DbUser {
+  createdAt: Date
+  lastActive: Date
+  uid: string
+  email: string
+  wheels: string[]
+}
 
 export const firebaseConfig = {
   apiKey: PUBLIC_FIREBASE_API_KEY,
@@ -61,6 +69,17 @@ export const sendPasswordResetEmail = (email: string) => (
   firebaseAuthSendPasswordResetEmail(auth, email)
 )
 
+export const sendEmailVerificationEmail = () => {
+  if (auth.currentUser) sendEmailVerification(auth.currentUser)
+}
+
 export const signOut = () => firebaseAuthSignOut(auth)
 
 export const getCurrentUser = () => auth.currentUser
+
+export const getSelfFromDb = async () => {
+  if (!auth.currentUser) return null
+  const userSnapshot = await getDoc(doc(db, 'users', auth.currentUser.uid))
+  if (!userSnapshot.exists()) return null
+  return userSnapshot.data() as DbUser
+}

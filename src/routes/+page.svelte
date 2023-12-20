@@ -35,8 +35,8 @@
     type: 'component', component: 'saveDialog'
   })
 
-  const openLoginDialog = async () => modalStore.trigger({
-    type: 'component', component: 'loginDialog'
+  const openAccountDialog = async () => modalStore.trigger({
+    type: 'component', component: 'accountDialog'
   })
 </script>
 
@@ -51,7 +51,7 @@
     on:new={wheelStore.reset}
     on:open={openOpenDialog}
     on:save={openSaveDialog}
-    on:login={openLoginDialog}
+    on:account={openAccountDialog}
   />
 
   <main class="flex-grow flex flex-col xl:grid grid-cols-4">

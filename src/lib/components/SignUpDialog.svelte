@@ -33,12 +33,12 @@
   }
 
   const login = () => {
-    modalStore.close()
     modalStore.trigger({
       type: 'component',
       component: 'loginDialog',
       meta: { next: $modalStore[0].meta?.next }
     })
+    modalStore.close()
   }
 
   onNavigate(modalStore.close)

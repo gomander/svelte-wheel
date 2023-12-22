@@ -39,7 +39,7 @@ export const POST = async ({ request }) => {
   })
 
   const body = await request.json() as {
-    wheel: ApiWheel, uid: string, visibility: WheelVisibility
+    wheel: Omit<ApiWheel, 'path'>, uid: string, visibility: WheelVisibility
   }
 
   try {

@@ -71,10 +71,7 @@ const getNewWheelPath = async () => {
 
 const getRandomPath = () => {
   const chars = 'abcdefghjkmnpqrstuvwxyz23456789'
-  // TODO: upgrade to Node 20 for access to Array.prototype.toSpliced
-  const pathChars = Array.from(
+  return Array.from(
     { length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]
-  )
-  pathChars.splice(3, 0, '-')
-  return pathChars.join('')
+  ).toSpliced(3, 0, '-').join('')
 }

@@ -16,6 +16,14 @@ export interface ApiError {
   }
 }
 
+export interface ApiUser {
+  uid: string
+  createdAt: Date
+  lastActive: Date
+  email?: string
+  wheels: string[]
+}
+
 export interface ApiWheel {
   path: string
   config: WheelConfig

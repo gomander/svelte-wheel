@@ -20,24 +20,18 @@
 
   const save = async () => {
     if (!title) return
-
-    const res = await fetch('/api/wheels', {
+    await fetch('/api/wheels', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         wheel: {
-          config: $wheelStore.config,
+          config: { ...$wheelStore.config, title },
           entries: $wheelStore.entries
         },
         visibility: 'private',
         uid: getCurrentUser()?.uid
       })
     })
-
-    const responseObject = await res.json()
-
-    console.log(responseObject)
-
     toastStore.trigger({
       message: 'Wheel saved successfully!',
       background: 'variant-soft-primary',

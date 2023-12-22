@@ -1,9 +1,35 @@
 import { z } from 'zod'
 import { SVELTE_WHEEL_API_KEY } from '$env/static/private'
-import { saveWheel } from '$lib/server/FirebaseAdmin'
+import { getWheels, saveWheel } from '$lib/server/FirebaseAdmin'
 import type {
   ApiError, ApiSuccess, ApiWheel, WheelVisibility
 } from '$lib/types/api'
+
+export const GET = async ({ request }) => {
+  const uid = request.headers.get('Authorization')
+  if (!uid) {
+    return new Response(
+      JSON.stringify(
+        {
+          success: false,
+          error: { message: 'Unauthorized' }
+        } satisfies ApiError
+      ),
+      { status: 401 }
+    )
+  }
+
+  const wheels = await getWheels(uid)
+  return new Response(
+    JSON.stringify(
+      {
+        success: true,
+        data: { wheels }
+      } satisfies ApiSuccess<{ wheels: ApiWheel[] }>
+    ),
+    { status: 200 }
+  )
+}
 
 export const POST = async ({ request }) => {
   // const apiKey = request.headers.get('x-api-key')

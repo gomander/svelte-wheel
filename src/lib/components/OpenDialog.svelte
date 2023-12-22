@@ -6,6 +6,11 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
+  const openOpenCloudDialog = () => {
+    modalStore.close()
+    modalStore.trigger({ type: 'component', component: 'openCloudDialog' })
+  }
+
   const openLocalFile = async () => {
     try {
       const file = await fileOpen({
@@ -42,8 +47,7 @@
     <div class="px-4 flex flex-col gap-4">
       <button
         class="btn variant-filled-primary flex flex-col gap-2"
-        disabled
-        on:click={() => null}
+        on:click={openOpenCloudDialog}
       >
         <i class="fas fa-cloud text-4xl" />
         <span>Open from the cloud</span>

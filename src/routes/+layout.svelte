@@ -10,6 +10,7 @@
   import { fullscreenStore } from '$lib/stores/FullscreenStore'
 	import WinnerDialog from '$lib/components/WinnerDialog.svelte'
   import OpenDialog from '$lib/components/OpenDialog.svelte'
+  import OpenCloudDialog from '$lib/components/OpenCloudDialog.svelte'
   import SaveDialog from '$lib/components/SaveDialog.svelte'
   import SaveCloudDialog from '$lib/components/SaveCloudDialog.svelte'
   import SaveLocalDialog from '$lib/components/SaveLocalDialog.svelte'
@@ -24,6 +25,7 @@
   const modalRegistry: Record<string, ModalComponent> = {
 		winnerDialog: { ref: WinnerDialog },
     openDialog: { ref: OpenDialog },
+    openCloudDialog: { ref: OpenCloudDialog },
     saveDialog: { ref: SaveDialog },
     saveCloudDialog: { ref: SaveCloudDialog },
     saveLocalDialog: { ref: SaveLocalDialog },

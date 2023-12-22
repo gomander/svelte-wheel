@@ -32,6 +32,7 @@
         uid: getCurrentUser()?.uid
       })
     })
+    modalStore.close()
     toastStore.trigger({
       message: 'Wheel saved successfully!',
       background: 'variant-soft-primary',

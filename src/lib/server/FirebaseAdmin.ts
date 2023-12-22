@@ -61,10 +61,20 @@ export const saveWheel = async (
 
 const getNewWheelPath = async () => {
   let path: string
-  let snap
+  let snap: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>
   do {
-    path = 'abc-' + Math.floor(Math.random() * 1000)
+    path = getRandomPath()
     snap = await db.doc(`wheel-meta/${path}`).get()
   } while (snap.exists)
   return path
+}
+
+const getRandomPath = () => {
+  const chars = 'abcdefghjkmnpqrstuvwxyz23456789'
+  // TODO: upgrade to Node 20 for access to Array.prototype.toSpliced
+  const pathChars = Array.from(
+    { length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]
+  )
+  pathChars.splice(3, 0, '-')
+  return pathChars.join('')
 }

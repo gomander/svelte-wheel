@@ -14,6 +14,12 @@
     try {
       await registerUser(user.email, user.password)
       await signIn(user.email, user.password)
+      if ($modalStore[0].meta?.next) {
+        modalStore.trigger({
+          type: 'component',
+          component: $modalStore[0].meta.next
+        })
+      }
       modalStore.close()
       toastStore.trigger({
         message: 'Account created successfully',
@@ -28,7 +34,11 @@
 
   const login = () => {
     modalStore.close()
-    modalStore.trigger({ type: 'component', component: 'loginDialog' })
+    modalStore.trigger({
+      type: 'component',
+      component: 'loginDialog',
+      meta: { next: $modalStore[0].meta?.next }
+    })
   }
 
   onNavigate(modalStore.close)

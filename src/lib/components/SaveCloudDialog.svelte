@@ -8,6 +8,16 @@
 
   let title = $wheelStore.config.title
 
+  const user = getCurrentUser()
+  if (!user) {
+    modalStore.close()
+    modalStore.trigger({
+      type: 'component',
+      component: 'loginDialog',
+      meta: { next: 'saveCloudDialog' }
+    })
+  }
+
   const save = async () => {
     if (!title) return
 

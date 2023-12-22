@@ -13,6 +13,12 @@
   const onSubmit = async (user: { email: string, password: string }) => {
     try {
       await signIn(user.email, user.password)
+      if ($modalStore[0].meta?.next) {
+        modalStore.trigger({
+          type: 'component',
+          component: $modalStore[0].meta.next
+        })
+      }
       modalStore.close()
       toastStore.trigger({
         message: 'Logged in successfully',
@@ -32,7 +38,11 @@
 
   const signUp = () => {
     modalStore.close()
-    modalStore.trigger({ type: 'component', component: 'signUpDialog' })
+    modalStore.trigger({
+      type: 'component',
+      component: 'signUpDialog',
+      meta: { next: $modalStore[0].meta?.next }
+    })
   }
 
   onNavigate(modalStore.close)

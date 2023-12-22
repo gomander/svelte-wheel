@@ -2,6 +2,7 @@
   import { getModalStore } from '@skeletonlabs/skeleton'
   import { wheelStore } from '$lib/stores/WheelStore'
   import { RangeSlider } from '@skeletonlabs/skeleton'
+  import ColorPicker from 'svelte-awesome-color-picker'
 
   const modalStore = getModalStore()
 
@@ -18,7 +19,7 @@
 </script>
 
 {#if $modalStore[0]}
-  <article class="card w-modal shadow-xl overflow-hidden">
+  <article class="card w-modal shadow-xl">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-palette" />
       <h1>Customize</h1>
@@ -62,6 +63,23 @@
           </div>
         </div>
       </RangeSlider>
+
+      <div class="label">
+        Colors
+
+        <div class="flex flex-wrap color-pickers-wrapper">
+          {#each config.colors as hex}
+            <ColorPicker
+              bind:hex
+              label=""
+              isAlpha={false}
+              textInputModes={['hex']}
+              --picker-height="100px"
+              --picker-width="100px"
+            />
+          {/each}
+        </div>
+      </div>
     </div>
 
     <footer class="p-4 flex justify-end gap-2">

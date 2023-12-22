@@ -16,3 +16,13 @@
 .modal .input-group :focus {
   outline-style: none !important;
 }
+
+.color-pickers-wrapper [role="dialog"] {
+  @apply variant-filled-surface;
+  border: none;
+}
+
+.color-pickers-wrapper [role="dialog"] input {
+  @apply variant-filled;
+  color: rgb(var(--color-surface-900));
+}

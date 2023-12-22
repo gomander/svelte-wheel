@@ -11,6 +11,7 @@
 	import WinnerDialog from '$lib/components/WinnerDialog.svelte'
   import OpenDialog from '$lib/components/OpenDialog.svelte'
   import SaveDialog from '$lib/components/SaveDialog.svelte'
+  import SaveCloudDialog from '$lib/components/SaveCloudDialog.svelte'
   import SaveLocalDialog from '$lib/components/SaveLocalDialog.svelte'
   import AccountDialog from '$lib/components/AccountDialog.svelte'
   import LoginDialog from '$lib/components/LoginDialog.svelte'
@@ -24,6 +25,7 @@
 		winnerDialog: { ref: WinnerDialog },
     openDialog: { ref: OpenDialog },
     saveDialog: { ref: SaveDialog },
+    saveCloudDialog: { ref: SaveCloudDialog },
     saveLocalDialog: { ref: SaveLocalDialog },
     accountDialog: { ref: AccountDialog },
     loginDialog: { ref: LoginDialog },

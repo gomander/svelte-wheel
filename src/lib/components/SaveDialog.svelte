@@ -24,7 +24,6 @@
     <div class="px-4 flex flex-col gap-4">
       <button
         class="btn variant-filled-primary flex flex-col gap-2"
-        disabled
         on:click={openSaveCloudDialog}
       >
         <i class="fas fa-cloud text-4xl" />

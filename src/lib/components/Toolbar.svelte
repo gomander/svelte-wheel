@@ -8,6 +8,7 @@
     new: null,
     open: null,
     save: null,
+    customize: null,
     account: null
   }>()
 </script>
@@ -65,6 +66,15 @@
         title="Save"
       >
         <i class="fas fa-floppy-disk" />
+      </button>
+
+      <button
+        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        on:click={() => dispatch('customize')}
+        aria-label="Customize"
+        title="Customize"
+      >
+        <i class="fas fa-palette" />
       </button>
 
       <button

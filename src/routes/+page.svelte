@@ -35,6 +35,10 @@
     type: 'component', component: 'saveDialog'
   })
 
+  const openCustomizeDialog = () => modalStore.trigger({
+    type: 'component', component: 'customizeDialog'
+  })
+
   const openAccountDialog = async () => modalStore.trigger({
     type: 'component', component: 'accountDialog'
   })
@@ -51,6 +55,7 @@
     on:new={wheelStore.reset}
     on:open={openOpenDialog}
     on:save={openSaveDialog}
+    on:customize={openCustomizeDialog}
     on:account={openAccountDialog}
   />
 

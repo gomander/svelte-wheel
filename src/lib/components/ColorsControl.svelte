@@ -31,9 +31,13 @@
       <div
         animate:flip={{ duration: 100 }}
         class="flex flex-col"
+        aria-label="Use enter and the arrow keys to reorder this color"
       >
-        <div class="h-6 flex justify-center items-center bg-surface-50-900-token rounded-t-full">
-          <i class="fas fa-grip opacity-25" />
+        <div
+          class="h-6 flex justify-center items-center bg-surface-50-900-token rounded-t-full"
+          title="Drag to reorder"
+        >
+          <i class="fas fa-grip text-surface-300-600-token" />
         </div>
 
         <input
@@ -51,7 +55,7 @@
           title="Delete color"
           aria-label="Delete color"
         >
-          <i class="fas fa-times opacity-50" />
+          <i class="fas fa-times text-surface-400-500-token" />
         </button>
       </div>
     {/each}

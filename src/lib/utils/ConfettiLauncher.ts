@@ -1,6 +1,7 @@
 import confetti from 'canvas-confetti'
 
-export type ConfettiType = 'fireworks' | 'cannons' | 'stars' | 'off'
+export const confettiTypes = ['fireworks', 'cannons', 'stars', 'off'] as const
+export type ConfettiType = typeof confettiTypes[number]
 
 export const launchConfetti = (
   confettiType: ConfettiType, colors: string[]

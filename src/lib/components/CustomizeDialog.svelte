@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { getModalStore, RangeSlider } from '@skeletonlabs/skeleton'
+  import {
+    getModalStore, RangeSlider, TabGroup, Tab
+  } from '@skeletonlabs/skeleton'
   import { wheelStore } from '$lib/stores/WheelStore'
-  import ColorsControl from './ColorsControl.svelte';
+  import ColorsControl from '$lib/components/ColorsControl.svelte'
+  import { confettiTypes } from '$lib/utils/ConfettiLauncher'
 
   const modalStore = getModalStore()
 
   const config = structuredClone($wheelStore.config)
+
+	let openTab = 0
 
   const save = () => {
     wheelStore.setConfig(config)
@@ -24,51 +29,120 @@
       <h1>Customize</h1>
     </header>
 
-    <div class="flex flex-col gap-2">
-      <label class="label">
-        Title
-
-        <input
-          type="text"
-          class="input"
-          maxlength="50"
-          bind:value={config.title}
-        />
-      </label>
-
-      <label class="label">
-        Description
-
-        <textarea
-          class="textarea resize-none"
-          maxlength="200"
-          bind:value={config.description}
-        />
-      </label>
-
-      <RangeSlider
-        name="spinTime"
-        label="Spin time"
-        min={1}
-        max={60}
-        ticked
-        bind:value={config.spinTime}
+    <TabGroup
+      class="flex-1 flex flex-col"
+      regionPanel="flex-1 flex flex-col gap-4"
+    >
+      <Tab
+        bind:group={openTab}
+        name="basic"
+        value={0}
       >
-        <div class="flex justify-between items-center">
-          <div>Spin time</div>
+        Basic
+      </Tab>
 
-          <div class="text-sm">
-            {config.spinTime.toLocaleString('en', secondsFormat)}
+      <Tab
+        bind:group={openTab}
+        name="appearance"
+        value={1}
+      >
+        Appearance
+      </Tab>
+
+      <Tab
+        bind:group={openTab}
+        name="afterSpin"
+        value={2}
+      >
+        After spin
+      </Tab>
+
+      <svelte:fragment slot="panel">
+        {#if openTab === 0}
+          <div class="flex flex-col gap-2">
+            <label class="label">
+              <span>Title</span>
+
+              <input
+                type="text"
+                class="input"
+                maxlength="50"
+                bind:value={config.title}
+              />
+            </label>
+
+            <label class="label">
+              <span>Description</span>
+
+              <textarea
+                class="textarea resize-none"
+                maxlength="200"
+                bind:value={config.description}
+              />
+            </label>
+
+            <RangeSlider
+              name="spinTime"
+              label="Spin time"
+              min={1}
+              max={60}
+              ticked
+              bind:value={config.spinTime}
+            >
+              <div class="flex justify-between items-center">
+                <span>Spin time</span>
+
+                <span class="text-sm">
+                  {config.spinTime.toLocaleString('en', secondsFormat)}
+                </span>
+              </div>
+            </RangeSlider>
           </div>
-        </div>
-      </RangeSlider>
+        {:else if openTab === 1}
+          <div class="label">
+            <span>Colors</span>
 
-      <div class="label">
-        Colors
+            <ColorsControl bind:colors={config.colors} />
+          </div>
+        {:else if openTab === 2}
+          <label class="flex items-center space-x-2 w-fit">
+            <input
+              type="checkbox"
+              bind:checked={config.displayWinnerDialog}
+              class="checkbox"
+            />
 
-        <ColorsControl bind:colors={config.colors} />
-      </div>
-    </div>
+            <span>Display winner dialog</span>
+          </label>
+
+          <label class="label">
+            <span>Winner message</span>
+
+            <input
+              type="text"
+              class="input"
+              maxlength="50"
+              bind:value={config.winnerMessage}
+              placeholder="We have a winner!"
+              disabled={!config.displayWinnerDialog}
+            />
+          </label>
+
+          <label class="label">
+            <span>Confetti</span>
+
+            <select
+              class="select"
+              bind:value={config.confetti}
+            >
+              {#each confettiTypes as item}
+                <option value={item}>{item}</option>
+              {/each}
+            </select>
+          </label>
+        {/if}
+      </svelte:fragment>
+    </TabGroup>
 
     <footer class="flex justify-end gap-2">
       <button

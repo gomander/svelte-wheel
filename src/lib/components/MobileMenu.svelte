@@ -5,6 +5,8 @@
   const dispatch = createEventDispatcher<{
     new: null,
     open: null,
+    customize: null,
+    account: null,
     save: null
   }>()
 </script>
@@ -32,6 +34,22 @@
   >
     <i class="fas fa-floppy-disk w-6" />
     <span class="flex-grow text-left">Save</span>
+  </button>
+
+  <button
+    class="btn text-xl hover:variant-soft-primary"
+    on:click={() => dispatch('customize')}
+  >
+    <i class="fas fa-palette w-6" />
+    <span class="flex-grow text-left">Customize</span>
+  </button>
+
+  <button
+    class="btn text-xl hover:variant-soft-primary"
+    on:click={() => dispatch('account')}
+  >
+    <i class="fas fa-user w-6" />
+    <span class="flex-grow text-left">Account</span>
   </button>
 
   <a

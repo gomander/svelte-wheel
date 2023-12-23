@@ -35,6 +35,8 @@
         on:new={() => dispatch('new')}
         on:open={() => dispatch('open')}
         on:save={() => dispatch('save')}
+        on:customize={() => dispatch('customize')}
+        on:account={() => dispatch('account')}
       />
     </div>
   </div>

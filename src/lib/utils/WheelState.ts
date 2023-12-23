@@ -7,7 +7,7 @@ export interface WheelState {
   ticksInPhase: number
 }
 
-type Phase = 'demo' | 'accelerating' | 'decelerating' | 'stopped'
+type Phase = 'demo' | 'accelerating' | 'constant' | 'decelerating' | 'stopped'
 type WheelStateFn = (state: WheelState) => WheelState
 
 const DEMO_SPEED = 0.005
@@ -24,16 +24,22 @@ export const click = (state: WheelState): WheelState => {
   const handleClickForPhase: Record<Phase, WheelStateFn> = {
     demo: (state: WheelState) => goToPhase(state, 'accelerating'),
     accelerating: (state: WheelState) => state,
+    constant: (state: WheelState) => goToDeceleratingPhase(state),
     decelerating: (state: WheelState) => state,
     stopped: (state: WheelState) => goToPhase(state, 'accelerating')
   }
   return handleClickForPhase[state.phase](state)
 }
 
-export const tick = (state: WheelState, spinTime: number): WheelState => {
+export const tick = (
+  state: WheelState, spinTime: number, indefiniteSpin: boolean
+): WheelState => {
   const processTickForPhase: Record<Phase, WheelStateFn> = {
     demo: (state: WheelState) => ({ ...state, speed: DEMO_SPEED }),
-    accelerating: (state: WheelState) => tickAcceleratingPhase(state, spinTime),
+    accelerating: (state: WheelState) => tickAcceleratingPhase(
+      state, spinTime, indefiniteSpin
+    ),
+    constant: (state: WheelState) => state,
     decelerating: (state: WheelState) => tickDeceleratingPhase(state, spinTime),
     stopped: (state: WheelState) => ({ ...state, speed: 0 })
   }
@@ -55,9 +61,11 @@ const increaseTicksInPhase = (state: WheelState): WheelState => (
 )
 
 const tickAcceleratingPhase = (
-  state: WheelState, spinTime: number
+  state: WheelState, spinTime: number, indefiniteSpin: boolean
 ): WheelState => state.ticksInPhase >= getAccelTicks(spinTime)
-  ? goToDeceleratingPhase(state)
+  ? indefiniteSpin
+    ? goToPhase(state, 'constant')
+    : goToDeceleratingPhase(state)
   : { ...state, speed: state.speed + getAccelRate() }
 
 const tickDeceleratingPhase = (

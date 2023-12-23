@@ -8,6 +8,7 @@ export default class WheelConfig {
   displayWinnerDialog: boolean
   winnerMessage: string
   confetti: ConfettiType
+  indefiniteSpin: boolean
 
   constructor(props?: Partial<WheelConfig>) {
     this.title = props?.title ?? ''
@@ -17,6 +18,7 @@ export default class WheelConfig {
     this.displayWinnerDialog = props?.displayWinnerDialog ?? true
     this.winnerMessage = props?.winnerMessage ?? ''
     this.confetti = props?.confetti ?? 'fireworks'
+    this.indefiniteSpin = props?.indefiniteSpin ?? false
   }
 }
 

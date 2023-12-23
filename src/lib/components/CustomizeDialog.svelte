@@ -51,8 +51,16 @@
 
       <Tab
         bind:group={openTab}
-        name="afterSpin"
+        name="duringSpin"
         value={2}
+      >
+        During spin
+      </Tab>
+
+      <Tab
+        bind:group={openTab}
+        name="afterSpin"
+        value={3}
       >
         After spin
       </Tab>
@@ -105,6 +113,16 @@
             <ColorsControl bind:colors={config.colors} />
           </div>
         {:else if openTab === 2}
+          <label class="flex items-center space-x-2 w-fit">
+            <input
+              type="checkbox"
+              bind:checked={config.indefiniteSpin}
+              class="checkbox"
+            />
+
+            <span>Keep spinning until the wheel is clicked</span>
+          </label>
+        {:else if openTab === 3}
           <label class="flex items-center space-x-2 w-fit">
             <input
               type="checkbox"

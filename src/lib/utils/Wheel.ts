@@ -23,7 +23,9 @@ export default class Wheel {
 
   tick() {
     const oldState = this.state
-    const newState = tick(oldState, this.config.spinTime)
+    const newState = tick(
+      oldState, this.config.spinTime, this.config.indefiniteSpin
+    )
     if (newState.phase !== oldState.phase && newState.phase === 'stopped') {
       const entry = getEntryAtPointer(this)
       this.onStopped(entry, getColorAtPointer(this))

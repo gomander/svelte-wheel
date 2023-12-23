@@ -1,3 +1,5 @@
+import type { ConfettiType } from '$lib/utils/ConfettiLauncher'
+
 export default class WheelConfig {
   title: string
   description: string
@@ -5,6 +7,7 @@ export default class WheelConfig {
   spinTime: number
   displayWinnerDialog: boolean
   winnerMessage: string
+  confetti: ConfettiType
 
   constructor(props?: Partial<WheelConfig>) {
     this.title = props?.title ?? ''
@@ -12,7 +15,8 @@ export default class WheelConfig {
     this.colors = props?.colors ?? defaultColors
     this.spinTime = props?.spinTime ?? 10
     this.displayWinnerDialog = props?.displayWinnerDialog ?? true
-    this.winnerMessage = props?.winnerMessage ?? 'We have a winner!'
+    this.winnerMessage = props?.winnerMessage ?? ''
+    this.confetti = props?.confetti ?? 'fireworks'
   }
 }
 

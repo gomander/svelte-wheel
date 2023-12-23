@@ -5,6 +5,7 @@
   import EditorColumn from '$lib/components/EditorColumn.svelte'
   import { wheelStore } from '$lib/stores/WheelStore'
 	import { fullscreenStore } from '$lib/stores/FullscreenStore'
+  import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { Entry } from '$lib/utils/Wheel'
   import AboutCards from '$lib/components/AboutCards.svelte'
 
@@ -15,7 +16,7 @@
   ): ModalSettings => ({
     type: 'component',
     component: 'winnerDialog',
-    title: $wheelStore.config.winnerMessage,
+    title: $wheelStore.config.winnerMessage || 'We have a winner!',
     body: data.winner.text,
     meta: data
   })
@@ -23,6 +24,7 @@
 	const openWinnerModal = async (
 		e: CustomEvent<{ winner: Entry, color?: string }>
 	) => {
+    launchConfetti($wheelStore.config.confetti, $wheelStore.config.colors)
 		if (!$wheelStore.config.displayWinnerDialog) return
 		modalStore.trigger(createWinnerModal(e.detail))
 	}

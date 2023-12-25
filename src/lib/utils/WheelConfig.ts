@@ -25,7 +25,7 @@ export default class WheelConfig {
     this.indefiniteSpin = props?.indefiniteSpin ?? false
     this.duringSpinSound = props?.duringSpinSound ?? 'tick'
     this.duringSpinSoundVolume = props?.duringSpinSoundVolume ?? 0.5
-    this.afterSpinSound = props?.afterSpinSound ?? '/audio/SMALL_CROWD_APPLAUSE-Yannick_Lemieux-1268806408.mp3'
+    this.afterSpinSound = props?.afterSpinSound ?? 'SMALL_CROWD_APPLAUSE-Yannick_Lemieux-1268806408.mp3'
     this.afterSpinSoundVolume = props?.afterSpinSoundVolume ?? 0.5
   }
 }

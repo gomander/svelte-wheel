@@ -4,7 +4,9 @@
   import Wheel, { type Entry } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
-  import { playTick, playSound, playLoopedSound } from '$lib/utils/Audio'
+  import {
+    playTick, playSound, playLoopedSound, cancelLoopingSounds
+  } from '$lib/utils/Audio'
 
   const dispatch = createEventDispatcher<{
     stop: { winner: Entry, color: string }
@@ -28,6 +30,7 @@
     }
   }
   const onStopped = (winner: Entry, color: string) => {
+    cancelLoopingSounds()
     if (wheel.config.afterSpinSound) {
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
     }

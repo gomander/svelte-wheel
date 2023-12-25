@@ -9,6 +9,10 @@ export default class WheelConfig {
   winnerMessage: string
   confetti: ConfettiType
   indefiniteSpin: boolean
+  duringSpinSound: string
+  duringSpinSoundVolume: number
+  afterSpinSound: string
+  afterSpinSoundVolume: number
 
   constructor(props?: Partial<WheelConfig>) {
     this.title = props?.title ?? ''
@@ -19,6 +23,10 @@ export default class WheelConfig {
     this.winnerMessage = props?.winnerMessage ?? ''
     this.confetti = props?.confetti ?? 'fireworks'
     this.indefiniteSpin = props?.indefiniteSpin ?? false
+    this.duringSpinSound = props?.duringSpinSound ?? 'tick'
+    this.duringSpinSoundVolume = props?.duringSpinSoundVolume ?? 0.5
+    this.afterSpinSound = props?.afterSpinSound ?? '/audio/SMALL_CROWD_APPLAUSE-Yannick_Lemieux-1268806408.mp3'
+    this.afterSpinSoundVolume = props?.afterSpinSoundVolume ?? 0.5
   }
 }
 

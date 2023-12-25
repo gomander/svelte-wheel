@@ -8,17 +8,30 @@ export default class Wheel {
   config: WheelConfig
   state: WheelState
   entries: Entry[]
-  onStopped: (winner: Entry, color?: string) => void
+  onStarted?: () => void
+  onPointerIndexChanged?: (index: number) => void
+  onStopped?: (winner: Entry, color: string) => void
 
   constructor(props?: Partial<Wheel>) {
     this.config = props?.config ?? new WheelConfig()
     this.state = props?.state ?? initialWheelState
     this.entries = props?.entries ?? defaultEntries
-    this.onStopped = props?.onStopped ?? (() => {})
+    this.onStarted = props?.onStarted
+    this.onPointerIndexChanged = props?.onPointerIndexChanged
+    this.onStopped = props?.onStopped
   }
 
   click() {
-    this.state = click(this.state)
+    const oldState = this.state
+    const newState = click(this.state)
+    if (
+      this.onStarted &&
+      newState.phase !== oldState.phase &&
+      newState.phase === 'accelerating'
+    ) {
+      this.onStarted()
+    }
+    this.state = newState
   }
 
   tick() {
@@ -26,7 +39,22 @@ export default class Wheel {
     const newState = tick(
       oldState, this.config.spinTime, this.config.indefiniteSpin
     )
-    if (newState.phase !== oldState.phase && newState.phase === 'stopped') {
+    if (this.onPointerIndexChanged) {
+      const oldIndex = getIndexAtPointer({
+        config: this.config, entries: this.entries, state: oldState
+      })
+      const newIndex = getIndexAtPointer({
+        config: this.config, entries: this.entries, state: newState
+      })
+      if (newIndex !== oldIndex) {
+        this.onPointerIndexChanged(getIndexAtPointer(this))
+      }
+    }
+    if (
+      this.onStopped &&
+      newState.phase !== oldState.phase &&
+      newState.phase === 'stopped'
+    ) {
       const entry = getEntryAtPointer(this)
       this.onStopped(entry, getColorAtPointer(this))
     }
@@ -47,17 +75,23 @@ export interface Entry {
   text: string
 }
 
-const getIndexAtPointer = (wheel: Wheel) => (
+const getIndexAtPointer = (
+  wheel: Pick<Wheel, 'config' | 'entries' | 'state'>
+) => (
   Math.round(
     wheel.state.angle / (2 * Math.PI / wheel.entries.length)
   ) % wheel.entries.length
 )
 
-const getEntryAtPointer = (wheel: Wheel) => (
+const getEntryAtPointer = (
+  wheel: Pick<Wheel, 'config' | 'entries' | 'state'>
+) => (
   wheel.entries[getIndexAtPointer(wheel)]
 )
 
-const getColorAtPointer = (wheel: Wheel) => (
+const getColorAtPointer = (
+  wheel: Pick<Wheel, 'config' | 'entries' | 'state'>
+) => (
   wheel.config.colors[getIndexAtPointer(wheel) % wheel.config.colors.length]
 )
 

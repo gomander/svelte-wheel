@@ -4,19 +4,39 @@
   import Wheel, { type Entry } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
+  import { playTick, playSound, playLoopedSound } from '$lib/utils/Audio'
 
   const dispatch = createEventDispatcher<{
-    stop: { winner: Entry, color?: string }
+    stop: { winner: Entry, color: string }
   }>()
 
   let canvas: HTMLCanvasElement
   let context: CanvasRenderingContext2D
 
-  const onStopped = (winner: Entry, color?: string) => {
+  const onStarted = () => {
+    if (wheel.config.duringSpinSound) {
+      if (wheel.config.duringSpinSound === 'tick') {
+        wheel.onPointerIndexChanged = () => {
+          playTick(wheel.config.duringSpinSoundVolume)
+        }
+      } else {
+        delete wheel.onPointerIndexChanged
+        playLoopedSound(
+          wheel.config.duringSpinSound, wheel.config.duringSpinSoundVolume
+        )
+      }
+    }
+  }
+  const onStopped = (winner: Entry, color: string) => {
+    if (wheel.config.afterSpinSound) {
+      playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
+    }
     dispatch('stop', { winner, color })
     wheelStore.setWinners([...$wheelStore.winners, winner])
   }
-  const wheel = new Wheel({ ...$wheelStore, onStopped })
+  const wheel = new Wheel({
+    ...$wheelStore, onStarted, onStopped
+  })
   const painter = new WheelPainter()
   const ticker = new Ticker()
 

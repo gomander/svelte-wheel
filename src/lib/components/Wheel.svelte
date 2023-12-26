@@ -16,17 +16,15 @@
   let context: CanvasRenderingContext2D
 
   const onStarted = () => {
-    if (wheel.config.duringSpinSound) {
-      if (wheel.config.duringSpinSound === 'tick') {
-        wheel.onPointerIndexChanged = () => {
-          playTick(wheel.config.duringSpinSoundVolume)
-        }
-      } else {
-        delete wheel.onPointerIndexChanged
-        playLoopedSound(
-          wheel.config.duringSpinSound, wheel.config.duringSpinSoundVolume
-        )
-      }
+    if (wheel.config.duringSpinSound === 'tick') {
+      wheel.onPointerIndexChanged = () => playTick(
+        wheel.config.duringSpinSoundVolume
+      )
+    } else {
+      delete wheel.onPointerIndexChanged
+      if (wheel.config.duringSpinSound) playLoopedSound(
+        wheel.config.duringSpinSound, wheel.config.duringSpinSoundVolume
+      )
     }
   }
   const onStopped = (winner: Entry, color: string) => {

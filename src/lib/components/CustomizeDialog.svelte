@@ -5,12 +5,13 @@
   import { wheelStore } from '$lib/stores/WheelStore'
   import ColorsControl from '$lib/components/ColorsControl.svelte'
   import { confettiTypes } from '$lib/utils/ConfettiLauncher'
+  import { duringSpinSounds, afterSpinSounds } from '$lib/utils/Audio'
 
   const modalStore = getModalStore()
 
   const config = structuredClone($wheelStore.config)
 
-	let openTab = 0
+	let openTab = 'basic'
 
   const save = () => {
     wheelStore.setConfig(config)
@@ -36,7 +37,7 @@
       <Tab
         bind:group={openTab}
         name="basic"
-        value={0}
+        value="basic"
       >
         Basic
       </Tab>
@@ -44,7 +45,7 @@
       <Tab
         bind:group={openTab}
         name="appearance"
-        value={1}
+        value="appearance"
       >
         Appearance
       </Tab>
@@ -52,7 +53,7 @@
       <Tab
         bind:group={openTab}
         name="duringSpin"
-        value={2}
+        value="duringSpin"
       >
         During spin
       </Tab>
@@ -60,13 +61,13 @@
       <Tab
         bind:group={openTab}
         name="afterSpin"
-        value={3}
+        value="afterSpin"
       >
         After spin
       </Tab>
 
       <svelte:fragment slot="panel">
-        {#if openTab === 0}
+        {#if openTab === 'basic'}
           <div class="flex flex-col gap-2">
             <label class="label">
               <span>Title</span>
@@ -106,13 +107,28 @@
               </div>
             </RangeSlider>
           </div>
-        {:else if openTab === 1}
+        {:else if openTab === 'appearance'}
           <div class="label">
             <span>Colors</span>
 
             <ColorsControl bind:colors={config.colors} />
           </div>
-        {:else if openTab === 2}
+        {:else if openTab === 'duringSpin'}
+          <label class="label">
+            <span>Sound</span>
+
+            <select
+              class="select"
+              bind:value={config.duringSpinSound}
+            >
+              <option value="">No sound</option>
+              <option value="tick">Tick</option>
+              {#each duringSpinSounds as item}
+                <option value={item.file}>{item.name}</option>
+              {/each}
+            </select>
+          </label>
+
           <label class="flex items-center space-x-2 w-fit">
             <input
               type="checkbox"
@@ -122,7 +138,21 @@
 
             <span>Keep spinning until the wheel is clicked</span>
           </label>
-        {:else if openTab === 3}
+        {:else if openTab === 'afterSpin'}
+          <label class="label">
+            <span>Sound</span>
+
+            <select
+              class="select"
+              bind:value={config.afterSpinSound}
+            >
+              <option value="">No sound</option>
+              {#each afterSpinSounds as item}
+                <option value={item.file}>{item.name}</option>
+              {/each}
+            </select>
+          </label>
+
           <label class="flex items-center space-x-2 w-fit">
             <input
               type="checkbox"

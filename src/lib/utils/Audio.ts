@@ -22,3 +22,11 @@ export const cancelLoopingSounds = () => {
   loopingAudio.pause()
   loopingAudio = null
 }
+
+export const duringSpinSounds = [
+  { name: 'Beyond the Cloudy Sky', file: 'beyond-the-cloudy-sky-shutterstock.mp3' }
+]
+
+export const afterSpinSounds = [
+  { name: 'Small Crowd Applause', file: 'SMALL_CROWD_APPLAUSE-Yannick_Lemieux-1268806408.mp3' }
+]

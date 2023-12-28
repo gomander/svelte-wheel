@@ -14,6 +14,7 @@ export default class WheelConfig {
   afterSpinSound: string
   afterSpinSoundVolume: number
   image: string
+  hubSize: HubSize
 
   constructor(props?: Partial<WheelConfig>) {
     this.title = props?.title ?? ''
@@ -29,7 +30,18 @@ export default class WheelConfig {
     this.afterSpinSound = props?.afterSpinSound ?? 'SMALL_CROWD_APPLAUSE-Yannick_Lemieux-1268806408.mp3'
     this.afterSpinSoundVolume = props?.afterSpinSoundVolume ?? 0.5
     this.image = props?.image ?? ''
+    this.hubSize = props?.hubSize ?? 'S'
   }
 }
 
+export type HubSize = 'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL'
+
+export const hubSizes: Record<HubSize, number> = {
+  XXS: 0.05,
+  XS: 0.1,
+  S: 0.25,
+  M: 0.33,
+  L: 0.5,
+  XL: 0.75
+}
 export const defaultColors = ['#6693fa', '#eb6574', '#f5d273', '#6be88a']

@@ -7,6 +7,7 @@
   import { confettiTypes } from '$lib/utils/ConfettiLauncher'
   import { duringSpinSounds, afterSpinSounds } from '$lib/utils/Audio'
   import { compressImage } from '$lib/utils/WheelPainter'
+  import { hubSizes } from '$lib/utils/WheelConfig'
 
   const modalStore = getModalStore()
 
@@ -132,6 +133,19 @@
               accept="image/*"
               on:input={updateWheelImage}
             />
+          </label>
+
+          <label class="label">
+            <span>Hub size</span>
+
+            <select
+              class="select"
+              bind:value={config.hubSize}
+            >
+              {#each Object.keys(hubSizes) as item}
+                <option value={item}>{item}</option>
+              {/each}
+            </select>
           </label>
         {:else if openTab === 'duringSpin'}
           <label class="label">

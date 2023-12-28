@@ -1,4 +1,5 @@
 import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
+import { hubSizes } from '$lib/utils/WheelConfig'
 import type Wheel from '$lib/utils/Wheel'
 
 export type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
@@ -20,7 +21,7 @@ export default class WheelPainter {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     this.drawShadow(context)
     this.drawWheel(context, wheel)
-    this.drawCenterImage(context, wheel.config.image, wheel)
+    this.drawCenterImage(context, wheel)
     this.drawPointer(context)
   }
 
@@ -65,7 +66,7 @@ export default class WheelPainter {
 
   drawWheelNoCache(context: Context, wheel: Wheel) {
     this.drawSlices(context, wheel)
-    this.drawCenter(context)
+    this.drawCenter(context, hubSizes[wheel.config.hubSize])
     this.imageCache.set('wheel', context.canvas)
   }
 
@@ -83,8 +84,8 @@ export default class WheelPainter {
     context.font = this.fontPicker.getFont(
       context,
       wheel.entries.map(entry => entry.text),
-      radius,
-      radius / 3,
+      radius * 15 / 16,
+      radius * hubSizes[wheel.config.hubSize] * 17 / 16,
       2 * Math.PI / wheel.entries.length
     )
     wheel.entries.forEach((_entry, index) => {
@@ -132,42 +133,48 @@ export default class WheelPainter {
     context.fillText(truncateText(text), radius * 15 / 16, 0)
   }
 
-  drawCenter(context: Context) {
+  drawCenter(context: Context, hubSize: number) {
     if (!this.imageCache.has('center')) {
-      this.drawCenterNoCache(createInMemoryImage(context))
+      this.drawCenterNoCache(createInMemoryImage(context), hubSize)
     }
     context.drawImage(this.imageCache.get('center')!, 0, 0)
   }
 
-  drawCenterNoCache(context: Context) {
+  drawCenterNoCache(context: Context, hubSize: number) {
     context.translate(context.canvas.width / 2, context.canvas.height / 2)
     context.beginPath()
-    context.arc(0, 0, getWheelRadius(context) / 5, 0, 2 * Math.PI)
+    context.arc(0, 0, getWheelRadius(context) * hubSize, 0, 2 * Math.PI)
     context.fillStyle = 'white'
     context.fill()
     this.imageCache.set('center', context.canvas)
   }
 
-  async drawCenterImage(context: Context, url: string, wheel: Wheel) {
+  async drawCenterImage(context: Context, wheel: Wheel) {
     if (!wheel.config.image) return
     if (!this.imageCache.has('center-image')) {
-      this.drawCenterImageNoCache(createInMemoryImage(context), url)
+      this.drawCenterImageNoCache(
+        createInMemoryImage(context),
+        wheel.config.image,
+        hubSizes[wheel.config.hubSize]
+      )
     }
     if (this.imageCache.get('center-image') === null) return
     context.save()
     const { width, height } = context.canvas
     context.translate(width / 2, height / 2)
     context.rotate(wheel.state.angle)
-    const radius = getWheelRadius(context) / 5
+    const radius = getWheelRadius(context) * hubSizes[wheel.config.hubSize]
     context.translate(-radius, -radius)
     context.drawImage(this.imageCache.get('center-image')!, 0, 0)
     context.restore()
   }
 
-  async drawCenterImageNoCache(context: Context, dataUri: string) {
+  async drawCenterImageNoCache(
+    context: Context, dataUri: string, hubSize: number
+  ) {
     this.imageCache.set('center-image', null)
     const image = await createImageFromDataUri(dataUri)
-    const radius = getWheelRadius(context) / 5
+    const radius = getWheelRadius(context) * hubSize
     const scale = radius * 2 / Math.min(image.width, image.height)
     const width = image.width * scale
     const x = (radius * 2 - width) / 2 - radius

@@ -4,7 +4,7 @@ import type Wheel from '$lib/utils/Wheel'
 export type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
 
 export default class WheelPainter {
-  imageCache = new Map<string, HTMLCanvasElement | OffscreenCanvas>()
+  imageCache = new Map<string, HTMLCanvasElement | OffscreenCanvas | null>()
   fontPicker = new FontPicker()
 
   refresh() {
@@ -16,10 +16,11 @@ export default class WheelPainter {
     this.fontPicker.clearFontCache()
   }
 
-  draw(context: Context, wheel: Wheel) {
+  async draw(context: Context, wheel: Wheel) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     this.drawShadow(context)
     this.drawWheel(context, wheel)
+    this.drawCenterImage(context, wheel.config.image, wheel)
     this.drawPointer(context)
   }
 
@@ -147,6 +148,41 @@ export default class WheelPainter {
     this.imageCache.set('center', context.canvas)
   }
 
+  async drawCenterImage(context: Context, url: string, wheel: Wheel) {
+    if (!wheel.config.image) return
+    if (!this.imageCache.has('center-image')) {
+      this.drawCenterImageNoCache(createInMemoryImage(context), url)
+    }
+    if (this.imageCache.get('center-image') === null) return
+    context.save()
+    const { width, height } = context.canvas
+    context.translate(width / 2, height / 2)
+    context.rotate(wheel.state.angle)
+    const radius = getWheelRadius(context) / 5
+    context.translate(-radius, -radius)
+    context.drawImage(this.imageCache.get('center-image')!, 0, 0)
+    context.restore()
+  }
+
+  async drawCenterImageNoCache(context: Context, dataUri: string) {
+    this.imageCache.set('center-image', null)
+    const image = await createImageFromDataUri(dataUri)
+    const radius = getWheelRadius(context) / 5
+    const scale = radius * 2 / Math.min(image.width, image.height)
+    const width = image.width * scale
+    const x = (radius * 2 - width) / 2 - radius
+    const height = image.height * scale
+    const y = (radius * 2 - height) / 2 - radius
+    context.save()
+    context.beginPath()
+    context.translate(radius, radius)
+    context.arc(0, 0, radius, 0, Math.PI * 2, true)
+    context.clip()
+    context.drawImage(image, x, y, width, height)
+    context.restore()
+    this.imageCache.set('center-image', context.canvas)
+  }
+
   drawPointer(context: Context) {
     if (!this.imageCache.has('pointer')) {
       this.drawPointerNoCache(createInMemoryImage(context))
@@ -181,3 +217,38 @@ const getWheelRadius = (context: Context) => Math.min(
 const createInMemoryImage = (context: Context) => new OffscreenCanvas(
   context.canvas.width, context.canvas.height
 ).getContext('2d')!
+
+const createImageFromDataUri = async (dataUri: string) => {
+  const image = new Image()
+  image.src = dataUri
+  await image.decode()
+  return image
+}
+
+export const compressImage = async (file: File) => (
+  readBlobAsDataUri(file, async event => {
+    const dataUri = event.target!.result as string
+    const image = await createImageFromDataUri(dataUri)
+    const scale = 700 / Math.min(image.width, image.height)
+    const canvas = new OffscreenCanvas(
+      image.width * scale, image.height * scale
+    )
+    const context = canvas.getContext('2d')!
+    context.drawImage(image, 0, 0, image.width * scale, image.height * scale)
+    const blob = await canvas.convertToBlob(
+      { type: 'image/jpeg', quality: 0.7 }
+    )
+    return readBlobAsDataUri(blob!)
+  })
+)
+
+const readBlobAsDataUri = (
+  blob: Blob,
+  onLoad?: (event: ProgressEvent<FileReader>) => Promise<string>
+) => new Promise<string>(resolve => {
+  const reader = new FileReader()
+  reader.onloadend = (event => resolve(
+    onLoad ? onLoad(event) : event.target!.result as string
+  ))
+  reader.readAsDataURL(blob)
+})

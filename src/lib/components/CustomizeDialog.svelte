@@ -6,6 +6,7 @@
   import ColorsControl from '$lib/components/ColorsControl.svelte'
   import { confettiTypes } from '$lib/utils/ConfettiLauncher'
   import { duringSpinSounds, afterSpinSounds } from '$lib/utils/Audio'
+  import { compressImage } from '$lib/utils/WheelPainter'
 
   const modalStore = getModalStore()
 
@@ -20,6 +21,14 @@
 
   const secondsFormat: Intl.NumberFormatOptions = {
     style: 'unit', unit: 'second', unitDisplay: 'long'
+  }
+
+  const updateWheelImage = async (
+    event: Event & { currentTarget: EventTarget & HTMLInputElement }
+  ) => {
+    const file = event.currentTarget.files?.[0]
+    config.image = ''
+    if (file) config.image = await compressImage(file)
   }
 </script>
 
@@ -113,6 +122,17 @@
 
             <ColorsControl bind:colors={config.colors} />
           </div>
+
+          <label class="label">
+            <span>Center image</span>
+
+            <input
+              type="file"
+              class="input"
+              accept="image/*"
+              on:input={updateWheelImage}
+            />
+          </label>
         {:else if openTab === 'duringSpin'}
           <label class="label">
             <span>Sound</span>

@@ -13,6 +13,7 @@ export default class WheelConfig {
   duringSpinSoundVolume: number
   afterSpinSound: string
   afterSpinSoundVolume: number
+  image: string
 
   constructor(props?: Partial<WheelConfig>) {
     this.title = props?.title ?? ''
@@ -27,6 +28,7 @@ export default class WheelConfig {
     this.duringSpinSoundVolume = props?.duringSpinSoundVolume ?? 0.5
     this.afterSpinSound = props?.afterSpinSound ?? 'SMALL_CROWD_APPLAUSE-Yannick_Lemieux-1268806408.mp3'
     this.afterSpinSoundVolume = props?.afterSpinSoundVolume ?? 0.5
+    this.image = props?.image ?? ''
   }
 }
 

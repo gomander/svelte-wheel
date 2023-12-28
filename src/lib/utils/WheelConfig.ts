@@ -15,6 +15,7 @@ export default class WheelConfig {
   afterSpinSoundVolume: number
   image: string
   hubSize: HubSize
+  type: 'color' | 'image'
 
   constructor(props?: Partial<WheelConfig>) {
     this.title = props?.title ?? ''
@@ -31,11 +32,11 @@ export default class WheelConfig {
     this.afterSpinSoundVolume = props?.afterSpinSoundVolume ?? 0.5
     this.image = props?.image ?? ''
     this.hubSize = props?.hubSize ?? 'S'
+    this.type = props?.type ?? 'color'
   }
 }
 
 export type HubSize = 'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL'
-
 export const hubSizes: Record<HubSize, number> = {
   XXS: 0.05,
   XS: 0.1,

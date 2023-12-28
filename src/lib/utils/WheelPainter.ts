@@ -20,6 +20,7 @@ export default class WheelPainter {
   async draw(context: Context, wheel: Wheel) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     this.drawShadow(context)
+    this.drawBackground(context, wheel)
     this.drawWheel(context, wheel)
     this.drawCenterImage(context, wheel)
     this.drawPointer(context)
@@ -38,18 +39,52 @@ export default class WheelPainter {
     const y = height / 2
     const radius = getWheelRadius(context)
     const gradient = context.createRadialGradient(
-      x,
-      y,
-      radius,
-      x,
-      y + radius / 75,
-      radius * 26 / 25
+      x, y, radius,
+      x, y + radius / 75, radius * 26 / 25
     )
     gradient.addColorStop(0, 'rgba(0, 0, 0, 0.25)')
     gradient.addColorStop(1, 'transparent')
     context.fillStyle = gradient
     context.fillRect(0, 0, width, height)
     this.imageCache.set('shadow', context.canvas)
+  }
+
+  drawBackground(context: Context, wheel: Wheel) {
+    if (wheel.config.type !== 'image') return
+    if (!this.imageCache.has('background')) {
+      this.drawBackgroundNoCache(
+        createInMemoryImage(context),
+        wheel.config.image
+      )
+    }
+    if (this.imageCache.get('background') === null) return
+    context.save()
+    const { width, height } = context.canvas
+    context.translate(width / 2, height / 2)
+    context.rotate(wheel.state.angle)
+    context.translate(-width / 2, -height / 2)
+    context.drawImage(this.imageCache.get('background')!, 0, 0)
+    context.restore()
+  }
+
+  async drawBackgroundNoCache(context: Context, dataUri: string) {
+    this.imageCache.set('background', null)
+    const image = await createImageFromDataUri(dataUri)
+    const radius = getWheelRadius(context)
+    const scale = radius * 2 / Math.min(image.width, image.height)
+    const width = image.width * scale
+    const x = (radius * 2 - width) / 2
+    const height = image.height * scale
+    const y = (radius * 2 - height) / 2
+    context.save()
+    context.beginPath()
+    context.translate(context.canvas.width / 2, context.canvas.height / 2)
+    context.arc(0, 0, radius, 0, Math.PI * 2)
+    context.clip()
+    context.translate(-radius, -radius)
+    context.drawImage(image, x, y, width, height)
+    context.restore()
+    this.imageCache.set('background', context.canvas)
   }
 
   drawWheel(context: Context, wheel: Wheel) {
@@ -66,7 +101,7 @@ export default class WheelPainter {
 
   drawWheelNoCache(context: Context, wheel: Wheel) {
     this.drawSlices(context, wheel)
-    this.drawCenter(context, hubSizes[wheel.config.hubSize])
+    this.drawCenter(context, wheel)
     this.imageCache.set('wheel', context.canvas)
   }
 
@@ -99,11 +134,17 @@ export default class WheelPainter {
   drawSlice(context: Context, wheel: Wheel, index: number) {
     const radius = getWheelRadius(context)
     const radians = 2 * Math.PI / wheel.entries.length
-    const bgColor = wheel.config.colors[index % wheel.config.colors.length]
-    this.drawSliceBg(context, radius, radians, bgColor)
-    this.drawText(
-      context, wheel.entries[index].text, radius, getTextColor(bgColor)
-    )
+    if (wheel.config.type === 'color') {
+      const bgColor = wheel.config.colors[index % wheel.config.colors.length]
+      this.drawSliceBg(context, radius, radians, bgColor)
+      this.drawText(
+        context, wheel.entries[index].text, radius, getTextColor(bgColor)
+      )
+    } else {
+      this.drawText(
+        context, wheel.entries[index].text, radius, 'white', 'black'
+      )
+    }
   }
 
   drawSliceBg(
@@ -124,18 +165,29 @@ export default class WheelPainter {
     context: Context,
     text: string,
     radius: number,
-    color: string
+    color: string,
+    strokeColor?: string
   ) {
     context.lineJoin = 'round'
     context.textBaseline = 'middle'
     context.textAlign = 'end'
     context.fillStyle = color
-    context.fillText(truncateText(text), radius * 15 / 16, 0)
+    const displayText = truncateText(text)
+    if (strokeColor) {
+      context.strokeStyle = strokeColor
+      context.lineWidth = 3
+      context.strokeText(displayText, radius * 15 / 16, 0)
+    }
+    context.fillText(displayText, radius * 15 / 16, 0)
   }
 
-  drawCenter(context: Context, hubSize: number) {
+  drawCenter(context: Context, wheel: Wheel) {
+    if (wheel.config.type !== 'color') return
     if (!this.imageCache.has('center')) {
-      this.drawCenterNoCache(createInMemoryImage(context), hubSize)
+      this.drawCenterNoCache(
+        createInMemoryImage(context),
+        hubSizes[wheel.config.hubSize]
+      )
     }
     context.drawImage(this.imageCache.get('center')!, 0, 0)
   }
@@ -150,7 +202,7 @@ export default class WheelPainter {
   }
 
   async drawCenterImage(context: Context, wheel: Wheel) {
-    if (!wheel.config.image) return
+    if (wheel.config.type !== 'color' || !wheel.config.image) return
     if (!this.imageCache.has('center-image')) {
       this.drawCenterImageNoCache(
         createInMemoryImage(context),

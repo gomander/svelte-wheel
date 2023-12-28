@@ -125,7 +125,9 @@
           </div>
 
           <label class="label">
-            <span>Center image</span>
+            <span>
+              {config.type === 'color' ? 'Center image' : 'Background image'}
+            </span>
 
             <input
               type="file"
@@ -135,18 +137,20 @@
             />
           </label>
 
-          <label class="label">
-            <span>Hub size</span>
+          {#if config.type === 'color'}
+            <label class="label">
+              <span>Hub size</span>
 
-            <select
-              class="select"
-              bind:value={config.hubSize}
-            >
-              {#each Object.keys(hubSizes) as item}
-                <option value={item}>{item}</option>
-              {/each}
-            </select>
-          </label>
+              <select
+                class="select"
+                bind:value={config.hubSize}
+              >
+                {#each Object.keys(hubSizes) as item}
+                  <option value={item}>{item}</option>
+                {/each}
+              </select>
+            </label>
+          {/if}
         {:else if openTab === 'duringSpin'}
           <label class="label">
             <span>Sound</span>

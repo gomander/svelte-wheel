@@ -1,0 +1,50 @@
+<script lang="ts">
+  import { RangeSlider } from '@skeletonlabs/skeleton'
+  import WheelConfig from '$lib/utils/WheelConfig'
+
+  export let config: WheelConfig
+
+  const secondsFormat: Intl.NumberFormatOptions = {
+    style: 'unit', unit: 'second', unitDisplay: 'long'
+  }
+</script>
+
+<div class="flex flex-col gap-2">
+  <label class="label">
+    <span>Title</span>
+
+    <input
+      type="text"
+      class="input"
+      maxlength="50"
+      bind:value={config.title}
+    />
+  </label>
+
+  <label class="label">
+    <span>Description</span>
+
+    <textarea
+      class="textarea resize-none"
+      maxlength="200"
+      bind:value={config.description}
+    />
+  </label>
+
+  <RangeSlider
+    name="spinTime"
+    label="Spin time"
+    min={1}
+    max={60}
+    ticked
+    bind:value={config.spinTime}
+  >
+    <div class="flex justify-between items-center">
+      <span>Spin time</span>
+
+      <span class="text-sm">
+        {config.spinTime.toLocaleString('en', secondsFormat)}
+      </span>
+    </div>
+  </RangeSlider>
+</div>

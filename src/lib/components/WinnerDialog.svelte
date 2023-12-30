@@ -18,12 +18,10 @@
     <header
       class="p-4 text-2xl font-semibold"
       style={
-        $modalStore[0].meta.color
-          ? `
-            background-color: ${$modalStore[0].meta.color};
-            color: ${getTextColor($modalStore[0].meta.color)}
-          `
-          : ''
+        $modalStore[0].meta.color ? `
+          background-color: ${$modalStore[0].meta.color};
+          color: ${getTextColor($modalStore[0].meta.color)}
+        ` : ''
       }
     >
       {$modalStore[0].title}
@@ -32,17 +30,10 @@
     <div class="p-4 h1">{$modalStore[0].body}</div>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
-      <button
-        class="btn variant-soft"
-        on:click={modalStore.close}
-      >
+      <button class="btn variant-soft" on:click={modalStore.close}>
         Close
       </button>
-
-      <button
-        class="btn variant-soft-warning"
-        on:click={remove}
-      >
+      <button class="btn variant-soft-warning" on:click={remove}>
         Remove
       </button>
     </footer>

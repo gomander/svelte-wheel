@@ -10,7 +10,7 @@ export default class Wheel {
   entries: Entry[]
   onStarted?: () => void
   onPointerIndexChanged?: (index: number) => void
-  onStopped?: (winner: Entry, color: string) => void
+  onStopped?: (data: OnStoppedData) => void
 
   constructor(props?: Partial<Wheel>) {
     this.config = props?.config ?? new WheelConfig()
@@ -56,7 +56,9 @@ export default class Wheel {
       newState.phase !== oldState.phase &&
       newState.phase === 'stopped'
     ) {
-      this.onStopped(getEntryAtPointer(this), getColorAtPointer(this))
+      this.onStopped({
+        winner: getEntryAtPointer(this), color: getColorAtPointer(this)
+      })
     }
     this.state = newState
   }
@@ -75,6 +77,11 @@ export interface Entry {
   text: string
 }
 
+export interface OnStoppedData {
+  winner: Entry
+  color: string | null
+}
+
 const getIndexAtPointer = (wheel: Pick<Wheel, 'entries' | 'state'>) => {
   return Math.round(
     wheel.state.angle / (2 * Math.PI / (wheel.entries.length || 1))
@@ -88,7 +95,7 @@ const getEntryAtPointer = (wheel: Pick<Wheel, 'entries' | 'state'>) => {
 const getColorAtPointer = (
   wheel: Pick<Wheel, 'config' | 'entries' | 'state'>
 ) => {
-  if (!wheel.config.colors.length) return '#000000'
+  if (wheel.config.type === 'image' || !wheel.config.colors.length) return null
   return wheel.config.colors[
     getIndexAtPointer(wheel) % wheel.config.colors.length
   ]

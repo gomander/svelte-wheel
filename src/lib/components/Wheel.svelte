@@ -2,16 +2,14 @@
   import { onMount, createEventDispatcher } from 'svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import busyStore from '$lib/stores/BusyStore'
-  import Wheel, { type Entry } from '$lib/utils/Wheel'
+  import Wheel, { type OnStoppedData } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
   import {
     playTick, playSound, playLoopedSound, cancelLoopingSounds
   } from '$lib/utils/Audio'
 
-  const dispatch = createEventDispatcher<{
-    stop: { winner: Entry, color: string }
-  }>()
+  const dispatch = createEventDispatcher<{ stop: OnStoppedData }>()
 
   let canvas: HTMLCanvasElement
   let context: CanvasRenderingContext2D
@@ -19,34 +17,36 @@
   const onStarted = () => {
     busyStore.setSpinning(true)
     if (wheel.config.duringSpinSound === 'tick') {
-      wheel.onPointerIndexChanged = () => playTick(
-        wheel.config.duringSpinSoundVolume
-      )
+      wheel.onPointerIndexChanged = () => {
+        playTick(wheel.config.duringSpinSoundVolume)
+      }
     } else {
       delete wheel.onPointerIndexChanged
-      if (wheel.config.duringSpinSound) playLoopedSound(
-        wheel.config.duringSpinSound, wheel.config.duringSpinSoundVolume
-      )
+      if (wheel.config.duringSpinSound) {
+        playLoopedSound(
+          wheel.config.duringSpinSound, wheel.config.duringSpinSoundVolume
+        )
+      }
     }
   }
-  const onStopped = (winner: Entry, color: string) => {
+  const onStopped = (data: OnStoppedData) => {
     busyStore.setSpinning(false)
     cancelLoopingSounds()
     if (wheel.config.afterSpinSound) {
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
     }
-    dispatch('stop', { winner, color })
-    wheelStore.setWinners([...$wheelStore.winners, winner])
+    dispatch('stop', data)
+    wheelStore.setWinners([...$wheelStore.winners, data.winner])
   }
-  const wheel = new Wheel({
-    ...$wheelStore, onStarted, onStopped
-  })
+  const wheel = new Wheel({ ...$wheelStore, onStarted, onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()
 
   const refreshPainter = () => {
     painter.refresh()
-    if (context) painter.draw(context, wheel)
+    if (context) {
+      painter.draw(context, wheel)
+    }
   }
 
   const refreshPainterOnFontLoad = async () => {

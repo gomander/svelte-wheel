@@ -1,6 +1,6 @@
 <script lang="ts">
   import { wheelStore } from '$lib/stores/WheelStore'
-  import { getNewId, type Entry } from '$lib/utils/Wheel'
+  import { getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
   let textarea: HTMLTextAreaElement
 
@@ -13,7 +13,7 @@
       let id = $wheelStore.entries.at(index)?.id
       if (!id || $wheelStore.entries.at(index)?.text !== text) {
         if (index < changeStartIndex) changeStartIndex = index
-        id = getNewId()
+        id = getNewEntryId()
       }
       return { text, id }
     })

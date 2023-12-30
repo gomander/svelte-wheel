@@ -52,51 +52,64 @@ export const tick = (
 
 const increaseAngle = (state: WheelState): WheelState => {
   let angle = state.angle + state.speed
-  if (angle >= 2 * Math.PI) angle -= 2 * Math.PI
+  if (angle >= 2 * Math.PI) {
+    angle -= 2 * Math.PI
+  }
   return { ...state, angle }
 }
 
-const increaseTicksInPhase = (state: WheelState): WheelState => (
-  { ...state, ticksInPhase: state.ticksInPhase + 1 }
-)
+const increaseTicksInPhase = (state: WheelState): WheelState => {
+  return { ...state, ticksInPhase: state.ticksInPhase + 1 }
+}
 
 const tickAcceleratingPhase = (
   state: WheelState, spinTime: number, indefiniteSpin: boolean
-): WheelState => state.ticksInPhase >= getAccelTicks(spinTime)
-  ? indefiniteSpin
-    ? goToPhase(state, 'constant')
-    : goToDeceleratingPhase(state)
-  : { ...state, speed: state.speed + getAccelRate() }
+): WheelState => {
+  if (state.ticksInPhase >= getAccelTicks(spinTime)) {
+    if (indefiniteSpin) {
+      return goToPhase(state, 'constant')
+    }
+    return goToDeceleratingPhase(state)
+  }
+  return { ...state, speed: state.speed + getAccelRate() }
+}
 
 const tickDeceleratingPhase = (
   state: WheelState, spinTime: number
-): WheelState => state.ticksInPhase >= getDecelTicks(spinTime)
-  ? goToPhase(state, 'stopped')
-  : { ...state, speed: state.speed * getDecelRate(spinTime) }
+): WheelState => {
+  if (state.ticksInPhase >= getDecelTicks(spinTime)) {
+    return goToPhase(state, 'stopped')
+  }
+  return { ...state, speed: state.speed * getDecelRate(spinTime) }
+}
 
-const goToDeceleratingPhase = (state: WheelState): WheelState => ({
-  ...state,
-  angle: Math.random() * 2 * Math.PI,
-  phase: 'decelerating',
-  ticksInPhase: 0
-})
+const goToDeceleratingPhase = (state: WheelState): WheelState => {
+  return {
+    ...state,
+    angle: Math.random() * 2 * Math.PI,
+    phase: 'decelerating',
+    ticksInPhase: 0
+  }
+}
 
-const goToPhase = (state: WheelState, phase: Phase): WheelState => (
-  { ...state, phase, ticksInPhase: 0 }
-)
+const goToPhase = (state: WheelState, phase: Phase): WheelState => {
+  return { ...state, phase, ticksInPhase: 0 }
+}
 
-const getAccelTicks = (spinTime: number) => (
-  Math.min(FPS, Math.floor(spinTime * FPS / 3))
-)
+const getAccelTicks = (spinTime: number) => {
+  return Math.min(FPS, Math.floor(spinTime * FPS / 3))
+}
 
-const getAccelRate = () => 0.6 / FPS
+const getAccelRate = () => {
+  return 0.6 / FPS
+}
 
-const getDecelTicks = (spinTime: number) => (
-  spinTime * FPS - getAccelTicks(spinTime)
-)
+const getDecelTicks = (spinTime: number) => {
+  return spinTime * FPS - getAccelTicks(spinTime)
+}
 
-const getDecelRate = (spinTime: number) => Math.exp(
-  Math.log(
+const getDecelRate = (spinTime: number) => {
+  return Math.exp(Math.log(
     STOP_SPEED / (DEMO_SPEED + getAccelTicks(spinTime) * getAccelRate())
-  ) / getDecelTicks(spinTime)
-)
+  ) / getDecelTicks(spinTime))
+}

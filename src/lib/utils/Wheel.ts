@@ -22,6 +22,7 @@ export default class Wheel {
   }
 
   click() {
+    if (!this.entries.length) return
     const oldState = this.state
     const newState = click(this.state)
     if (
@@ -41,13 +42,13 @@ export default class Wheel {
     )
     if (this.onPointerIndexChanged) {
       const oldIndex = getIndexAtPointer({
-        config: this.config, entries: this.entries, state: oldState
+        entries: this.entries, state: oldState
       })
       const newIndex = getIndexAtPointer({
-        config: this.config, entries: this.entries, state: newState
+        entries: this.entries, state: newState
       })
       if (newIndex !== oldIndex) {
-        this.onPointerIndexChanged(getIndexAtPointer(this))
+        this.onPointerIndexChanged(newIndex)
       }
     }
     if (
@@ -55,8 +56,7 @@ export default class Wheel {
       newState.phase !== oldState.phase &&
       newState.phase === 'stopped'
     ) {
-      const entry = getEntryAtPointer(this)
-      this.onStopped(entry, getColorAtPointer(this))
+      this.onStopped(getEntryAtPointer(this), getColorAtPointer(this))
     }
     this.state = newState
   }
@@ -75,28 +75,27 @@ export interface Entry {
   text: string
 }
 
-const getIndexAtPointer = (
-  wheel: Pick<Wheel, 'config' | 'entries' | 'state'>
-) => (
-  Math.round(
-    wheel.state.angle / (2 * Math.PI / wheel.entries.length)
-  ) % wheel.entries.length
-)
+const getIndexAtPointer = (wheel: Pick<Wheel, 'entries' | 'state'>) => {
+  return Math.round(
+    wheel.state.angle / (2 * Math.PI / (wheel.entries.length || 1))
+  ) % (wheel.entries.length || 1)
+}
 
-const getEntryAtPointer = (
-  wheel: Pick<Wheel, 'config' | 'entries' | 'state'>
-) => (
-  wheel.entries[getIndexAtPointer(wheel)]
-)
+const getEntryAtPointer = (wheel: Pick<Wheel, 'entries' | 'state'>) => {
+  return wheel.entries[getIndexAtPointer(wheel)]
+}
 
 const getColorAtPointer = (
   wheel: Pick<Wheel, 'config' | 'entries' | 'state'>
-) => (
-  wheel.config.colors[getIndexAtPointer(wheel) % wheel.config.colors.length]
-)
+) => {
+  if (!wheel.config.colors.length) return '#000000'
+  return wheel.config.colors[
+    getIndexAtPointer(wheel) % wheel.config.colors.length
+  ]
+}
 
-export const getNewId = () => uuid().split('-')[0]
+export const getNewEntryId = () => uuid().split('-')[0]
 
 export const defaultEntries: Entry[] = [
   'Ali', 'Beatriz', 'Charles', 'Diya', 'Eric', 'Fatima', 'Gabriel', 'Hanna'
-].map(text => ({ text, id: getNewId() }))
+].map(text => ({ text, id: getNewEntryId() }))

@@ -1,7 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { popup, LightSwitch } from '@skeletonlabs/skeleton'
-  import { fullscreenStore } from '$lib/stores/FullscreenStore'
+  import fullscreenStore from '$lib/stores/FullscreenStore'
+  import busyStore from '$lib/stores/BusyStore'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
 
   const dispatch = createEventDispatcher<{
@@ -46,6 +47,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('new')}
+        disabled={$busyStore.spinning}
         aria-label="New"
         title="New"
       >
@@ -55,6 +57,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('open')}
+        disabled={$busyStore.spinning}
         aria-label="Open"
         title="Open"
       >
@@ -64,6 +67,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('save')}
+        disabled={$busyStore.spinning}
         aria-label="Save"
         title="Save"
       >
@@ -73,6 +77,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('customize')}
+        disabled={$busyStore.spinning}
         aria-label="Customize"
         title="Customize"
       >
@@ -82,6 +87,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('account')}
+        disabled={$busyStore.spinning}
         aria-label="Account"
         title="Account"
       >

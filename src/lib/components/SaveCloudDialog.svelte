@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
 
   const modalStore = getModalStore()
@@ -40,6 +40,15 @@
       hideDismiss: true
     })
   }
+
+  // TODO: If the wheel has been saved previously, present the user with a
+  // choice to overwrite the existing wheel or create a new wheel. This can be
+  // done by writing the path to the wheel store when saving or opening a wheel
+  // and checking if the path exists when opening the save cloud dialog. The
+  // user should be shown as much metadata about the wheel as possible, such as
+  // the title, number of entries, and date created. Additionally, there should
+  // be a thumbnail of the wheel, the same one that would be shown in the open
+  // cloud dialog.
 </script>
 
 {#if $modalStore[0]}

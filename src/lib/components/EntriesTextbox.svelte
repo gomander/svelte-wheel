@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
+  import busyStore from '$lib/stores/BusyStore'
   import { getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
   let textarea: HTMLTextAreaElement
@@ -39,5 +40,6 @@
   bind:this={textarea}
   bind:value={text}
   on:input={setEntries}
+  disabled={$busyStore.spinning}
   aria-label="Entries"
 />

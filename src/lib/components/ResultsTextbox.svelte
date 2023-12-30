@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
 
   $: text = $wheelStore.winners.map(e => e.text).join('\n')
 </script>

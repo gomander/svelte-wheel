@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getModalStore, TabGroup, Tab } from '@skeletonlabs/skeleton'
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
   import CustomizeDialogBasic from '$lib/components/CustomizeDialogBasic.svelte'
   import CustomizeDialogAppearance from '$lib/components/CustomizeDialogAppearance.svelte'
   import CustomizeDialogDuringSpin from '$lib/components/CustomizeDialogDuringSpin.svelte'

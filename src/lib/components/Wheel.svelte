@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte'
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
+  import busyStore from '$lib/stores/BusyStore'
   import Wheel, { type Entry } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
@@ -16,6 +17,7 @@
   let context: CanvasRenderingContext2D
 
   const onStarted = () => {
+    busyStore.setSpinning(true)
     if (wheel.config.duringSpinSound === 'tick') {
       wheel.onPointerIndexChanged = () => playTick(
         wheel.config.duringSpinSoundVolume
@@ -28,6 +30,7 @@
     }
   }
   const onStopped = (winner: Entry, color: string) => {
+    busyStore.setSpinning(false)
     cancelLoopingSounds()
     if (wheel.config.afterSpinSound) {
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)

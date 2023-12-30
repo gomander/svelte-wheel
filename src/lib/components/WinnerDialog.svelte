@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getModalStore } from '@skeletonlabs/skeleton'
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
   import { getTextColor } from '$lib/utils/FontPicker'
 
   const modalStore = getModalStore()

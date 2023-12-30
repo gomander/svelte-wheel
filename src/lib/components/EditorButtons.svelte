@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
+  import busyStore from '$lib/stores/BusyStore'
 
   const sortEntries = () => {
     const entries = [...$wheelStore.entries]
@@ -21,6 +22,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={sortEntries}
+    disabled={$busyStore.spinning}
     aria-label="Sort"
   >
     <i class="fas fa-arrow-down-a-z" />
@@ -30,6 +32,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={shuffleEntries}
+    disabled={$busyStore.spinning}
     aria-label="Shuffle"
   >
     <i class="fas fa-shuffle" />

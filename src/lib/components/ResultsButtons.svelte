@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
+  import busyStore from '$lib/stores/BusyStore'
 
   const sortWinners = () => {
     const winners = [...$wheelStore.winners]
@@ -35,6 +36,7 @@
   <button
     class="btn variant-filled flex-1"
     on:click={resetEntries}
+    disabled={$busyStore.spinning}
     aria-label="Reset"
   >
     <i class="fas fa-rotate-left" />

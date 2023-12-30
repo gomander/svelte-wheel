@@ -7,7 +7,7 @@
 	import {
     computePosition, autoUpdate, flip, shift, offset, arrow
   } from '@floating-ui/dom'
-  import { fullscreenStore } from '$lib/stores/FullscreenStore'
+  import fullscreenStore from '$lib/stores/FullscreenStore'
 	import WinnerDialog from '$lib/components/WinnerDialog.svelte'
   import OpenDialog from '$lib/components/OpenDialog.svelte'
   import OpenCloudDialog from '$lib/components/OpenCloudDialog.svelte'

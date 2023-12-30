@@ -52,6 +52,8 @@ const initialState: WheelStoreData = {
 
 const localStorageWheelStore = localStorageStore('wheel', initialState)
 
-export const wheelStore = createWheelStore(get(localStorageWheelStore))
+const wheelStore = createWheelStore(get(localStorageWheelStore))
 
 wheelStore.subscribe(localStorageWheelStore.set)
+
+export default wheelStore

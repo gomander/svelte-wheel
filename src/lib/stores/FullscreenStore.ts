@@ -49,6 +49,8 @@ const createFullscreenStore = (state: {
   return { subscribe, toggleFullscreen, initialize }
 }
 
-export const fullscreenStore = createFullscreenStore({
+const fullscreenStore = createFullscreenStore({
   active: false, element: null, supported: false
 })
+
+export default fullscreenStore

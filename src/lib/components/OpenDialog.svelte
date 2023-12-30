@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import { fileOpen } from 'browser-fs-access'
-  import { wheelStore } from '$lib/stores/WheelStore'
+  import wheelStore from '$lib/stores/WheelStore'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()

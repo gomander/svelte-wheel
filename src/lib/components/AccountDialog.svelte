@@ -8,21 +8,36 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  const authUser = getCurrentUser()
+  let loading = false
 
+  const authUser = getCurrentUser()
   if (!authUser) {
     modalStore.close()
     modalStore.trigger({ type: 'component', component: 'loginDialog' })
   }
 
-  const logOut = () => {
-    signOut()
-    modalStore.close()
-    toastStore.trigger({
-      ...toastDefaults,
-      message: 'Logged out',
-      timeout: 1500
-    })
+  const logOut = async () => {
+    if (loading) return
+    loading = true
+    try {
+      await signOut()
+      modalStore.close()
+      toastStore.trigger({
+        ...toastDefaults,
+        message: 'Logged out',
+        timeout: 1500
+      })
+    } catch (error) {
+      if (error instanceof Error) {
+        toastStore.trigger({
+          ...toastDefaults,
+          message: error.message,
+          background: 'variant-filled-error'
+        })
+      }
+    } finally {
+      loading = false
+    }
   }
 </script>
 

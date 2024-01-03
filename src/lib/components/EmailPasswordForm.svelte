@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ProgressRadial } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
+  import { FirebaseError } from 'firebase/app'
 
   export let onSubmit: (
     user: { email: string, password: string }
@@ -21,8 +22,8 @@
 
   const submit = async () => {
     if (loading) return
-    formError = null
     loading = true
+    formError = null
     const formData = new FormData(form)
     const user = {
       email: String(formData.get('email')),
@@ -30,12 +31,22 @@
     }
     try {
       userSchema.parse(user)
+      await onSubmit(user)
     } catch (error) {
-      if (error instanceof z.ZodError) errors = error.flatten().fieldErrors
-      return loading = false
+      if (error instanceof z.ZodError) {
+        errors = error.flatten().fieldErrors
+      }
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/email-already-in-use') {
+          formError = 'Email already in use'
+        }
+        if (error.code === 'auth/invalid-credential') {
+          formError = 'Invalid email or password'
+        }
+      }
+    } finally {
+      loading = false
     }
-    await onSubmit(user)
-    loading = false
   }
 </script>
 

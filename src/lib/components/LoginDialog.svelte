@@ -2,7 +2,6 @@
   import { onNavigate } from '$app/navigation'
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import { signIn } from '$lib/utils/Firebase'
-  import { FirebaseError } from 'firebase/app'
   import { toastDefaults } from '$lib/utils/Toast'
   import EmailPasswordForm from '$lib/components/EmailPasswordForm.svelte'
 
@@ -12,25 +11,20 @@
   let formError: string | null = null
 
   const onSubmit = async (user: { email: string, password: string }) => {
-    try {
-      await signIn(user.email, user.password)
-      if ($modalStore[0].meta?.next) {
-        modalStore.trigger({
-          type: 'component',
-          component: $modalStore[0].meta.next
-        })
-      }
-      modalStore.close()
-      toastStore.trigger({
-        ...toastDefaults,
-        message: 'Logged in successfully',
-        background: 'variant-filled-primary'
+    await signIn(user.email, user.password)
+    if ($modalStore[0].meta?.next) {
+      modalStore.trigger({
+        type: 'component',
+        component: $modalStore[0].meta.next
       })
-    } catch (error) {
-      formError = error instanceof FirebaseError && error.code === 'auth/invalid-credential'
-        ? 'Invalid email or password'
-        : 'Something went wrong'
     }
+    modalStore.close()
+    toastStore.trigger({
+      ...toastDefaults,
+      message: 'Logged in',
+      background: 'variant-filled-primary',
+      timeout: 2000
+    })
   }
 
   const resetPassword = () => {

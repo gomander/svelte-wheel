@@ -25,24 +25,14 @@
 
   const share = async () => {
     if (loading) return
-    if (!title) {
-      toastStore.trigger({
-        ...toastDefaults,
-        message: 'Please enter a title for your wheel',
-        background: 'variant-filled-error'
-      })
-      return
-    }
-    if (!user) {
-      toastStore.trigger({
-        ...toastDefaults,
-        message: 'You must be logged in to share a wheel',
-        background: 'variant-filled-error'
-      })
-      return
-    }
     loading = true
     try {
+      if (!title) {
+        throw new Error('Title is required')
+      }
+      if (!user) {
+        throw new Error('User is not logged in')
+      }
       const response = await createWheel({
         wheel: {
           config: { ...$wheelStore.config, title },
@@ -57,16 +47,18 @@
       modalStore.close()
       toastStore.trigger({
         ...toastDefaults,
-        message: `Wheel shared successfully! You can view it at https://sveltewheel.com/${response.data.path}`,
+        message: `Wheel shared! You can view it at ${window.location.origin}/${response.data.path}`,
         background: 'variant-filled-primary',
         timeout: 7000
       })
     } catch (error) {
-      toastStore.trigger({
-        ...toastDefaults,
-        message: 'There was an error sharing your wheel',
-        background: 'variant-filled-error'
-      })
+      if (error instanceof Error) {
+        toastStore.trigger({
+          ...toastDefaults,
+          message: error.message,
+          background: 'variant-filled-error'
+        })
+      }
     } finally {
       loading = false
     }

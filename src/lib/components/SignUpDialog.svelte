@@ -2,7 +2,6 @@
   import { onNavigate } from '$app/navigation'
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import { registerUser, signIn } from '$lib/utils/Firebase'
-  import { FirebaseError } from 'firebase/app'
   import { toastDefaults } from '$lib/utils/Toast'
   import EmailPasswordForm from '$lib/components/EmailPasswordForm.svelte'
 
@@ -12,26 +11,20 @@
   let formError: string | null = null
 
   const onSubmit = async (user: { email: string, password: string }) => {
-    try {
-      await registerUser(user.email, user.password)
-      await signIn(user.email, user.password)
-      if ($modalStore[0].meta?.next) {
-        modalStore.trigger({
-          type: 'component',
-          component: $modalStore[0].meta.next
-        })
-      }
-      modalStore.close()
-      toastStore.trigger({
-        ...toastDefaults,
-        message: 'Account created successfully',
-        background: 'variant-filled-primary'
+    await registerUser(user.email, user.password)
+    await signIn(user.email, user.password)
+    if ($modalStore[0].meta?.next) {
+      modalStore.trigger({
+        type: 'component',
+        component: $modalStore[0].meta.next
       })
-    } catch (error) {
-      formError = error instanceof FirebaseError && error.code === 'auth/email-already-in-use'
-        ? 'Email already in use'
-        : 'Something went wrong'
     }
+    modalStore.close()
+    toastStore.trigger({
+      ...toastDefaults,
+      message: 'Account created',
+      background: 'variant-filled-primary'
+    })
   }
 
   const login = () => {

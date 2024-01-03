@@ -23,10 +23,10 @@
   let wheels: ApiWheel[] = []
 
   onMount(async () => {
-    if (!user) {
-      throw new Error('User is not logged in')
-    }
     try {
+      if (!user) {
+        throw new Error('User is not logged in')
+      }
       const response = await getWheels(user.uid)
       if (!response.success) {
         throw new Error('Failed to fetch wheels')
@@ -54,8 +54,9 @@
     modalStore.close()
     toastStore.trigger({
       ...toastDefaults,
-      message: 'Wheel opened successfully!',
-      background: 'variant-filled-primary'
+      message: 'Wheel opened',
+      background: 'variant-filled-primary',
+      timeout: 1000
     })
   }
 

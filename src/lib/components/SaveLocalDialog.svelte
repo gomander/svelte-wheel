@@ -8,10 +8,13 @@
   const toastStore = getToastStore()
 
   let fileName = $wheelStore.config.title
+  let loading = false
 
-  const save = () => {
+  const save = async () => {
+    if (loading) return
+    loading = true
     try {
-      fileSave(
+      await fileSave(
         new Blob(
           [JSON.stringify({
             config: $wheelStore.config,
@@ -25,16 +28,19 @@
       modalStore.close()
       toastStore.trigger({
         ...toastDefaults,
-        message: 'Wheel saved successfully!',
+        message: 'Wheel saved',
         background: 'variant-filled-primary'
       })
-    } catch (e) {
-      console.error(e)
-      toastStore.trigger({
-        ...toastDefaults,
-        message: 'Error saving wheel',
-        background: 'variant-filled-error'
-      })
+    } catch (error) {
+      if (error instanceof Error) {
+        toastStore.trigger({
+          ...toastDefaults,
+          message: error.message,
+          background: 'variant-filled-error'
+        })
+      }
+    } finally {
+      loading = false
     }
   }
 </script>

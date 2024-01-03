@@ -1,123 +1,80 @@
 import { z } from 'zod'
 import { SVELTE_WHEEL_API_KEY } from '$env/static/private'
 import { getWheels, saveWheel } from '$lib/server/FirebaseAdmin'
-import type {
-  ApiError, ApiSuccess, ApiWheel, WheelVisibility
-} from '$lib/utils/Api'
+import { wheelSchema } from '$lib/utils/Schemas'
+import type { ApiError, ApiSuccess, ApiWheel } from '$lib/utils/Api'
 
 export const GET = async ({ request }) => {
   const uid = request.headers.get('authorization')
   if (!uid) {
     return new Response(
-      JSON.stringify(
-        {
-          success: false,
-          error: { message: 'Unauthorized' }
-        } satisfies ApiError
-      ),
+      JSON.stringify({
+        success: false,
+        error: { message: 'Unauthorized' }
+      } satisfies ApiError),
       { status: 401 }
     )
   }
-
-  const wheels = await getWheels(uid)
-  return new Response(
-    JSON.stringify(
-      {
+  try {
+    const wheels = await getWheels(uid)
+    return new Response(
+      JSON.stringify({
         success: true,
         data: { wheels }
-      } satisfies ApiSuccess<{ wheels: ApiWheel[] }>
-    ),
-    { status: 200 }
-  )
+      } satisfies ApiSuccess<{ wheels: ApiWheel[] }>),
+      { status: 200 }
+    )
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: { message: 'Error getting wheels' }
+      } satisfies ApiError),
+      { status: 500 }
+    )
+  }
 }
 
 export const POST = async ({ request }) => {
-  // const apiKey = request.headers.get('x-api-key')
-
-  // if (!apiKey || apiKey !== SVELTE_WHEEL_API_KEY) {
-  //   return new Response(
-  //     JSON.stringify(
-  //       {
-  //         success: false,
-  //         error: { message: 'Unauthorized' }
-  //       } satisfies ApiError
-  //     ),
-  //     { status: 401 }
-  //   )
-  // }
-
-  const wheelSchema = z.object({
-    wheel: z.object({
-      config: z.object({
-        title: z.string(),
-        description: z.string(),
-        spinTime: z.number().min(1).max(60)
-      }),
-      entries: z.array(
-        z.object({
-          text: z.string(),
-          id: z.string().min(5).max(20)
-        })
-      )
-    }),
-    visibility: z.string(),
-    uid: z.string()
-  })
-
-  const body = await request.json() as {
-    wheel: Omit<ApiWheel, 'path'>, uid: string, visibility: WheelVisibility
+  const apiKey = request.headers.get('x-api-key')
+  if (!apiKey || apiKey !== SVELTE_WHEEL_API_KEY) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: { message: 'Unauthorized' }
+      } satisfies ApiError),
+      { status: 401 }
+    )
   }
-
   try {
-    wheelSchema.parse(body)
+    const body = await request.json()
+    const data = wheelSchema.parse(body)
+    const path = await saveWheel(data.wheel, data.uid, data.visibility)
+    return new Response(
+      JSON.stringify({
+        success: true,
+        data: { path }
+      } satisfies ApiSuccess<{ path: string }>),
+      { status: 201 }
+    )
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(
-        JSON.stringify(
-          {
-            success: false,
-            error: {
-              message: 'Invalid wheel',
-              errors: error.flatten().fieldErrors
-            }
-          } satisfies ApiError
-        ),
+        JSON.stringify({
+          success: false,
+          error: {
+            message: 'Invalid wheel',
+            errors: error.flatten().fieldErrors
+          }
+        } satisfies ApiError),
         { status: 400 }
       )
     }
     return new Response(
-      JSON.stringify(
-        {
-          success: false,
-          error: { message: 'Invalid wheel' }
-        } satisfies ApiError
-      ),
-      { status: 400 }
-    )
-  }
-
-  try {
-    const path = await saveWheel(body.wheel, body.uid, body.visibility)
-
-    return new Response(
-      JSON.stringify(
-        {
-          success: true,
-          data: { path }
-        } satisfies ApiSuccess<{ path: string }>
-      ),
-      { status: 201 }
-    )
-  } catch (error) {
-    console.error(error)
-
-    return new Response(
-      JSON.stringify(
-        {
-          success: false,
-          error: { message: 'Error when saving wheel' }
-        } satisfies ApiError
-      ),
+      JSON.stringify({
+        success: false,
+        error: { message: 'Error saving wheel' }
+      } satisfies ApiError),
       { status: 500 }
     )
   }

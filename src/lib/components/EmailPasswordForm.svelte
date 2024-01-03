@@ -2,6 +2,7 @@
   import { ProgressRadial } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
   import { FirebaseError } from 'firebase/app'
+  import { userSchema } from '$lib/utils/Schemas'
 
   export let onSubmit: (
     user: { email: string, password: string }
@@ -14,11 +15,6 @@
 
   let passwordInput: HTMLInputElement
   let showPassword = false
-
-  const userSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(8, 'Password must be at least 8 characters').trim()
-  })
 
   const submit = async () => {
     if (loading) return

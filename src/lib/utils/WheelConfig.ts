@@ -15,7 +15,7 @@ export default class WheelConfig {
   afterSpinSoundVolume: number
   image: string
   hubSize: HubSize
-  type: 'color' | 'image'
+  type: WheelType
 
   constructor(props?: Partial<WheelConfig>) {
     this.title = props?.title ?? ''
@@ -36,7 +36,10 @@ export default class WheelConfig {
   }
 }
 
-export type HubSize = 'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL'
+export const wheelTypes = ['color', 'image'] as const
+export type WheelType = typeof wheelTypes[number]
+export const hubSizeKeys = ['XXS', 'XS', 'S', 'M', 'L', 'XL'] as const
+export type HubSize = typeof hubSizeKeys[number]
 export const hubSizes: Record<HubSize, number> = {
   XXS: 0.05,
   XS: 0.1,

@@ -1,26 +1,42 @@
 import type { Entry } from '$lib/utils/Wheel'
 import type WheelConfig from '$lib/utils/WheelConfig'
 
-export const createWheel = async (data: CreateWheelData) => {
-  const response = await fetch('/api/wheels', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
+export const createWheel = async (
+  data: CreateWheelData, fetch = window.fetch
+) => {
+  const response = await fetch(
+    '/api/wheels',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }
+  )
   return await response.json() as ApiResponse<{ path: string }>
 }
 
-export const getWheel = async (path: string, uid?: string) => {
-  const response = await fetch(`/api/wheels/${path}`,
-    uid ? { headers: { authorization: uid } } : {}
-  )
+export const getWheel = async (
+  path: string,
+  uid?: string | null,
+  apiKey?: string | null,
+  fetch = window.fetch
+) => {
+  const headers: HeadersInit = {}
+  if (uid) {
+    headers.authorization = uid
+  }
+  if (apiKey) {
+    headers['x-api-key'] = apiKey
+  }
+  const response = await fetch(`/api/wheels/${path}`, { headers })
   return await response.json() as ApiResponse<{ wheel: ApiWheel }>
 }
 
-export const getWheels = async (uid: string) => {
-  const response = await fetch('/api/wheels', {
-    headers: { authorization: uid }
-  })
+export const getWheels = async (uid: string, fetch = window.fetch) => {
+  const response = await fetch(
+    '/api/wheels',
+    { headers: { authorization: uid } }
+  )
   return await response.json() as ApiResponse<{ wheels: ApiWheel[] }>
 }
 

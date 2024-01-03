@@ -4,13 +4,13 @@
   } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
   import { sendPasswordResetEmail } from '$lib/utils/Firebase'
+  import { emailValidator } from '$lib/utils/Schemas'
   import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
   let email = ''
-  const emailValidator = z.string().email()
   let loading = false
   let errors: Record<string, string[] | undefined> = { }
 

@@ -4,6 +4,7 @@
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { getWheels, type ApiWheel } from '$lib/utils/Api'
+  import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -27,17 +28,16 @@
     }
     try {
       const response = await getWheels(user.uid)
-      if ('error' in response) {
+      if (!response.success) {
         throw new Error('Failed to fetch wheels')
       }
       wheels = response.data.wheels
     } catch (error) {
       if (error instanceof Error) {
         toastStore.trigger({
+          ...toastDefaults,
           message: error.message,
-          background: 'variant-soft-error',
-          timeout: 3000,
-          hideDismiss: true
+          background: 'variant-filled-error'
         })
       }
       modalStore.close()
@@ -53,10 +53,9 @@
     wheelStore.setEntries(wheel.entries)
     modalStore.close()
     toastStore.trigger({
+      ...toastDefaults,
       message: 'Wheel opened successfully!',
-      background: 'variant-soft-primary',
-      timeout: 3000,
-      hideDismiss: true
+      background: 'variant-filled-primary'
     })
   }
 

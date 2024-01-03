@@ -5,6 +5,7 @@
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { createWheel } from '$lib/utils/Api'
+  import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -25,20 +26,20 @@
   const save = async () => {
     if (loading) return
     if (!title) {
-      return toastStore.trigger({
+      toastStore.trigger({
+        ...toastDefaults,
         message: 'Please enter a title for your wheel',
-        background: 'variant-soft-error',
-        timeout: 3000,
-        hideDismiss: true
+        background: 'variant-filled-error'
       })
+      return
     }
     if (!user) {
-      return toastStore.trigger({
+      toastStore.trigger({
+        ...toastDefaults,
         message: 'You must be logged in to share a wheel',
-        background: 'variant-soft-error',
-        timeout: 3000,
-        hideDismiss: true
+        background: 'variant-filled-error'
       })
+      return
     }
     loading = true
     try {
@@ -52,17 +53,15 @@
       })
       modalStore.close()
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Wheel saved successfully!',
-        background: 'variant-soft-primary',
-        timeout: 3000,
-        hideDismiss: true
+        background: 'variant-filled-primary'
       })
     } catch (error) {
       toastStore.trigger({
+        ...toastDefaults,
         message: 'There was an error saving your wheel',
-        background: 'variant-soft-error',
-        timeout: 3000,
-        hideDismiss: true
+        background: 'variant-filled-error'
       })
     } finally {
       loading = false

@@ -4,6 +4,7 @@
   } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
   import { sendPasswordResetEmail } from '$lib/utils/Firebase'
+  import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -18,24 +19,25 @@
     loading = true
     try {
       emailValidator.parse(email)
-    } catch (error) {
-      if (error instanceof z.ZodError) errors = error.flatten().fieldErrors
-      return loading = false
-    }
-    try {
       await sendPasswordResetEmail(email)
-      loading = false
       modalStore.close()
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Password reset email sent',
         background: 'variant-filled-primary'
       })
     } catch (error) {
-      loading = false
+      if (error instanceof z.ZodError) {
+        errors = error.flatten().fieldErrors
+        return
+      }
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Something went wrong, please try again later',
         background: 'variant-filled-error'
       })
+    } finally {
+      loading = false
     }
   }
 </script>

@@ -4,7 +4,8 @@
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
-  import type { ApiSuccess, CreateWheelData } from '$lib/utils/Api'
+  import { createWheel } from '$lib/utils/Api'
+  import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -25,49 +26,46 @@
   const share = async () => {
     if (loading) return
     if (!title) {
-      return toastStore.trigger({
+      toastStore.trigger({
+        ...toastDefaults,
         message: 'Please enter a title for your wheel',
-        background: 'variant-soft-error',
-        timeout: 3000,
-        hideDismiss: true
+        background: 'variant-filled-error'
       })
+      return
     }
     if (!user) {
-      return toastStore.trigger({
+      toastStore.trigger({
+        ...toastDefaults,
         message: 'You must be logged in to share a wheel',
-        background: 'variant-soft-error',
-        timeout: 3000,
-        hideDismiss: true
+        background: 'variant-filled-error'
       })
+      return
     }
     loading = true
     try {
-      const response = await fetch('/api/wheels', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          wheel: {
-            config: { ...$wheelStore.config, title },
-            entries: $wheelStore.entries
-          },
-          visibility: 'public',
-          uid: user.uid
-        } satisfies CreateWheelData)
+      const response = await createWheel({
+        wheel: {
+          config: { ...$wheelStore.config, title },
+          entries: $wheelStore.entries
+        },
+        visibility: 'public',
+        uid: user.uid
       })
-      const responseObject = await response.json() as ApiSuccess<{ path: string }>
+      if (!response.success) {
+        throw new Error('Failed to share wheel')
+      }
       modalStore.close()
       toastStore.trigger({
-        message: `Wheel shared successfully! You can view it at https://sveltewheel.com/${responseObject.data.path}`,
+        ...toastDefaults,
+        message: `Wheel shared successfully! You can view it at https://sveltewheel.com/${response.data.path}`,
         background: 'variant-filled-primary',
-        timeout: 3000,
-        hideDismiss: true
+        timeout: 7000
       })
     } catch (error) {
       toastStore.trigger({
+        ...toastDefaults,
         message: 'There was an error sharing your wheel',
-        background: 'variant-soft-error',
-        timeout: 3000,
-        hideDismiss: true
+        background: 'variant-filled-error'
       })
     } finally {
       loading = false

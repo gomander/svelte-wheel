@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onNavigate } from '$app/navigation'
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
-  import { signIn } from '$lib/utils/Firebase.js'
+  import { signIn } from '$lib/utils/Firebase'
   import { FirebaseError } from 'firebase/app'
+  import { toastDefaults } from '$lib/utils/Toast'
   import EmailPasswordForm from '$lib/components/EmailPasswordForm.svelte'
 
   const modalStore = getModalStore()
@@ -21,6 +22,7 @@
       }
       modalStore.close()
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Logged in successfully',
         background: 'variant-filled-primary'
       })

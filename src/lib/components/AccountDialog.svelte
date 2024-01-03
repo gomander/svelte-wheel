@@ -3,6 +3,7 @@
   import {
     getCurrentUser, sendEmailVerificationEmail, signOut
   } from '$lib/utils/Firebase'
+  import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -18,10 +19,9 @@
     signOut()
     modalStore.close()
     toastStore.trigger({
+      ...toastDefaults,
       message: 'Logged out',
-      background: 'variant-soft',
-      timeout: 1000,
-      hideDismiss: true
+      timeout: 1500
     })
   }
 </script>

@@ -2,6 +2,7 @@
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import { fileSave } from 'browser-fs-access'
   import wheelStore from '$lib/stores/WheelStore'
+  import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -23,12 +24,14 @@
       )
       modalStore.close()
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Wheel saved successfully!',
         background: 'variant-filled-primary'
       })
     } catch (e) {
       console.error(e)
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Error saving wheel',
         background: 'variant-filled-error'
       })

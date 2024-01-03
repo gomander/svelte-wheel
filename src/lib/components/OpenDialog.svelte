@@ -2,6 +2,7 @@
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import { fileOpen } from 'browser-fs-access'
   import wheelStore from '$lib/stores/WheelStore'
+  import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -24,12 +25,14 @@
       wheelStore.setWinners(winners)
       modalStore.close()
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Wheel loaded successfully!',
         background: 'variant-filled-primary'
       })
     } catch (e) {
       console.error(e)
       toastStore.trigger({
+        ...toastDefaults,
         message: 'Error loading wheel',
         background: 'variant-filled-error'
       })

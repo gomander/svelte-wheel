@@ -4,7 +4,7 @@
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
-  import { createWheel } from '$lib/utils/Api'
+  import type { ApiSuccess, CreateWheelData } from '$lib/utils/Api'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -18,11 +18,11 @@
     modalStore.trigger({
       type: 'component',
       component: 'loginDialog',
-      meta: { next: 'saveCloudDialog' }
+      meta: { next: 'shareDialog' }
     })
   }
 
-  const save = async () => {
+  const share = async () => {
     if (loading) return
     if (!title) {
       return toastStore.trigger({
@@ -42,24 +42,29 @@
     }
     loading = true
     try {
-      await createWheel({
-        wheel: {
-          config: { ...$wheelStore.config, title },
-          entries: $wheelStore.entries
-        },
-        visibility: 'private',
-        uid: user.uid
+      const response = await fetch('/api/wheels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wheel: {
+            config: { ...$wheelStore.config, title },
+            entries: $wheelStore.entries
+          },
+          visibility: 'public',
+          uid: user.uid
+        } satisfies CreateWheelData)
       })
+      const responseObject = await response.json() as ApiSuccess<{ path: string }>
       modalStore.close()
       toastStore.trigger({
-        message: 'Wheel saved successfully!',
-        background: 'variant-soft-primary',
+        message: `Wheel shared successfully! You can view it at https://sveltewheel.com/${responseObject.data.path}`,
+        background: 'variant-filled-primary',
         timeout: 3000,
         hideDismiss: true
       })
     } catch (error) {
       toastStore.trigger({
-        message: 'There was an error saving your wheel',
+        message: 'There was an error sharing your wheel',
         background: 'variant-soft-error',
         timeout: 3000,
         hideDismiss: true
@@ -68,26 +73,32 @@
       loading = false
     }
   }
-
-  // TODO: If the wheel has been saved previously, present the user with a
-  // choice to overwrite the existing wheel or create a new wheel. This can be
-  // done by writing the path to the wheel store when saving or opening a wheel
-  // and checking if the path exists when opening the save cloud dialog. The
-  // user should be shown as much metadata about the wheel as possible, such as
-  // the title, number of entries, and date created. Additionally, there should
-  // be a thumbnail of the wheel, the same one that would be shown in the open
-  // cloud dialog.
 </script>
 
 {#if $modalStore[0]}
-  <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
-    <header class="text-2xl font-semibold flex items-center gap-2">
-      <i class="fas fa-floppy-disk" />
-      <h1>Save a wheel</h1>
+  <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
+    <header class="h3 flex items-center gap-2">
+      <i class="fas fa-share-nodes" />
+      <h1>Share wheel</h1>
     </header>
 
+    <section class="flex flex-col gap-2">
+      <p>
+        Sharing a wheel will make it public for anyone to see and spin if they
+        have the link.
+      </p>
+      <p>
+        Others will not be able to edit the wheel, nor will they be able to see
+        changes you make after sharing.
+      </p>
+      <p>
+        Each person who opens the wheel will be able to spin it as many times as
+        they want, and their results will be independent of anyone else's.
+      </p>
+    </section>
+
     <form
-      on:submit|preventDefault={save}
+      on:submit|preventDefault={share}
       class="flex flex-col gap-4"
     >
       <label class="label">
@@ -95,8 +106,9 @@
 
         <input
           type="text"
-          maxlength="50"
+          name="title"
           required
+          maxlength="50"
           bind:value={title}
           placeholder="Enter a title for your wheel"
           class="input"
@@ -111,7 +123,6 @@
         >
           Cancel
         </button>
-
         <button
           class="btn variant-filled-primary"
           aria-busy={loading}

@@ -16,3 +16,8 @@
 .modal .input-group :focus {
   outline-style: none !important;
 }
+
+.required::after {
+  content: ' *';
+  @apply text-error-500-400-token;
+}

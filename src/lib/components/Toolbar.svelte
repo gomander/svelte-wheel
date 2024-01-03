@@ -10,6 +10,7 @@
     open: null,
     save: null,
     customize: null,
+    share: null,
     account: null
   }>()
 </script>
@@ -37,6 +38,7 @@
         on:open={() => dispatch('open')}
         on:save={() => dispatch('save')}
         on:customize={() => dispatch('customize')}
+        on:share={() => dispatch('share')}
         on:account={() => dispatch('account')}
       />
     </div>
@@ -82,6 +84,16 @@
         title="Customize"
       >
         <i class="fas fa-palette" />
+      </button>
+
+      <button
+        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        on:click={() => dispatch('share')}
+        disabled={$busyStore.spinning}
+        aria-label="Share"
+        title="Share"
+      >
+        <i class="fas fa-share-nodes" />
       </button>
 
       <button

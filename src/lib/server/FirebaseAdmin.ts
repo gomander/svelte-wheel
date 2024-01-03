@@ -1,7 +1,9 @@
 import { initializeApp, getApp, getApps } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 import { firebaseConfig } from '$lib/utils/Firebase'
-import type { ApiUser, ApiWheel, ApiWheelMeta, WheelVisibility } from '$lib/types/api'
+import type {
+  ApiUser, ApiWheel, ApiWheelMeta, WheelVisibility
+} from '$lib/utils/Api'
 
 const app = getApps().length
   ? getApp()

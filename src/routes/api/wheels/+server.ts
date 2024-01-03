@@ -3,10 +3,10 @@ import { SVELTE_WHEEL_API_KEY } from '$env/static/private'
 import { getWheels, saveWheel } from '$lib/server/FirebaseAdmin'
 import type {
   ApiError, ApiSuccess, ApiWheel, WheelVisibility
-} from '$lib/types/api'
+} from '$lib/utils/Api'
 
 export const GET = async ({ request }) => {
-  const uid = request.headers.get('Authorization')
+  const uid = request.headers.get('authorization')
   if (!uid) {
     return new Response(
       JSON.stringify(

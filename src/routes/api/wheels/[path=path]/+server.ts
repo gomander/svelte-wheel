@@ -1,6 +1,6 @@
 import { SVELTE_WHEEL_API_KEY } from '$env/static/private'
 import { getWheel } from '$lib/server/FirebaseAdmin'
-import type { ApiError, ApiSuccess, ApiWheel } from '$lib/types/api'
+import type { ApiError, ApiSuccess, ApiWheel } from '$lib/utils/Api'
 
 export const GET = async ({ request, url }) => {
   const uid = request.headers.get('authorization')
@@ -42,8 +42,8 @@ export const GET = async ({ request, url }) => {
       JSON.stringify(
         {
           success: true,
-          data: wheel
-        } satisfies ApiSuccess<ApiWheel>
+          data: { wheel }
+        } satisfies ApiSuccess<{ wheel: ApiWheel }>
       ),
       { status: 200 }
     )

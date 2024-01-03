@@ -19,6 +19,7 @@
   import SignUpDialog from '$lib/components/SignUpDialog.svelte'
   import ResetPasswordDialog from '$lib/components/ResetPasswordDialog.svelte'
   import CustomizeDialog from '$lib/components/CustomizeDialog.svelte'
+  import ShareDialog from '$lib/components/ShareDialog.svelte'
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
 	initializeStores()
@@ -34,7 +35,8 @@
     loginDialog: { ref: LoginDialog },
     signUpDialog: { ref: SignUpDialog },
     resetPasswordDialog: { ref: ResetPasswordDialog },
-    customizeDialog: { ref: CustomizeDialog }
+    customizeDialog: { ref: CustomizeDialog },
+    shareDialog: { ref: ShareDialog }
 	}
 
   onMount(fullscreenStore.initialize)

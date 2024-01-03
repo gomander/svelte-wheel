@@ -3,7 +3,7 @@
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
-  import type { ApiWheel } from '$lib/types/api'
+  import { getWheels, type ApiWheel } from '$lib/utils/Api'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
@@ -22,15 +22,26 @@
   let wheels: ApiWheel[] = []
 
   onMount(async () => {
-    const res = await fetch('/api/wheels', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': getCurrentUser()?.uid || ''
+    if (!user) {
+      throw new Error('User is not logged in')
+    }
+    try {
+      const response = await getWheels(user.uid)
+      if ('error' in response) {
+        throw new Error('Failed to fetch wheels')
       }
-    })
-    const responseObject = await res.json() as { data: { wheels: ApiWheel[] } }
-    wheels = responseObject.data.wheels
+      wheels = response.data.wheels
+    } catch (error) {
+      if (error instanceof Error) {
+        toastStore.trigger({
+          message: error.message,
+          background: 'variant-soft-error',
+          timeout: 3000,
+          hideDismiss: true
+        })
+      }
+      modalStore.close()
+    }
   })
 
   const open = async () => {

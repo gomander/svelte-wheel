@@ -37,6 +37,10 @@
     type: 'component', component: 'customizeDialog'
   })
 
+  const openShareDialog = () => modalStore.trigger({
+    type: 'component', component: 'shareDialog'
+  })
+
   const openAccountDialog = async () => modalStore.trigger({
     type: 'component', component: 'accountDialog'
   })
@@ -54,6 +58,7 @@
     on:open={openOpenDialog}
     on:save={openSaveDialog}
     on:customize={openCustomizeDialog}
+    on:share={openShareDialog}
     on:account={openAccountDialog}
   />
 

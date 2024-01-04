@@ -1,4 +1,4 @@
-import { createCanvas } from '@napi-rs/canvas'
+import { createCanvas } from 'canvas'
 import WheelPainter from '$lib/server/WheelPainter'
 import type Wheel from '$lib/utils/Wheel'
 

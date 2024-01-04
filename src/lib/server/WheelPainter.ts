@@ -1,6 +1,6 @@
 import {
-  createCanvas, Image, type Canvas, type SKRSContext2D as Context
-} from '@napi-rs/canvas'
+  createCanvas, Image, type Canvas, type CanvasRenderingContext2D as Context
+} from 'canvas'
 import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
 import { hubSizes } from '$lib/utils/WheelConfig'
 import type Wheel from '$lib/utils/Wheel'

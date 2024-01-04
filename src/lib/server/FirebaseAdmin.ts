@@ -4,16 +4,14 @@ import { firebaseConfig } from '$lib/utils/Firebase'
 import type {
   ApiUser, ApiWheel, ApiWheelMeta, WheelVisibility
 } from '$lib/utils/Api'
+import { ENVIRONMENT } from '$env/static/private'
 
-const getDb = () => {
-  const app = getApps().length
-    ? getApp()
-    : initializeApp(firebaseConfig)
-  return getFirestore(app)
-}
+const app = (getApps().length && ENVIRONMENT === 'dev')
+  ? getApp()
+  : initializeApp(firebaseConfig)
+const db = getFirestore(app)
 
 export const getWheel = async (path: string, uid?: string) => {
-  const db = getDb()
   const metaSnap = await db.doc(`wheel-meta/${path}`).get()
   if (!metaSnap.exists) {
     return null
@@ -30,7 +28,6 @@ export const getWheel = async (path: string, uid?: string) => {
 }
 
 export const getWheels = async (uid: string) => {
-  const db = getDb()
   const metaSnap = await db.collection('wheel-meta').where(
     'uid', '==', uid
   ).get()
@@ -44,7 +41,6 @@ export const getWheels = async (uid: string) => {
 export const saveWheel = async (
   wheel: Omit<ApiWheel, 'path'>, uid: string, visibility: WheelVisibility
 ) => {
-  const db = getDb()
   const path = await getNewWheelPath()
   await db.collection('wheel-meta').doc(path).create({
     path,
@@ -67,7 +63,6 @@ export const saveWheel = async (
 }
 
 const getNewWheelPath = async () => {
-  const db = getDb()
   let path: string
   let snap: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>
   do {

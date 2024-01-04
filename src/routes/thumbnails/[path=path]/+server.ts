@@ -12,7 +12,7 @@ export const GET = async ({ setHeaders, params }) => {
   }
   const image = await createThumbnail(new Wheel(wheelData))
   setHeaders({
-    'Content-Type': 'image/png',
+    'Content-Type': 'image/webp',
     'Content-Length': image.byteLength.toString()
   })
   return new Response(image, { status: 200 })

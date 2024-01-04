@@ -14,7 +14,6 @@
   },
   "type": "module",
   "devDependencies": {
-    "@napi-rs/canvas": "^0.1.44",
     "@playwright/test": "^1.40.1",
     "@skeletonlabs/skeleton": "^2.7.0",
     "@skeletonlabs/tw-plugin": "~0.3.1",
@@ -40,6 +39,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.5.3",
+    "@napi-rs/canvas": "^0.1.44",
     "browser-fs-access": "^0.35.0",
     "canvas-confetti": "^1.9.2",
     "firebase": "^10.7.1",

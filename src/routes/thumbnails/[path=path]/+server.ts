@@ -10,7 +10,6 @@ export const GET = async ({ setHeaders, params }) => {
       { status: 404 }
     )
   }
-  console.log(wheelData)
   const image = await createThumbnail(new Wheel(wheelData))
   setHeaders({
     'Content-Type': 'image/png',

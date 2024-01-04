@@ -8,6 +8,9 @@ dependencies:
   '@floating-ui/dom':
     specifier: ^1.5.3
     version: 1.5.3
+  '@napi-rs/canvas':
+    specifier: ^0.1.44
+    version: 0.1.44
   browser-fs-access:
     specifier: ^0.35.0
     version: 0.35.0
@@ -28,9 +31,6 @@ dependencies:
     version: 3.22.4
 
 devDependencies:
-  '@napi-rs/canvas':
-    specifier: ^0.1.44
-    version: 0.1.44
   '@playwright/test':
     specifier: ^1.40.1
     version: 1.40.1
@@ -997,7 +997,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-darwin-arm64@0.1.44:
@@ -1006,7 +1006,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-darwin-x64@0.1.44:
@@ -1015,7 +1015,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-linux-arm-gnueabihf@0.1.44:
@@ -1024,7 +1024,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-linux-arm64-gnu@0.1.44:
@@ -1033,7 +1033,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-linux-arm64-musl@0.1.44:
@@ -1042,7 +1042,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-linux-x64-gnu@0.1.44:
@@ -1051,7 +1051,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-linux-x64-musl@0.1.44:
@@ -1060,7 +1060,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas-win32-x64-msvc@0.1.44:
@@ -1069,7 +1069,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
+    dev: false
     optional: true
 
   /@napi-rs/canvas@0.1.44:
@@ -1085,7 +1085,7 @@ packages:
       '@napi-rs/canvas-linux-x64-gnu': 0.1.44
       '@napi-rs/canvas-linux-x64-musl': 0.1.44
       '@napi-rs/canvas-win32-x64-msvc': 0.1.44
-    dev: true
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}

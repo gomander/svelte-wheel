@@ -40,7 +40,7 @@
         },
         visibility: 'private',
         uid: user.uid
-      })
+      }, user.uid)
       if (!response.success) {
         throw new Error('Failed to save wheel')
       }

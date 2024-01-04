@@ -37,7 +37,11 @@ export const GET = async ({ request }) => {
 
 export const POST = async ({ request }) => {
   const apiKey = request.headers.get('x-api-key')
-  if (!apiKey || apiKey !== SVELTE_WHEEL_API_KEY) {
+  const uid = request.headers.get('authorization')
+  if (
+    (!uid && !apiKey) ||
+    (apiKey && apiKey !== SVELTE_WHEEL_API_KEY)
+  ) {
     return new Response(
       JSON.stringify({
         success: false,

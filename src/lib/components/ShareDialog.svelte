@@ -40,7 +40,7 @@
         },
         visibility: 'public',
         uid: user.uid
-      })
+      }, user.uid)
       if (!response.success) {
         throw new Error('Failed to share wheel')
       }

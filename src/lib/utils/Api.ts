@@ -2,13 +2,23 @@ import type { Entry } from '$lib/utils/Wheel'
 import type WheelConfig from '$lib/utils/WheelConfig'
 
 export const createWheel = async (
-  data: CreateWheelData, fetch = window.fetch
+  data: CreateWheelData,
+  uid?: string | null,
+  apiKey?: string | null,
+  fetch = window.fetch
 ) => {
+  const headers: HeadersInit = { 'Content-Type': 'application/json' }
+  if (uid) {
+    headers.authorization = uid
+  }
+  if (apiKey) {
+    headers['x-api-key'] = apiKey
+  }
   const response = await fetch(
     '/api/wheels',
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(data)
     }
   )
@@ -69,7 +79,8 @@ export interface ApiWheel {
   entries: Entry[]
 }
 
-export type WheelVisibility = 'public' | 'private'
+export const wheelVisibilities = ['public', 'private'] as const
+export type WheelVisibility = typeof wheelVisibilities[number]
 
 export interface ApiWheelMeta {
   path: string

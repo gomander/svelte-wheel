@@ -9,7 +9,8 @@
     customize: null,
     share: null,
     account: null,
-    save: null
+    save: null,
+    debug: null
   }>()
 </script>
 
@@ -80,4 +81,13 @@
     <LightSwitch />
     <span class="flex-grow text-left">Theme</span>
   </div>
+
+  <button
+    class="btn text-xl hover:variant-soft-primary"
+    on:click={() => dispatch('debug')}
+    disabled={$busyStore.spinning}
+  >
+    <i class="fas fa-bug w-6" />
+    <span class="flex-grow text-left">Debug</span>
+  </button>
 </div>

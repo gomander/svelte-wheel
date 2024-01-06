@@ -11,7 +11,8 @@
     save: null,
     customize: null,
     share: null,
-    account: null
+    account: null,
+    debug: null
   }>()
 </script>
 
@@ -40,6 +41,7 @@
         on:customize={() => dispatch('customize')}
         on:share={() => dispatch('share')}
         on:account={() => dispatch('account')}
+        on:debug={() => dispatch('debug')}
       />
     </div>
   </div>

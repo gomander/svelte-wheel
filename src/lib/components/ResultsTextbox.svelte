@@ -1,5 +1,6 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
+  import debugStore from '$lib/stores/DebugStore'
 
   $: text = $wheelStore.winners.map(e => e.text).join('\n')
 </script>
@@ -13,4 +14,6 @@
   aria-label="Results"
 />
 
-<pre>{$wheelStore.winners.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
+{#if $debugStore.active}
+  <pre>{$wheelStore.winners.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
+{/if}

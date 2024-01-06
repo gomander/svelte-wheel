@@ -1,6 +1,7 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
   import busyStore from '$lib/stores/BusyStore'
+  import debugStore from '$lib/stores/DebugStore'
   import { getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
   let textarea: HTMLTextAreaElement
@@ -44,4 +45,6 @@
   aria-label="Entries"
 />
 
-<pre>{$wheelStore.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
+{#if $debugStore.active}
+  <pre>{$wheelStore.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
+{/if}

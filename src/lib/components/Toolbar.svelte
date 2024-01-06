@@ -1,9 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { popup, LightSwitch } from '@skeletonlabs/skeleton'
+  import { popup } from '@skeletonlabs/skeleton'
   import fullscreenStore from '$lib/stores/FullscreenStore'
   import busyStore from '$lib/stores/BusyStore'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
+  import MoreMenu from '$lib/components/MoreMenu.svelte'
 
   const dispatch = createEventDispatcher<{
     new: null,
@@ -97,16 +98,6 @@
       >
         <i class="fas fa-share-nodes" />
       </button>
-
-      <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => dispatch('account')}
-        disabled={$busyStore.spinning}
-        aria-label="Account"
-        title="Account"
-      >
-        <i class="fas fa-user" />
-      </button>
     {/if}
 
     {#if $fullscreenStore.supported}
@@ -120,6 +111,21 @@
       </button>
     {/if}
 
-    <LightSwitch />
+    <div>
+      <button
+        class="btn btn-icon-sm text-xl hover:variant-soft-primary"
+        use:popup={{ event: 'click', target: 'moreMenu' }}
+        role="menu"
+      >
+        <i class="fas fa-bars" />
+      </button>
+
+      <div data-popup="moreMenu">
+        <MoreMenu
+          on:account={() => dispatch('account')}
+          on:debug={() => dispatch('debug')}
+        />
+      </div>
+    </div>
   </div>
 </header>

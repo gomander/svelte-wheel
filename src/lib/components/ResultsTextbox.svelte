@@ -12,3 +12,5 @@
   bind:value={text}
   aria-label="Results"
 />
+
+<pre>{$wheelStore.winners.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>

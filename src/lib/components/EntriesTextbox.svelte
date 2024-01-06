@@ -43,3 +43,5 @@
   disabled={$busyStore.spinning}
   aria-label="Entries"
 />
+
+<pre>{$wheelStore.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>

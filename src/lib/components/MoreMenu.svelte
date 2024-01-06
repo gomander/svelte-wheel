@@ -5,62 +5,12 @@
   import debugStore from '$lib/stores/DebugStore'
 
   const dispatch = createEventDispatcher<{
-    new: null,
-    open: null,
-    customize: null,
-    share: null,
     account: null,
-    save: null,
     debug: null
   }>()
 </script>
 
 <div class="card flex flex-col w-fit shadow-xl p-2">
-  <button
-    class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('new')}
-    disabled={$busyStore.spinning}
-  >
-    <i class="fas fa-file w-6" />
-    <span class="flex-grow text-left">New</span>
-  </button>
-
-  <button
-    class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('open')}
-    disabled={$busyStore.spinning}
-  >
-    <i class="fas fa-folder-open w-6" />
-    <span class="flex-grow text-left">Open</span>
-  </button>
-
-  <button
-    class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('save')}
-    disabled={$busyStore.spinning}
-  >
-    <i class="fas fa-floppy-disk w-6" />
-    <span class="flex-grow text-left">Save</span>
-  </button>
-
-  <button
-    class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('customize')}
-    disabled={$busyStore.spinning}
-  >
-    <i class="fas fa-palette w-6" />
-    <span class="flex-grow text-left">Customize</span>
-  </button>
-
-  <button
-    class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('share')}
-    disabled={$busyStore.spinning}
-  >
-    <i class="fas fa-share-nodes w-6" />
-    <span class="flex-grow text-left">Share</span>
-  </button>
-
   <button
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('account')}

@@ -33,3 +33,15 @@ test('Shuffle and Sort buttons change entry order', async ({ page }) => {
     'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
   )
 })
+
+test('New button resets wheel', async ({ page }) => {
+  await page.goto('/')
+  const entriesTextbox = page.getByRole('textbox', { name: 'Entries' })
+  const shuffleButton = page.getByRole('button', { name: 'Shuffle' })
+  await shuffleButton.click()
+  const newButton = page.getByRole('button', { name: 'New' })
+  await newButton.click()
+  await expect(entriesTextbox).toHaveValue(
+    'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
+  )
+})

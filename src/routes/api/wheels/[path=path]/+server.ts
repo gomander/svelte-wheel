@@ -2,7 +2,7 @@ import { SVELTE_WHEEL_API_KEY } from '$env/static/private'
 import { getWheel } from '$lib/server/FirebaseAdmin'
 import type { ApiError, ApiSuccess, ApiWheel } from '$lib/utils/Api'
 
-export const GET = async ({ request, url }) => {
+export const GET = async ({ request, params }) => {
   const uid = request.headers.get('authorization')
   const apiKey = request.headers.get('x-api-key')
   if (
@@ -17,14 +17,13 @@ export const GET = async ({ request, url }) => {
       { status: 401 }
     )
   }
-  const path = url.pathname.split('/').pop()!
   try {
-    const wheel = await getWheel(path)
+    const wheel = await getWheel(params.path)
     if (!wheel) {
       return new Response(
         JSON.stringify({
           success: false,
-          error : { message: `Wheel "${path}" not found` }
+          error : { message: `Wheel "${params.path}" not found` }
         } satisfies ApiError),
         { status: 404 }
       )
@@ -41,7 +40,7 @@ export const GET = async ({ request, url }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error : { message: `Error when fetching wheel "${path}"` }
+        error : { message: `Error when fetching wheel "${params.path}"` }
       } satisfies ApiError),
       { status: 500 }
     )

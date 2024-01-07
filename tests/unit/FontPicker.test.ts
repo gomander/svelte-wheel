@@ -3,10 +3,9 @@ import { createCanvas, GlobalFonts, type SKRSContext2D } from '@napi-rs/canvas'
 import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
 
 GlobalFonts.registerFromPath(
-  'Quicksand',
-  'static/Quicksand-VariableFont_wght.ttf'
+  'static/Quicksand-VariableFont_wght.ttf',
+  'Quicksand'
 )
-console.log(GlobalFonts.families)
 
 describe('FontPicker', () => {
   let fontPicker: FontPicker
@@ -29,7 +28,7 @@ describe('FontPicker', () => {
     const font = fontPicker.getFont(
       context, texts, wheelRadius, hubRadius, smallestAngle
     )
-    expect(font).toBe('500 52px Quicksand')
+    expect(font).toBe('500 56px Quicksand')
   })
 
   it('should get the cached result', () => {

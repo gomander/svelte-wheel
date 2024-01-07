@@ -1,32 +1,30 @@
 export default class Ticker {
-  lastFrameTimeMs: number
-  delta: number
-  timestep: number
-
-  constructor() {
-    this.lastFrameTimeMs = 0
-    this.delta = 0
-    this.timestep = 1000 / FPS
-  }
+  lastFrameTimeMs = 0
+  delta = 0
+  timestep = 1000 / FPS
 
   catchUp(ms: number, tick: () => void) {
     this.setTimestamp(ms)
-    while (this.shouldTick()) tick()
+    while (this.shouldTick()) {
+      tick()
+    }
   }
 
   setTimestamp(timestamp: number) {
     if (this.lastFrameTimeMs === 0) {
-      this.delta = this.timestep;
+      this.delta = this.timestep
     } else {
-      this.delta += timestamp - this.lastFrameTimeMs;
+      this.delta += timestamp - this.lastFrameTimeMs
     }
     this.lastFrameTimeMs = timestamp
   }
 
   shouldTick() {
-    const retVal = this.delta >= this.timestep
-    if (retVal) this.delta -= this.timestep
-    return retVal
+    const shouldTick = this.delta >= this.timestep
+    if (shouldTick) {
+      this.delta -= this.timestep
+    }
+    return shouldTick
   }
 }
 

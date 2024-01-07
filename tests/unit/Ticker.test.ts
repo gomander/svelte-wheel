@@ -14,12 +14,29 @@ describe('Ticker', () => {
     expect(ticker.timestep).toBe(1000 / FPS)
   })
 
+  it('should set the timestamp', () => {
+    ticker.setTimestamp(1000)
+    expect(ticker.lastFrameTimeMs).toBe(1000)
+    expect(ticker.delta).toBe(ticker.timestep)
+    ticker.setTimestamp(2000)
+    expect(ticker.lastFrameTimeMs).toBe(2000)
+    expect(ticker.delta).toBe(ticker.timestep + 1000)
+  })
+
+  it('should know when to tick', () => {
+    expect(ticker.shouldTick()).toBe(false)
+    ticker.setTimestamp(1000)
+    expect(ticker.shouldTick()).toBe(true)
+    ticker.catchUp(1000, () => {})
+    expect(ticker.shouldTick()).toBe(false)
+  })
+
   it('should catch up', () => {
     const wheel = {
-      tick() { }
+      tick() {}
     }
     const tickSpy = vi.spyOn(wheel, 'tick')
-    ticker.setTimestamp(ticker.timestep)
+    ticker.catchUp(1, wheel.tick)
     ticker.catchUp(ticker.timestep * 10, wheel.tick)
     expect(tickSpy).toHaveBeenCalledTimes(10)
   })

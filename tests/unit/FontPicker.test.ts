@@ -1,6 +1,12 @@
 import { describe, beforeEach, it, expect, vi } from 'vitest'
-import { createCanvas, type SKRSContext2D } from '@napi-rs/canvas'
+import { createCanvas, GlobalFonts, type SKRSContext2D } from '@napi-rs/canvas'
 import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
+
+GlobalFonts.registerFromPath(
+  'Quicksand',
+  'static/Quicksand-VariableFont_wght.ttf'
+)
+console.log(GlobalFonts.families)
 
 describe('FontPicker', () => {
   let fontPicker: FontPicker

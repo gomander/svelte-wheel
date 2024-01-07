@@ -84,16 +84,18 @@ const getFontSize = (
   wheelRadius: number,
   hubRadius: number,
   smallestAngle: number
-) => bisectSearch(
-  context,
-  wheelRadius,
-  hubRadius,
-  smallestAngle,
-  fontName,
-  displayText,
-  3,
-  200
-)
+) => {
+  return bisectSearch(
+    context,
+    wheelRadius,
+    hubRadius,
+    smallestAngle,
+    fontName,
+    displayText,
+    3,
+    200
+  )
+}
 
 /**
  * Finds the largest possible font size using a bisect search
@@ -159,7 +161,9 @@ const textFits = (
   font: string,
   height: number
 ) => {
-  if (!text) return true
+  if (!text) {
+    return true
+  }
   context.font = font
   const { width } = context.measureText(truncateText(text))
   return boxFits(angle, radius, innerRadius, width, height)
@@ -180,27 +184,34 @@ const boxFits = (
   innerRadius: number,
   width: number,
   height: number
-) => (
-  (radius ** 2 - (height / 2) ** 2) ** 0.5 - Math.max(
-    height * Math.cos(angle) / (2 * Math.sin(angle)), innerRadius
-  )
-) >= width
+) => {
+  return (
+    (radius ** 2 - (height / 2) ** 2) ** 0.5 - Math.max(
+      height * Math.cos(angle) / (2 * Math.sin(angle)), innerRadius
+    )
+  ) >= width
+}
 
 const getCacheKey = (
   texts: string[],
   wheelRadius: number,
   hubRadius: number,
   smallestAngle: number
-) => JSON.stringify({ texts, wheelRadius, hubRadius, smallestAngle })
+) => {
+  return JSON.stringify({ texts, wheelRadius, hubRadius, smallestAngle })
+}
 
 /**
  * Truncates a text to a maximum length of 18 characters
  * @param text Text to be truncated
  * @returns Truncated text
  */
-export const truncateText = (text: string) => text.length > 18
-  ? text.substring(0, 17) + '…'
-  : text
+export const truncateText = (text: string) => {
+  if (text.length <= 18) {
+    return text
+  }
+  return text.substring(0, 17) + '…'
+}
 
 /**
  * Chooses either black or white text based on the background color
@@ -208,15 +219,25 @@ export const truncateText = (text: string) => text.length > 18
  * @returns Black or white hex color string
  */
 export const getTextColor = (bgColor: string) => {
-  const color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor
-  const uicolors = [
-    Number(`0x${color.substring(0, 2)}`) / 255,
-    Number(`0x${color.substring(2, 4)}`) / 255,
-    Number(`0x${color.substring(4, 6)}`) / 255
+  const color = bgColor.replace('#', '')
+  const uiColors = [
+    hexToDec(color.substring(0, 2)) / 255,
+    hexToDec(color.substring(2, 4)) / 255,
+    hexToDec(color.substring(4, 6)) / 255
   ]
-  const c = uicolors.map(
-    col => col <= 0.03928 ? col / 12.92 : ((col + 0.055) / 1.055) ** 2.4
-  )
-  const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
-  return L > 0.179 ? '#000000' : '#FFFFFF'
+  const c = uiColors.map(color => {
+    if (color <= 0.03928) {
+      return color / 12.92
+    }
+    return ((color + 0.055) / 1.055) ** 2.4
+  })
+  const luminosity = (0.2126 * c[0]) + (0.7152 * c[1]) + (0.0722 * c[2])
+  if (luminosity > 0.179) {
+    return '#000000'
+  }
+  return '#FFFFFF'
+}
+
+const hexToDec = (hex: string) => {
+  return Number(`0x${hex}`)
 }

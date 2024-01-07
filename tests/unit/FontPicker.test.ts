@@ -1,4 +1,4 @@
-import { describe, beforeEach, it, expect, vi } from 'vitest'
+import { describe, beforeEach, it, expect } from 'vitest'
 import { createCanvas, GlobalFonts, type SKRSContext2D } from '@napi-rs/canvas'
 import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
 

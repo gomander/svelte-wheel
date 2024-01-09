@@ -27,7 +27,12 @@
       {$modalStore[0].title}
     </header>
 
-    <div class="p-4 h1">{$modalStore[0].body}</div>
+    <div
+      class="p-4 h1"
+      aria-label="Winner"
+    >
+      {$modalStore[0].body}
+    </div>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
       <button class="btn variant-soft" on:click={modalStore.close}>

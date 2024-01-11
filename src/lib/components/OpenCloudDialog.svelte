@@ -9,22 +9,18 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  const user = getCurrentUser()
-  if (!user) {
-    modalStore.close()
-    modalStore.trigger({
-      type: 'component',
-      component: 'loginDialog',
-      meta: { next: 'openCloudDialog' }
-    })
-  }
-
   let form: HTMLFormElement
   let wheels: ApiWheel[] = []
 
   onMount(async () => {
+    const user = getCurrentUser()
     try {
       if (!user) {
+        modalStore.trigger({
+          type: 'component',
+          component: 'loginDialog',
+          meta: { next: 'openCloudDialog' }
+        })
         throw new Error('User is not logged in')
       }
       const response = await getWheels(user.uid)

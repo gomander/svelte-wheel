@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onNavigate } from '$app/navigation'
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import { signIn } from '$lib/utils/Firebase'
   import { toastDefaults } from '$lib/utils/Toast'
@@ -40,8 +39,6 @@
     })
     modalStore.close()
   }
-
-  onNavigate(modalStore.close)
 </script>
 
 {#if $modalStore[0]}

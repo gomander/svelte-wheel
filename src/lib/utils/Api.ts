@@ -47,7 +47,7 @@ export const getWheels = async (uid: string, fetch = window.fetch) => {
     '/api/wheels',
     { headers: { authorization: uid } }
   )
-  return await response.json() as ApiResponse<{ wheels: ApiWheel[] }>
+  return await response.json() as ApiResponse<{ wheels: ApiWheelMeta[] }>
 }
 
 export type ApiResponse<T = any> = ApiSuccess<T> | ApiError

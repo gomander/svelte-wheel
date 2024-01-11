@@ -7,6 +7,7 @@ interface WheelStoreData {
   config: WheelConfig
   entries: Entry[]
   winners: Entry[]
+  path: string | null
 }
 
 const createWheelStore = (state: WheelStoreData) => {
@@ -33,21 +34,31 @@ const createWheelStore = (state: WheelStoreData) => {
     })
   }
 
-  const reset = () => {
+  const setPath = (path: string) => {
     update(state => {
-      state.config = new WheelConfig()
-      state.entries = defaultEntries
+      state.path = path
       return state
     })
   }
 
-  return { subscribe, setConfig, setEntries, setWinners, reset }
+  const reset = () => {
+    update(state => {
+      state.config = new WheelConfig()
+      state.entries = defaultEntries
+      state.winners = []
+      state.path = null
+      return state
+    })
+  }
+
+  return { subscribe, setConfig, setEntries, setWinners, setPath, reset }
 }
 
 const initialState: WheelStoreData = {
   config: new WheelConfig(),
   entries: defaultEntries,
-  winners: []
+  winners: [],
+  path: null
 }
 
 const localStorageWheelStore = localStorageStore('wheel', initialState)

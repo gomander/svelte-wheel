@@ -1,16 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
+  import {
+    ProgressRadial, getModalStore, getToastStore
+  } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
-  import { getWheels, type ApiWheel } from '$lib/utils/Api'
+  import { getWheel, getWheels, type ApiWheelMeta } from '$lib/utils/Api'
   import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
   let form: HTMLFormElement
-  let wheels: ApiWheel[] = []
+  let loading = false
+  let wheels: ApiWheelMeta[] = []
 
   onMount(async () => {
     const user = getCurrentUser()
@@ -41,19 +44,38 @@
   })
 
   const open = async () => {
+    if (loading) return
+    loading = true
     const formData = new FormData(form)
     const path = String(formData.get('wheel'))
-    const wheel = wheels.find(wheel => wheel.path === path)
-    if (!wheel) return
-    wheelStore.setConfig(wheel.config)
-    wheelStore.setEntries(wheel.entries)
-    modalStore.close()
-    toastStore.trigger({
-      ...toastDefaults,
-      message: 'Wheel opened',
-      background: 'variant-filled-primary',
-      timeout: 1000
-    })
+    try {
+      const response = await getWheel(path)
+      if (!response.success) {
+        throw new Error('Error opening wheel')
+      }
+      const { config, entries } = response.data.wheel
+      wheelStore.setConfig(config)
+      wheelStore.setEntries(entries)
+      wheelStore.setWinners([])
+      wheelStore.setPath(path)
+      modalStore.close()
+      toastStore.trigger({
+        ...toastDefaults,
+        message: 'Wheel opened',
+        background: 'variant-filled-primary',
+        timeout: 1000
+      })
+    } catch (error) {
+      if (error instanceof Error) {
+        toastStore.trigger({
+          ...toastDefaults,
+          message: error.message,
+          background: 'variant-filled-error'
+        })
+      }
+    } finally {
+      loading = false
+    }
   }
 
   // TODO: Use tabs to separate private and public wheels. Display the wheels in
@@ -79,14 +101,13 @@
     >
       <label class="label">
         <span>Wheel</span>
-
         <select
           name="wheel"
           class="select"
         >
           {#each wheels as wheel}
             <option value={wheel.path}>
-              Wheel: {wheel.config.title}
+              {wheel.title}
             </option>
           {/each}
         </select>
@@ -100,9 +121,12 @@
         >
           Cancel
         </button>
-
         <button class="btn variant-filled-primary">
-          Open
+          {#if loading}
+            <ProgressRadial width="w-6" />
+          {:else}
+            Open
+          {/if}
         </button>
       </footer>
     </form>

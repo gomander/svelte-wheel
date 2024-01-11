@@ -43,6 +43,22 @@ export const getWheels = async (uid: string) => {
   return wheelSnaps.map(snap => snap.data() as ApiWheel)
 }
 
+export const getUserWheelsMeta = async (uid: string) => {
+  const userSnap = await db.doc(`users/${uid}`).get()
+  if (!userSnap.exists) {
+    return []
+  }
+  const user = userSnap.data() as ApiUser
+  return await getWheelMetaForPaths(user.wheels)
+}
+
+export const getWheelMetaForPaths = async (paths: string[]) => {
+  const metaSnaps = await db.getAll(
+    ...paths.map(path => db.doc(`wheel-meta/${path}`))
+  )
+  return metaSnaps.map(snap => snap.data() as ApiWheelMeta)
+}
+
 export const saveWheel = async (
   wheel: Omit<ApiWheel, 'path'>, uid: string, visibility: WheelVisibility
 ) => {

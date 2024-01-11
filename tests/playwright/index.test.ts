@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+const defaultEntries = 'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
+
 test('Toolbar has page title', async ({ page }) => {
 	await page.goto('/')
 	await expect(page.getByRole('heading', { name: 'SvelteWheel' })).toBeVisible()
@@ -14,36 +16,28 @@ test('Entries textbox has default entries', async ({ page }) => {
   await page.goto('/')
   const entriesTextbox = page.getByRole('textbox', { name: 'Entries' })
   await expect(entriesTextbox).toBeVisible()
-  await expect(entriesTextbox).toHaveValue(
-    'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
-  )
+  await expect(entriesTextbox).toHaveValue(defaultEntries)
 })
 
 test('Shuffle and Sort buttons change entry order', async ({ page }) => {
   await page.goto('/')
   const entriesTextbox = page.getByRole('textbox', { name: 'Entries' })
   const shuffleButton = page.getByRole('button', { name: 'Shuffle' })
-  await shuffleButton.click()
-  await expect(entriesTextbox).not.toHaveValue(
-    'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
-  )
   const sortButton = page.getByRole('button', { name: 'Sort' })
+  await shuffleButton.click()
+  await expect(entriesTextbox).not.toHaveValue(defaultEntries)
   await sortButton.click()
-  await expect(entriesTextbox).toHaveValue(
-    'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
-  )
+  await expect(entriesTextbox).toHaveValue(defaultEntries)
 })
 
 test('New button resets wheel', async ({ page }) => {
   await page.goto('/')
   const entriesTextbox = page.getByRole('textbox', { name: 'Entries' })
   const shuffleButton = page.getByRole('button', { name: 'Shuffle' })
-  await shuffleButton.click()
   const newButton = page.getByRole('button', { name: 'New' })
+  await shuffleButton.click()
   await newButton.click()
-  await expect(entriesTextbox).toHaveValue(
-    'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
-  )
+  await expect(entriesTextbox).toHaveValue(defaultEntries)
 })
 
 test('Buttons are disabled when the wheel is spun', async ({ page }) => {
@@ -132,27 +126,31 @@ test('Wheel can be customized', async ({ page }) => {
 test('Wheel can be spun and a result is generated', async ({ page }) => {
   await page.goto('/')
   const customizeButton = page.getByRole('button', { name: 'Customize' })
-  await customizeButton.click()
   const customizeDialog = page.getByRole('dialog')
   const spinTimeSlider = customizeDialog.getByRole('slider', { name: 'Spin time' })
-  await spinTimeSlider.click({ force: true, position: { x: 0, y: 0 } })
   const saveButton = customizeDialog.getByRole('button', { name: 'Save' })
-  await saveButton.click()
   const wheel = page.getByLabel('Wheel', { exact: true })
-  await wheel.click()
   const resultDialog = page.getByRole('dialog', { name: 'We have a winner!' })
+  const closeButton = resultDialog.getByRole('button', { name: 'Close' })
+  const removeButton = resultDialog.getByRole('button', { name: 'Remove' })
+  const resultsTab = page.getByRole('tab', { name: 'Results' })
+  const resultsTextbox = page.getByRole('textbox', { name: 'Results' })
+  await customizeButton.click()
+  await spinTimeSlider.click({ force: true, position: { x: 0, y: 0 } })
+  await saveButton.click()
+  await wheel.click()
   await expect(resultDialog).toBeVisible()
   const result = await resultDialog.getByLabel('Winner').textContent()
   expect(result).not.toBeNull()
-  const closeButton = resultDialog.getByRole('button', { name: 'Close' })
-  await expect(closeButton).toBeVisible()
-  const removeButton = resultDialog.getByRole('button', { name: 'Remove' })
-  await expect(removeButton).toBeVisible()
+  await Promise.all([
+    expect(closeButton).toBeVisible(),
+    expect(removeButton).toBeVisible()
+  ])
   await removeButton.click()
   await expect(resultDialog).not.toBeVisible()
-  const resultsTab = page.getByRole('tab', { name: 'Results' })
   await resultsTab.click()
-  const resultsTextbox = page.getByRole('textbox', { name: 'Results' })
-  await expect(resultsTextbox).toBeVisible()
-  await expect(resultsTextbox).toHaveValue(result as string)
+  await Promise.all([
+    expect(resultsTextbox).toBeVisible(),
+    expect(resultsTextbox).toHaveValue(result as string)
+  ])
 })

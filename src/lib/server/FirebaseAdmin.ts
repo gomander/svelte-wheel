@@ -1,15 +1,20 @@
-import { initializeApp, getApp, getApps } from 'firebase-admin/app'
+import { initializeApp } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
+import { FirebaseError } from 'firebase/app'
 import { firebaseConfig } from '$lib/utils/Firebase'
 import type {
   ApiUser, ApiWheel, ApiWheelMeta, WheelVisibility
 } from '$lib/utils/Api'
-import { ENVIRONMENT } from '$env/static/private'
 
-const app = (getApps().length && ENVIRONMENT === 'dev')
-  ? getApp()
-  : initializeApp(firebaseConfig)
-const db = getFirestore(app)
+try {
+  initializeApp(firebaseConfig)
+} catch (error) {
+  if (error instanceof FirebaseError && error.code !== 'app/duplicate-app') {
+    console.error(error)
+  }
+}
+
+const db = getFirestore()
 
 export const getWheel = async (path: string, uid?: string) => {
   const metaSnap = await db.doc(`wheel-meta/${path}`).get()

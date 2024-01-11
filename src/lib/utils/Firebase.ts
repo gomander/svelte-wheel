@@ -1,4 +1,4 @@
-import { initializeApp, getApp, getApps } from 'firebase/app'
+import { initializeApp, FirebaseError } from 'firebase/app'
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   sendPasswordResetEmail as firebaseAuthSendPasswordResetEmail,
@@ -32,12 +32,16 @@ export const firebaseConfig = {
   measurementId: PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
-const app = getApps().length
-  ? getApp()
-  : initializeApp(firebaseConfig)
+try {
+  initializeApp(firebaseConfig)
+} catch (error) {
+  if (error instanceof FirebaseError && error.code !== 'app/duplicate-app') {
+    console.error(error)
+  }
+}
 
-const auth = getAuth(app)
-const db = getFirestore(app)
+const db = getFirestore()
+const auth = getAuth()
 
 export const registerUser = async (email: string, password: string) => {
   const userCredential = await createUserWithEmailAndPassword(

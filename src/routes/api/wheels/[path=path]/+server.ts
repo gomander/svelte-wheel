@@ -18,7 +18,7 @@ export const GET = async ({ request, params }) => {
     )
   }
   try {
-    const wheel = await getWheel(params.path)
+    const wheel = await getWheel(params.path, uid)
     if (!wheel) {
       return new Response(
         JSON.stringify({

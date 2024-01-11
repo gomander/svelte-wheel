@@ -53,9 +53,9 @@
 </script>
 
 <svelte:head>
-  <title>
-    {$wheelStore.config.title && `${$wheelStore.config.title} -` } Svelte Wheel
-  </title>
+  {#if $wheelStore.config.title}
+    <title>{$wheelStore.config.title} - Svelte Wheel</title>
+  {/if}
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

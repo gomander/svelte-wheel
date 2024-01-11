@@ -16,7 +16,7 @@ try {
 
 const db = getFirestore()
 
-export const getWheel = async (path: string, uid?: string) => {
+export const getWheel = async (path: string, uid?: string | null) => {
   const metaSnap = await db.doc(`wheel-meta/${path}`).get()
   if (!metaSnap.exists) {
     return null

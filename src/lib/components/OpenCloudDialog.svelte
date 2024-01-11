@@ -16,6 +16,7 @@
   let wheels: ApiWheelMeta[] = []
 
   onMount(async () => {
+    loading = true
     const user = getCurrentUser()
     try {
       if (!user) {
@@ -40,6 +41,8 @@
         })
       }
       modalStore.close()
+    } finally {
+      loading = false
     }
   })
 
@@ -49,7 +52,11 @@
     const formData = new FormData(form)
     const path = String(formData.get('wheel'))
     try {
-      const response = await getWheel(path)
+      const user = getCurrentUser()
+      if (!user) {
+        throw new Error('User is not logged in')
+      }
+      const response = await getWheel(path, user.uid)
       if (!response.success) {
         throw new Error('Error opening wheel')
       }
@@ -103,6 +110,7 @@
         <span>Wheel</span>
         <select
           name="wheel"
+          disabled={loading}
           class="select"
         >
           {#each wheels as wheel}

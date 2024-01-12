@@ -34,7 +34,7 @@ const createWheelStore = (state: WheelStoreData) => {
     })
   }
 
-  const setPath = (path: string) => {
+  const setPath = (path: string | null) => {
     update(state => {
       state.path = path
       return state

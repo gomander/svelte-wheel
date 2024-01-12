@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { SVELTE_WHEEL_API_KEY } from '$env/static/private'
 import { getUserWheelsMeta, saveWheel } from '$lib/server/FirebaseAdmin'
-import { wheelSchema } from '$lib/utils/Schemas'
+import { createWheelSchema } from '$lib/utils/Schemas'
 import type { ApiError, ApiSuccess, ApiWheelMeta } from '$lib/utils/Api'
 
 export const GET = async ({ request }) => {
@@ -52,7 +52,7 @@ export const POST = async ({ request }) => {
   }
   try {
     const body = await request.json()
-    const data = wheelSchema.parse(body)
+    const data = createWheelSchema.parse(body)
     const path = await saveWheel(data.wheel, data.uid, data.visibility)
     return new Response(
       JSON.stringify({

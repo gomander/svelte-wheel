@@ -83,6 +83,36 @@ export const saveWheel = async (
   return path
 }
 
+export const updateWheel = async (
+  path: string,
+  wheel: Partial<Omit<ApiWheel, 'path'>>,
+  uid: string,
+  visibility?: WheelVisibility
+) => {
+  const wheelMetaDoc = db.doc(`wheel-meta/${path}`)
+  const wheelMetaSnap = await wheelMetaDoc.get()
+  if (!wheelMetaSnap.exists) {
+    return null
+  }
+  const wheelMeta = wheelMetaSnap.data() as ApiWheelMeta
+  if (wheelMeta.uid !== uid) {
+    return null
+  }
+  const newWheelMeta: Partial<ApiWheelMeta> = {
+    updated: Date.now()
+  }
+  if (wheel.config && wheel.config.title !== wheelMeta.title) {
+    newWheelMeta.title = wheel.config.title
+  }
+  if (visibility) {
+    newWheelMeta.visibility = visibility
+  }
+  await wheelMetaDoc.update(newWheelMeta)
+  const wheelDoc = db.doc(`wheels/${path}`)
+  await wheelDoc.update({ ...wheel } satisfies Partial<ApiWheel>)
+  return wheelMeta.path
+}
+
 const getNewWheelPath = async () => {
   let path: string
   let snap: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>

@@ -1,10 +1,11 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import {
     ProgressRadial, getModalStore, getToastStore
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
-  import { createWheel } from '$lib/utils/Api'
+  import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
   import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
@@ -12,16 +13,35 @@
 
   let title = $wheelStore.config.title
   let loading = false
+  let saveMode: 'overwrite' | 'new' = 'new'
 
-  const user = getCurrentUser()
-  if (!user) {
-    modalStore.close()
-    modalStore.trigger({
-      type: 'component',
-      component: 'loginDialog',
-      meta: { next: 'saveCloudDialog' }
-    })
-  }
+  onMount(async () => {
+    const user = getCurrentUser()
+    if (!user) {
+      modalStore.close()
+      modalStore.trigger({
+        type: 'component',
+        component: 'loginDialog',
+        meta: { next: 'saveCloudDialog' }
+      })
+      return
+    }
+    if ($wheelStore.path) {
+      loading = true
+      try {
+        const response = await getWheel($wheelStore.path, user.uid)
+        if (!response.success) {
+          wheelStore.setPath(null)
+          return
+        }
+        saveMode = 'overwrite'
+      } catch (error) {
+        wheelStore.setPath(null)
+      } finally {
+        loading = false
+      }
+    }
+  })
 
   const save = async () => {
     if (loading) return
@@ -30,19 +50,34 @@
       if (!title) {
         throw new Error('Title is required')
       }
+      const user = getCurrentUser()
       if (!user) {
         throw new Error('User is not logged in')
       }
-      const response = await createWheel({
-        wheel: {
-          config: { ...$wheelStore.config, title },
-          entries: $wheelStore.entries
-        },
-        visibility: 'private',
-        uid: user.uid
-      }, user.uid)
-      if (!response.success) {
-        throw new Error('Failed to save wheel')
+      if (saveMode === 'new') {
+        const response = await createWheel({
+          wheel: {
+            config: { ...$wheelStore.config, title },
+            entries: $wheelStore.entries
+          },
+          visibility: 'private',
+          uid: user.uid
+        }, user.uid)
+        if (!response.success) {
+          throw new Error('Failed to save wheel')
+        }
+      }
+      if (saveMode === 'overwrite' && $wheelStore.path) {
+        const response = await updateWheel($wheelStore.path, {
+          wheel: {
+            config: { ...$wheelStore.config, title },
+            entries: $wheelStore.entries
+          },
+          uid: user.uid
+        }, user.uid)
+        if (!response.success) {
+          throw new Error('Failed to save wheel')
+        }
       }
       modalStore.close()
       toastStore.trigger({
@@ -63,14 +98,10 @@
     }
   }
 
-  // TODO: If the wheel has been saved previously, present the user with a
-  // choice to overwrite the existing wheel or create a new wheel. This can be
-  // done by writing the path to the wheel store when saving or opening a wheel
-  // and checking if the path exists when opening the save cloud dialog. The
-  // user should be shown as much metadata about the wheel as possible, such as
-  // the title, number of entries, and date created. Additionally, there should
-  // be a thumbnail of the wheel, the same one that would be shown in the open
-  // cloud dialog.
+  // TODO: When wheelStore has a path, the user should be shown as much metadata
+  // about the wheel as possible, such as the title, number of entries, and date
+  // created. Additionally, there should be a thumbnail of the wheel, the same
+  // one that would be shown in the open cloud dialog.
 </script>
 
 {#if $modalStore[0]}
@@ -84,9 +115,36 @@
       on:submit|preventDefault={save}
       class="flex flex-col gap-4"
     >
+      {#if $wheelStore.path}
+        <div class="flex flex-col gap-2">
+          <label class="flex items-center gap-2">
+            <input
+              type="radio"
+              name="saveMode"
+              value="overwrite"
+              bind:group={saveMode}
+              class="radio"
+            />
+            <span>
+              Overwrite "{$wheelStore.config.title}" ({$wheelStore.path})
+            </span>
+          </label>
+          <label class="flex items-center gap-2">
+            <input
+              type="radio"
+              name="saveMode"
+              value="new"
+              bind:group={saveMode}
+              checked
+              class="radio"
+            />
+            <span>Save a new wheel</span>
+          </label>
+        </div>
+      {/if}
+
       <label class="label">
         <span class="required">Title</span>
-
         <input
           type="text"
           maxlength="50"

@@ -25,6 +25,31 @@ export const createWheel = async (
   return await response.json() as ApiResponse<{ path: string }>
 }
 
+export const updateWheel = async (
+  path: string,
+  data: UpdateWheelData,
+  uid?: string | null,
+  apiKey?: string | null,
+  fetch = window.fetch
+) => {
+  const headers: HeadersInit = { 'Content-Type': 'application/json' }
+  if (uid) {
+    headers.authorization = uid
+  }
+  if (apiKey) {
+    headers['x-api-key'] = apiKey
+  }
+  const response = await fetch(
+    `/api/wheels/${path}`,
+    {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    }
+  )
+  return await response.json() as ApiResponse<{ path: string }>
+}
+
 export const getWheel = async (
   path: string,
   uid?: string | null,
@@ -97,3 +122,5 @@ export interface CreateWheelData {
   visibility: WheelVisibility
   uid: string
 }
+
+export type UpdateWheelData = Partial<CreateWheelData> & { uid: string }

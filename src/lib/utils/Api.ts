@@ -111,8 +111,8 @@ export interface ApiWheelMeta {
   path: string
   uid: string
   visibility: WheelVisibility
-  created: number
-  updated: number | null
+  created: Date
+  updated: Date | null
   title: string
   views: number
 }

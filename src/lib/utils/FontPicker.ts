@@ -219,7 +219,7 @@ export const truncateText = (text: string) => {
  * @returns Black or white hex color string
  */
 export const getTextColor = (bgColor: string) => {
-  const luminance = getColorLumninace(bgColor)
+  const luminance = getColorLuminance(bgColor)
   const whiteContrastRatio = 1.05 / (luminance + 0.05)
   const blackContrastRatio = (luminance + 0.05) / 0.05
   if (whiteContrastRatio > blackContrastRatio) {
@@ -232,7 +232,7 @@ const hexToRatio = (hex: string) => {
   return Number(`0x${hex}`) / 255
 }
 
-const getColorLumninace = (color: string) => {
+const getColorLuminance = (color: string) => {
   color = color.replace('#', '')
   const sRgbColors = [
     hexToRatio(color.substring(0, 2)),

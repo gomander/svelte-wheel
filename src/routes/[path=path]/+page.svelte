@@ -41,7 +41,7 @@
     content="https://sveltewheel.com/thumbnails/{wheel.path}"
   /> -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="{wheel.config.colors.at(0)}">
+  <meta name="theme-color" content={wheel.config.colors.at(0)}>
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

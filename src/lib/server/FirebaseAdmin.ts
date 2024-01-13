@@ -110,7 +110,7 @@ export const updateWheel = async (
   }
   await metaDoc.update(newMeta)
   const wheelDoc = db.doc(`wheels/${path}`)
-  await wheelDoc.update({ ...wheel } satisfies Partial<ApiWheel>)
+  await wheelDoc.update(wheel)
   return meta.path
 }
 

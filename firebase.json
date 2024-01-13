@@ -8,6 +8,22 @@
     ],
     "frameworksBackend": {
       "region": "europe-west1"
-    }
+    },
+    "rewrites": [
+      {
+        "source": "/thumbnails",
+        "run": {
+          "serviceId": "thumbnails-service",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/thumbnails/**",
+        "run": {
+          "serviceId": "thumbnails-service",
+          "region": "us-central1"
+        }
+      }
+    ]
   }
 }

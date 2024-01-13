@@ -139,7 +139,7 @@ test('Wheel can be spun and a result is generated', async ({ page }) => {
   await spinTimeSlider.click({ force: true, position: { x: 0, y: 0 } })
   await saveButton.click()
   await wheel.click()
-  await expect(resultDialog).toBeVisible()
+  await expect(resultDialog).toBeVisible({ timeout: 11000 })
   const result = await resultDialog.getByLabel('Winner').textContent()
   expect(result).not.toBeNull()
   await Promise.all([

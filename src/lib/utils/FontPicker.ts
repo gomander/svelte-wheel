@@ -219,25 +219,31 @@ export const truncateText = (text: string) => {
  * @returns Black or white hex color string
  */
 export const getTextColor = (bgColor: string) => {
-  const color = bgColor.replace('#', '')
-  const uiColors = [
-    hexToDec(color.substring(0, 2)) / 255,
-    hexToDec(color.substring(2, 4)) / 255,
-    hexToDec(color.substring(4, 6)) / 255
+  const luminance = getColorLumninace(bgColor)
+  const whiteContrastRatio = 1.05 / (luminance + 0.05)
+  const blackContrastRatio = (luminance + 0.05) / 0.05
+  if (whiteContrastRatio > blackContrastRatio) {
+    return '#FFFFFF'
+  }
+  return '#000000'
+}
+
+const hexToRatio = (hex: string) => {
+  return Number(`0x${hex}`) / 255
+}
+
+const getColorLumninace = (color: string) => {
+  color = color.replace('#', '')
+  const sRgbColors = [
+    hexToRatio(color.substring(0, 2)),
+    hexToRatio(color.substring(2, 4)),
+    hexToRatio(color.substring(4, 6))
   ]
-  const c = uiColors.map(color => {
+  const c = sRgbColors.map(color => {
     if (color <= 0.03928) {
       return color / 12.92
     }
     return ((color + 0.055) / 1.055) ** 2.4
   })
-  const luminosity = (0.2126 * c[0]) + (0.7152 * c[1]) + (0.0722 * c[2])
-  if (luminosity > 0.179) {
-    return '#000000'
-  }
-  return '#FFFFFF'
-}
-
-const hexToDec = (hex: string) => {
-  return Number(`0x${hex}`)
+  return (0.2126 * c[0]) + (0.7152 * c[1]) + (0.0722 * c[2])
 }

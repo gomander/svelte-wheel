@@ -31,10 +31,12 @@
   <title>{data.wheel.config.title} - Svelte Wheel</title>
   <meta property="og:title" content={data.wheel.config.title} />
   <meta property="og:description" content={data.wheel.config.description} />
-  <meta
+  <!-- <meta
     property="og:image"
     content="https://sveltewheel.com/thumbnails/{data.wheel.path}"
-  />
+  /> -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="{data.wheel.config.colors.at(0)}">
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

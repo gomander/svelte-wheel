@@ -154,3 +154,14 @@ test('Wheel can be spun and a result is generated', async ({ page }) => {
     expect(resultsTextbox).toHaveValue(result as string)
   ])
 })
+
+test('Login dialog opens when user who is not logged in clicks on open button', async ({ page }) => {
+  await page.goto('/')
+  const openButton = page.getByRole('button', { name: 'Open' })
+  const openFromCloudButton = page.getByRole('button', { name: 'Open from the cloud' })
+  const logInHeading = page.getByRole('heading', { name: 'Log in' })
+  await openButton.click()
+  await openFromCloudButton.isVisible()
+  await openFromCloudButton.click()
+  await logInHeading.isVisible()
+})

@@ -42,7 +42,7 @@
         uid: user.uid
       }, user.uid)
       if (!response.success) {
-        throw new Error('Failed to share wheel')
+        throw new Error(response.error.message)
       }
       modalStore.close()
       toastStore.trigger({

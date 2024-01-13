@@ -64,7 +64,7 @@
           uid: user.uid
         }, user.uid)
         if (!response.success) {
-          throw new Error('Failed to save wheel')
+          throw new Error(response.error.message)
         }
       }
       if (saveMode === 'overwrite' && $wheelStore.path) {
@@ -76,7 +76,7 @@
           uid: user.uid
         }, user.uid)
         if (!response.success) {
-          throw new Error('Failed to save wheel')
+          throw new Error(response.error.message)
         }
       }
       modalStore.close()

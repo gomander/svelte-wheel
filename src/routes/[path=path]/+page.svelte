@@ -6,6 +6,7 @@
   import type { OnStoppedData } from '$lib/utils/Wheel'
 
   export let data
+  const { wheel } = data
 
   const modalStore = getModalStore()
 
@@ -23,27 +24,31 @@
 		modalStore.trigger(createWinnerModal(e.detail))
 	}
 
-  wheelStore.setConfig(data.wheel.config)
-  wheelStore.setEntries(data.wheel.entries)
+  wheelStore.setConfig(wheel.config)
+  wheelStore.setEntries(wheel.entries)
 </script>
 
 <svelte:head>
-  <title>{data.wheel.config.title} - Svelte Wheel</title>
-  <meta property="og:title" content={data.wheel.config.title} />
-  <meta property="og:description" content={data.wheel.config.description} />
+  <title>{wheel.config.title} - Svelte Wheel</title>
+  <meta name="title" content={wheel.config.title} />
+  <meta property="og:title" content={wheel.config.title} />
+  {#if wheel.config.description}
+    <meta name="description" content={wheel.config.description} />
+    <meta property="og:description" content={wheel.config.description} />
+  {/if}
   <!-- <meta
     property="og:image"
-    content="https://sveltewheel.com/thumbnails/{data.wheel.path}"
+    content="https://sveltewheel.com/thumbnails/{wheel.path}"
   /> -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="{data.wheel.config.colors.at(0)}">
+  <meta name="theme-color" content="{wheel.config.colors.at(0)}">
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
   <main class="flex-grow flex flex-col xl:grid grid-cols-6">
     <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col">
-      <h2 class="text-3xl">{data.wheel.config.title}</h2>
-      <p class="text-lg">{data.wheel.config.description}</p>
+      <h2 class="text-3xl">{wheel.config.title}</h2>
+      <p class="text-lg">{wheel.config.description}</p>
     </div>
 
     <div class="col-span-4 flex-1 flex flex-col justify-center items-center">

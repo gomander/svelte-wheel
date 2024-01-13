@@ -29,9 +29,12 @@
       }
       const response = await getWheels(user.uid)
       if (!response.success) {
-        throw new Error('Failed to fetch wheels')
+        throw new Error(response.error.message)
       }
       wheels = response.data.wheels
+      if (!wheels.length) {
+        throw new Error('No saved wheels')
+      }
     } catch (error) {
       if (error instanceof Error) {
         toastStore.trigger({
@@ -58,7 +61,7 @@
       }
       const response = await getWheel(path, user.uid)
       if (!response.success) {
-        throw new Error('Error opening wheel')
+        throw new Error(response.error.message)
       }
       const { config, entries } = response.data.wheel
       wheelStore.setConfig(config)

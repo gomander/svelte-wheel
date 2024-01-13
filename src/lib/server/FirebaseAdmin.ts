@@ -49,6 +49,9 @@ export const getUserWheelsMeta = async (uid: string) => {
     return []
   }
   const user = userSnap.data() as ApiUser
+  if (!user.wheels.length) {
+    return []
+  }
   return await getWheelMetaForPaths(user.wheels)
 }
 

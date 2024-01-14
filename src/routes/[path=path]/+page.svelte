@@ -36,10 +36,10 @@
     <meta name="description" content={wheel.config.description} />
     <meta property="og:description" content={wheel.config.description} />
   {/if}
-  <!-- <meta
+  <meta
     property="og:image"
     content="https://sveltewheel.com/thumbnails/{wheel.path}"
-  /> -->
+  />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content={wheel.config.colors.at(0)}>
 </svelte:head>

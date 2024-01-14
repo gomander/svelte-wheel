@@ -3,10 +3,12 @@
 # uploaded. Then the application wouldn't get the environment variables that it
 # needs to run.
 node_modules/*
-WheelPainterWorker.*
-Audio.*
-Toast.*
-Schemas.*
+lib/utils/WheelPainter.*
+lib/utils/WheelPainterWorker.*
+lib/utils/Audio.*
+lib/utils/Toast.*
+lib/utils/Schemas.*
 env.example.*
 deploy_prod.*
-.gitkeep
+tsconfig.json
+pnpm-lock.yaml

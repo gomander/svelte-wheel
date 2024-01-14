@@ -1,4 +1,5 @@
-FROM node:20-slim
+FROM node:lts-slim
+RUN apt-get update && apt-get install -y fonts-noto-cjk fonts-noto-color-emoji fonts-quicksand fonts-noto-core
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install -g npm

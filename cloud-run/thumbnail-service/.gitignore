@@ -1,0 +1,4 @@
+lib/utils/*.ts
+lib/server/*.ts
+env.js
+dist/

@@ -3,3 +3,10 @@
 # uploaded. Then the application wouldn't get the environment variables that it
 # needs to run.
 node_modules/*
+WheelPainterWorker.*
+Audio.*
+Toast.*
+Schemas.*
+env.example.*
+deploy_prod.*
+.gitkeep

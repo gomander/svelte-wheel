@@ -35,6 +35,15 @@
   {#if wheel.config.description}
     <meta name="description" content={wheel.config.description} />
     <meta property="og:description" content={wheel.config.description} />
+  {:else}
+    <meta
+      name="description"
+      content="Spin this custom wheel and get a random result!"
+    />
+    <meta
+      property="og:description"
+      content="Spin this custom wheel and get a random result!"
+    />
   {/if}
   <meta
     property="og:image"

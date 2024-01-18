@@ -10,7 +10,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:integration": "playwright test",
-    "test:unit": "vitest"
+    "test:unit": "vitest",
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 static/favicon.svg"
   },
   "type": "module",
   "devDependencies": {
@@ -24,6 +25,7 @@
     "@types/canvas-confetti": "^1.6.4",
     "@types/node": "^20.11.5",
     "@types/uuid": "^9.0.7",
+    "@vite-pwa/assets-generator": "^0.2.3",
     "@vite-pwa/sveltekit": "^0.3.0",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.33",

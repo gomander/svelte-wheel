@@ -42,7 +42,7 @@
   bind:value={text}
   on:input={setEntries}
   disabled={$busyStore.spinning}
-  aria-label="Entries"
+  aria-labelledby="entries-label"
 />
 
 {#if $debugStore.active}

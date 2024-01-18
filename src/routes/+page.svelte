@@ -99,7 +99,7 @@
           {/if}
         </div>
 
-        <p class="hidden xl:block sticky bottom-4 text-sm">
+        <p class="hidden xl:block sticky bottom-4 text-sm" aria-hidden="true">
           Scroll down to read about this project!
         </p>
       {/if}

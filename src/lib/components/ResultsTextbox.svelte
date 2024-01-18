@@ -11,7 +11,7 @@
   autocomplete="off"
   readonly
   bind:value={text}
-  aria-label="Results"
+  aria-labelledby="results-label"
 />
 
 {#if $debugStore.active}

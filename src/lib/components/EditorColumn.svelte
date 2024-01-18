@@ -17,7 +17,7 @@
     name="editor"
     value={0}
   >
-    Entries
+    <span id="entries-label">Entries</span>
   </Tab>
 
   <Tab
@@ -25,7 +25,7 @@
     name="results"
     value={1}
   >
-    Results
+    <span id="results-label">Results</span>
   </Tab>
 
   <svelte:fragment slot="panel">

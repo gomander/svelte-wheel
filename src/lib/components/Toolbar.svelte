@@ -30,6 +30,8 @@
       class="btn btn-icon-sm text-xl hover:variant-soft-primary"
       use:popup={{ event: 'click', target: 'mobileMenu' }}
       role="menu"
+      aria-label="Menu"
+      title="Menu"
     >
       <i class="fas fa-bars" />
     </button>
@@ -116,6 +118,8 @@
         class="btn btn-icon-sm text-xl hover:variant-soft-primary"
         use:popup={{ event: 'click', target: 'moreMenu' }}
         role="menu"
+        aria-label="More"
+        title="More"
       >
         <i class="fas fa-bars" />
       </button>

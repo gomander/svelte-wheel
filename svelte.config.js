@@ -6,6 +6,9 @@ const config = {
 	extensions: ['.svelte'],
 	preprocess: [vitePreprocess()],
 	vitePlugin: { inspector: true },
-	kit: { adapter: adapter() }
+	kit: {
+    adapter: adapter(),
+    serviceWorker: { register: false }
+  }
 }
 export default config

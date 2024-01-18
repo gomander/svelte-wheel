@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.postcss'
   import { onMount } from 'svelte'
+  import { pwaInfo } from 'virtual:pwa-info'
 	import {
     initializeStores, Modal, Toast, storePopup, type ModalComponent
   } from '@skeletonlabs/skeleton'
@@ -39,8 +40,28 @@
     shareDialog: { ref: ShareDialog }
 	}
 
-  onMount(fullscreenStore.initialize)
+  onMount(async () => {
+    fullscreenStore.initialize()
+    if (pwaInfo) {
+      const { registerSW } = await import('virtual:pwa-register')
+      registerSW({
+        immediate: true,
+        onRegistered(r) {
+          r && setInterval(r.update, 60 * 60 * 1000)
+        },
+        onRegisterError(error) {
+          console.error('SW registration error', error)
+        }
+      })
+    }
+  })
+
+  $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 </script>
+
+<svelte:head>
+  {@html webManifestLink}
+</svelte:head>
 
 <Toast />
 

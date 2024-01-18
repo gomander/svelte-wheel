@@ -40,21 +40,7 @@
     shareDialog: { ref: ShareDialog }
 	}
 
-  onMount(async () => {
-    fullscreenStore.initialize()
-    if (pwaInfo) {
-      const { registerSW } = await import('virtual:pwa-register')
-      registerSW({
-        immediate: true,
-        onRegistered(r) {
-          r && setInterval(r.update, 60 * 60 * 1000)
-        },
-        onRegisterError(error) {
-          console.error('SW registration error', error)
-        }
-      })
-    }
-  })
+  onMount(fullscreenStore.initialize)
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 </script>
@@ -68,3 +54,7 @@
 <Modal components={modalRegistry} />
 
 <slot />
+
+{#await import('$lib/components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
+	<ReloadPrompt />
+{/await}

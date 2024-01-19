@@ -11,9 +11,10 @@ export default defineConfig({
     SvelteKitPWA({
       includeAssets: [
         'favicon.ico',
-        'apple-touch-icon.png',
-        'mask-icon.svg',
-        'robots.txt'
+        'favicon.svg',
+        'apple-touch-icon-180x180.png',
+        'Quicksand-VariableFont_wght.ttf',
+        'audio/*.mp3'
       ],
       manifest: {
         name: 'Svelte Wheel',

@@ -6,7 +6,7 @@
   const toastStore = getToastStore()
 
 	const { needRefresh, updateServiceWorker } = useRegisterSW({
-		onRegistered: r => r && setInterval(r.update, 60 * 60 * 1000),
+		onRegistered: r => r && setInterval(r.update, 4 * 60 * 60 * 1000),
 		onRegisterError: error => console.error('SW registration error', error)
 	})
 

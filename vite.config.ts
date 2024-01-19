@@ -11,8 +11,8 @@ export default defineConfig({
     SvelteKitPWA({
       includeAssets: [
         'favicon.ico',
-        'favicon.svg',
-        'apple-touch-icon-180x180.png',
+        'images/icons/favicon.svg',
+        'images/icons/apple-touch-icon-180x180.png',
         'Quicksand-VariableFont_wght.ttf',
         'audio/*.mp3'
       ],
@@ -23,26 +23,45 @@ export default defineConfig({
         theme_color: '#022a4f',
         icons: [
           {
-            src: 'pwa-64x64.png',
+            src: 'images/icons/pwa-64x64.png',
             sizes: '64x64',
             type: 'image/png'
           },
           {
-            src: 'pwa-192x192.png',
+            src: 'images/icons/pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'images/icons/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'maskable-icon-512x512.png',
+            src: 'images/icons/maskable-icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
+          },
+          {
+            src: 'images/icons/favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'monochrome'
+          }
+        ],
+        screenshots: [
+          {
+            src: 'images/screenshots/mobile.png',
+            sizes: '1080x2340',
+            type: 'image/png'
+          },
+          {
+            src: 'images/screenshots/desktop.png',
+            sizes: '1280x720',
+            type: 'image/png',
+            form_factor: 'wide'
           }
         ]
       },

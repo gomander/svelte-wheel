@@ -12,7 +12,7 @@
     "test": "npm run test:integration && npm run test:unit",
     "test:integration": "playwright test",
     "test:unit": "vitest",
-    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 static/favicon.svg"
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 static/images/icons/favicon.svg"
   },
   "type": "module",
   "devDependencies": {

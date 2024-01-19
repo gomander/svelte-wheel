@@ -8,7 +8,8 @@ const config = {
 	vitePlugin: { inspector: true },
 	kit: {
     adapter: adapter(),
-    serviceWorker: { register: false }
+    serviceWorker: { register: false },
+    paths: { relative: false }
   }
 }
 export default config

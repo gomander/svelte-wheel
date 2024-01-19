@@ -45,6 +45,19 @@ export default defineConfig({
             purpose: 'maskable'
           }
         ]
+      },
+      workbox: {
+        navigateFallbackDenylist: [/^\/\w\w\w\-\w\w\w$/],
+        runtimeCaching: [{
+          urlPattern: ({ url, sameOrigin }) => {
+            return sameOrigin && url.pathname.match(/^\/\w\w\w\-\w\w\w$/)
+          },
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'ssr-pages-cache',
+            cacheableResponse: { statuses: [200] }
+          }
+        }]
       }
     })
   ],

@@ -11,6 +11,7 @@
     content="Frequently asked questions about Svelte Wheel"
   />
   <meta property="og:url" content="https://sveltewheel.com/faq" />
+  <meta name="theme-color" content="#022a4f" />
 </svelte:head>
 
 <header class="px-4 py-2 bg-surface-200-700-token shadow-2xl">

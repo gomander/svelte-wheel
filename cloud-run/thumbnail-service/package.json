@@ -1,7 +1,10 @@
 {
   "name": "svelte-wheel-thumbnail-service",
   "version": "0.0.1",
-  "description": "",
+  "description": "A service that generates thumbnails for shared Svelte Wheel wheels",
+  "author": "Gunnar Omander <gunnar@gomander.dev>",
+  "license": "GPL-3.0-only",
+  "private": true,
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,8 +24,6 @@
     "copy-docker": "cp Dockerfile dist || copy Dockerfile dist",
     "deploy": "npm run build && gcloud run deploy thumbnails-service --source dist --platform managed --region us-central1 --allow-unauthenticated --set-env-vars=NODE_ENV=prod --memory 1Gi --project svelte-wheel"
   },
-  "author": "Gunnar Omander <gunnar@gomander.dev>",
-  "license": "ISC",
   "dependencies": {
     "@napi-rs/canvas": "~0.1.44",
     "express": "^4.18.2",

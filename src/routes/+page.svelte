@@ -62,6 +62,7 @@
     property="og:image"
     content="https://sveltewheel.com/images/sveltewheel.webp"
   />
+  <meta name="theme-color" content="#022a4f" />
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

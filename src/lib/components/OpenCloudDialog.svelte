@@ -17,15 +17,34 @@
   let form: HTMLFormElement
   let loading = false
   let apiWheels: ApiWheelMeta[] = []
-  $: filteredWheels = apiWheels.filter(
+  $: sortedWheels = apiWheels.sort((a, b) => {
+    switch (sort) {
+      case 'updated-desc':
+        return Number(b.updated || b.created) - Number(a.updated || a.created)
+      case 'updated-asc':
+        return Number(a.updated || a.created) - Number(b.updated || b.created)
+      case 'title-asc':
+        return a.title.localeCompare(b.title)
+      case 'title-desc':
+        return b.title.localeCompare(a.title)
+      default:
+        return 0
+    }
+  })
+  $: filteredWheels = sortedWheels.filter(
     wheel => wheel.title.toLowerCase().includes(filter.toLowerCase())
   )
-  $: pageWheels = filteredWheels.slice(page * wheelsPerPage, page * wheelsPerPage + wheelsPerPage)
+  $: pageWheels = filteredWheels.slice(
+    page * wheelsPerPage, page * wheelsPerPage + wheelsPerPage
+  )
   let selectedWheel: string
   let filter = ''
+  let sort: 'updated-desc' | 'updated-asc' | 'title-asc' | 'title-desc' = 'updated-desc'
   let page = 0
 
-  $: while (page && page > Math.floor(filteredWheels.length / wheelsPerPage) - 1) {
+  $: while (
+    page && page > Math.floor(filteredWheels.length / wheelsPerPage) - 1
+  ) {
     page--
   }
 
@@ -45,11 +64,7 @@
       if (!response.success) {
         throw new Error(response.error.message)
       }
-      apiWheels = response.data.wheels.sort((a, b) => {
-        const aDate = new Date(a.updated || a.created)
-        const bDate = new Date(b.updated || b.created)
-        return bDate.getTime() - aDate.getTime()
-      })
+      apiWheels = response.data.wheels
       if (!apiWheels.length) {
         throw new Error('No saved wheels')
       }
@@ -107,10 +122,8 @@
     }
   }
 
-  // TODO: Use tabs to separate private and public wheels. Display the wheels in
-  // a paginated list. The wheels should be sorted by date modified. The user
-  // should be able to search for a wheel by title. The user should be able to
-  // delete a wheel by clicking on a delete button.
+  // TODO: Use tabs to separate private and public wheels. The user should be
+  // able to delete a wheel by clicking on a delete button.
 </script>
 
 <svelte:window bind:innerHeight />
@@ -122,29 +135,51 @@
       <h1>Open a wheel</h1>
     </header>
 
-    {#if apiWheels.length > 4}
-      <label class="input-group grid-cols-[auto_1fr]">
-        <div><i class="fas fa-search" /></div>
-        <input
-          type="search"
-          class="input"
-          placeholder="Search..."
-          bind:value={filter}
-          aria-label="Search"
-        />
-      </label>
-    {/if}
-
     <form
       bind:this={form}
       on:submit|preventDefault={open}
       class="flex flex-col gap-4"
     >
-      {#if pageWheels.length}
-        <RadioGroup rounded="rounded-container-token" flexDirection="flex-col">
-          {#each pageWheels as wheel}
-            <RadioItem bind:group={selectedWheel} name="wheel" value={wheel.path}>
+      {#if apiWheels.length}
+        {#if apiWheels.length > wheelsPerPage}
+          <label class="input-group grid-cols-[auto_1fr]">
+            <div><i class="fas fa-search" /></div>
+            <input
+              type="search"
+              class="input"
+              placeholder="Search..."
+              bind:value={filter}
+              aria-label="Search"
+            />
+          </label>
+          <select
+            class="select"
+            bind:value={sort}
+            aria-label="Sort"
+            title="Sort"
+          >
+            <option value="updated-desc">Save date (newest first)</option>
+            <option value="updated-asc">Save date (oldest first)</option>
+            <option value="title-asc">Alphabetical (ascending)</option>
+            <option value="title-desc">Alphabetical (descending)</option>
+          </select>
+        {/if}
+
+        <RadioGroup
+          rounded="rounded-container-token"
+          flexDirection="flex-col"
+          padding="px-2 py-0"
+        >
+          {#each pageWheels as wheel, i}
+            <RadioItem
+              bind:group={selectedWheel}
+              name="wheel"
+              value={wheel.path}
+            >
               <div class="flex flex-col gap-1">
+                {#if i !== 0}
+                  <hr />
+                {/if}
                 <h2 class="text-lg font-semibold">{wheel.title}</h2>
                 <p class="text-sm">{wheel.path}</p>
               </div>

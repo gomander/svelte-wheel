@@ -11,18 +11,27 @@
     },
     "rewrites": [
       {
-        "source": "/thumbnails",
-        "run": {
-          "serviceId": "thumbnails-service",
-          "region": "us-central1"
-        }
-      },
-      {
         "source": "/thumbnails/**",
         "run": {
           "serviceId": "thumbnails-service",
           "region": "us-central1"
         }
+      }
+    ],
+    "headers": [
+      {
+        "source": "/thumbnails/**",
+        "headers": [{
+          "key": "Cache-Control",
+          "value": "max-age=3600"
+        }]
+      },
+      {
+        "source": "**/*.@(png|webp|mp3|ttf)",
+        "headers": [{
+          "key": "Cache-Control",
+          "value": "max-age=604800"
+        }]
       }
     ]
   }

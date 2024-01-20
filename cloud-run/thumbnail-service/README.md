@@ -17,5 +17,7 @@ No tests are available for the service currently.
 
 ## Deploying
 
-Deploying must currently be done manually by running `pnpm deploy`. In the future it will be handled by GitHub Actions.  
-GitHub repository secrets: `THUMBNAIL_SERVICE_ENV_FILE` should contain the contents of `env.js`. Also uses `FIREBASE_DEPLOYER_SERVICE_ACCOUNT`.  
+Deploying must currently be done manually by running `pnpm run deploy`. In the
+future it will be handled by GitHub Actions.  
+GitHub repository secrets: `THUMBNAIL_SERVICE_ENV_FILE` should contain the
+contents of `env.js`. Also uses `FIREBASE_DEPLOYER_SERVICE_ACCOUNT`.  

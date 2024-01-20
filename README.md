@@ -21,8 +21,11 @@ Run both: `pnpm test`
 ## Deploying
 
 Deploying is handled by GitHub Actions for the main SvelteKit app.  
-GitHub repository secrets: create one for each line in `.env`, plus `FIREBASE_DEPLOYER_SERVICE_ACCOUNT`, which is a JSON key to a GCP service account with Editor permissions.  
-If new PWA assets are needed, run `pnpm generate-pwa-assets`. Does not overwrite old assets.  
+GitHub repository secrets: create one for each line in `.env`, plus
+`FIREBASE_DEPLOYER_SERVICE_ACCOUNT`, which is a JSON key to a GCP service
+account with Editor permissions.  
+If new PWA assets are needed, run `pnpm generate-pwa-assets`. Does not overwrite
+old assets.  
 
 ## Cloud Run services
 

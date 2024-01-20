@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en" class="dark">
 	<head>
 		<meta charset="utf-8" />
@@ -33,16 +32,16 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <meta property="og:site_name" content="Svelte Wheel" />
+		%sveltekit.head%
     <title>Svelte Wheel</title>
     <meta name="title" content="Svelte Wheel" />
     <meta
       name="description"
       content="Enter texts onto the wheel and spin for a random result!"
     />
-    <meta property="og:type" content="website" />
     <meta property="og:url" content="https://sveltewheel.com/" />
-    <meta property="og:site_name" content="Svelte Wheel" />
-		%sveltekit.head%
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="Svelte Wheel" />
     <meta
       property="og:description"
@@ -50,10 +49,7 @@
     />
     <meta name="theme-color" content="#022a4f" />
 	</head>
-
 	<body data-sveltekit-preload-data="hover" data-theme="skeleton">
-		<div class="contents">
-      %sveltekit.body%
-    </div>
+		<div class="contents">%sveltekit.body%</div>
 	</body>
 </html>

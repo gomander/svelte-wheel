@@ -55,6 +55,8 @@
 <svelte:head>
   {#if $wheelStore.config.title}
     <title>{$wheelStore.config.title} - Svelte Wheel</title>
+  {:else}
+    <title>Svelte Wheel</title>
   {/if}
   <meta
     property="og:image"

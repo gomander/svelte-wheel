@@ -45,6 +45,7 @@
       content="Spin this custom wheel and get a random result!"
     />
   {/if}
+  <meta property="og:url" content="https://sveltewheel.com/{wheel.path}" />
   <meta
     property="og:image"
     content="https://sveltewheel.com/thumbnails/{wheel.path}"

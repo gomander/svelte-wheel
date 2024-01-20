@@ -1,3 +1,18 @@
+<svelte:head>
+  <title>FAQ - Svelte Wheel</title>
+  <meta name="title" content="FAQ - Svelte Wheel" />
+  <meta property="og:title" content="FAQ - Svelte Wheel" />
+  <meta
+    name="description"
+    content="Frequently asked questions about Svelte Wheel"
+  />
+  <meta
+    property="og:description"
+    content="Frequently asked questions about Svelte Wheel"
+  />
+  <meta property="og:url" content="https://sveltewheel.com/faq" />
+</svelte:head>
+
 <header class="px-4 py-2 bg-surface-200-700-token shadow-2xl">
   <a href="/" class="text-2xl flex gap-2 items-center">
     <i class="fas fa-arrow-left" />

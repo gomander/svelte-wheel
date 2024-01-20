@@ -19,7 +19,7 @@
     "copy-files-to-dist": "npm run copy-docker && npm run copy-package",
     "copy-package": "cp package*.json dist || copy package*.json dist",
     "copy-docker": "cp Dockerfile dist || copy Dockerfile dist",
-    "deploy": "npm run build && ./deploy_prod.sh || deploy_prod.bat"
+    "deploy": "npm run build && gcloud run deploy thumbnails-service --source dist --platform managed --region us-central1 --allow-unauthenticated --set-env-vars=NODE_ENV=prod --memory 1Gi --project svelte-wheel"
   },
   "author": "Gunnar Omander <gunnar@gomander.dev>",
   "license": "ISC",

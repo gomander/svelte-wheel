@@ -56,6 +56,10 @@
   {#if $wheelStore.config.title}
     <title>{$wheelStore.config.title} - Svelte Wheel</title>
   {/if}
+  <meta
+    property="og:image"
+    content="https://sveltewheel.com/images/sveltewheel.webp"
+  />
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

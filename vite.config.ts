@@ -63,7 +63,8 @@ export default defineConfig({
             type: 'image/png',
             form_factor: 'wide'
           }
-        ]
+        ],
+        protocol_handlers: [{ protocol: 'web+wheel', url: '/%s' }]
       },
       workbox: {
         navigateFallbackDenylist: [/^\/\w\w\w\-\w\w\w$/],

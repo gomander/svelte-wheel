@@ -36,23 +36,23 @@ jobs:
           projectId: svelte-wheel
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
-  # thumbnail-service:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '20'
-  #     - name: Install depedencies
-  #       run: cd cloud-run/thumbnail-service; npm i
-  #     - name: Create env.js
-  #       run: echo '${{ secrets.THUMBNAIL_SERVICE_ENV_FILE }}' > cloud-run/thumbnail-service/env.js
-  #     - name: Prepare authorization with Google Cloud
-  #       id: 'auth'
-  #       uses: 'google-github-actions/auth@v1'
-  #       with:
-  #         credentials_json: '${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}'
-  #     - name: Set up Google Cloud SDK
-  #       uses: 'google-github-actions/setup-gcloud@v1'
-  #     - name: Build and deploy
-  #       run: cd cloud-run/thumbnail-service; npm run deploy
+  thumbnail-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install depedencies
+        run: cd cloud-run/thumbnail-service; npm i
+      - name: Create env.js
+        run: echo '${{ secrets.THUMBNAIL_SERVICE_ENV_FILE }}' > cloud-run/thumbnail-service/env.js
+      - name: Prepare authorization with Google Cloud
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}'
+      - name: Set up Google Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v1'
+      - name: Build and deploy
+        run: cd cloud-run/thumbnail-service; npm run deploy

@@ -14,8 +14,8 @@
     "checkJs": true,
     "baseUrl": ".",
     "paths": {
-      "$lib/*": ["lib/*"],
-      "$env/static/public": ["env.js"],
+      "$lib/*": ["./lib/*"],
+      "$env/static/public": ["./env.js"],
       "*": ["node_modules/*"]
     }
   },

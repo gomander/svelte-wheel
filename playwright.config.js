@@ -1,6 +1,6 @@
-import type { PlaywrightTestConfig } from '@playwright/test'
-
-const config: PlaywrightTestConfig = {
+// @ts-check
+/** @type {import('@playwright/test').PlaywrightTestConfig} */
+export default {
 	webServer: {
 		command: 'npm run build && npm run preview',
 		port: 4173
@@ -8,5 +8,3 @@ const config: PlaywrightTestConfig = {
 	testDir: 'tests/playwright',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/
 }
-
-export default config

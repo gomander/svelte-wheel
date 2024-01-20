@@ -1,4 +1,4 @@
-/// <reference types="vitest" />
+// @ts-check
 import { defineConfig } from 'vite'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { purgeCss } from 'vite-plugin-tailwind-purgecss'
@@ -13,7 +13,7 @@ export default defineConfig({
         'favicon.ico',
         'images/icons/favicon.svg',
         'images/icons/apple-touch-icon-180x180.png',
-        'Quicksand-VariableFont_wght.ttf',
+        'Quicksand.ttf',
         'audio/*.mp3'
       ],
       manifest: {

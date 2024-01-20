@@ -1,8 +1,9 @@
+// @ts-check
 import adapter from '@sveltejs/adapter-auto'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
 /** @type {import('@sveltejs/kit').Config} */
-const config = {
+export default {
 	extensions: ['.svelte'],
 	preprocess: [vitePreprocess()],
 	vitePlugin: { inspector: true },
@@ -12,4 +13,3 @@ const config = {
     paths: { relative: false }
   }
 }
-export default config

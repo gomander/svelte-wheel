@@ -1,8 +1,7 @@
 import { describe, beforeEach, it, expect, vi } from 'vitest'
 import Wheel, { defaultEntries, type Entry } from '$lib/utils/Wheel'
 import WheelConfig from '$lib/utils/WheelConfig'
-import { initialWheelState } from '$lib/utils/WheelState'
-import { FPS } from '$lib/utils/Ticker'
+import { initialWheelState, FPS } from '$lib/utils/WheelState'
 
 describe('Wheel', () => {
   let wheel: Wheel

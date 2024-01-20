@@ -1,5 +1,6 @@
 import { describe, beforeEach, it, expect, vi } from 'vitest'
-import Ticker, { FPS } from '$lib/utils/Ticker'
+import Ticker from '$lib/utils/Ticker'
+import { FPS } from '$lib/utils/WheelState'
 
 describe('Ticker', () => {
   let ticker: Ticker

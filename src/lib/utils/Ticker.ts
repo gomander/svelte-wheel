@@ -1,3 +1,5 @@
+import { FPS } from '$lib/utils/WheelState'
+
 export default class Ticker {
   lastFrameTimeMs = 0
   delta = 0
@@ -27,5 +29,3 @@ export default class Ticker {
     return shouldTick
   }
 }
-
-export const FPS = 60

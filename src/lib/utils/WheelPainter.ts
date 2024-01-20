@@ -2,7 +2,7 @@ import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
 import { hubSizes } from '$lib/utils/WheelConfig'
 import type Wheel from '$lib/utils/Wheel'
 
-export type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
+type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
 
 export default class WheelPainter {
   imageCache = new Map<string, HTMLCanvasElement | OffscreenCanvas | null>()

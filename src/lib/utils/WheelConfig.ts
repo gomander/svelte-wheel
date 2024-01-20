@@ -1,5 +1,3 @@
-import type { ConfettiType } from '$lib/utils/ConfettiLauncher'
-
 export default class WheelConfig {
   title: string
   description: string
@@ -49,3 +47,5 @@ export const hubSizes: Record<HubSize, number> = {
   XL: 0.75
 }
 export const defaultColors = ['#6693fa', '#eb6574', '#f5d273', '#6be88a']
+export const confettiTypes = ['fireworks', 'cannons', 'stars', 'off'] as const
+export type ConfettiType = typeof confettiTypes[number]

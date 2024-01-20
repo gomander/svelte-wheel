@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getNewEntryId } from '$lib/utils/Wheel'
 import { wheelTypes, hubSizeKeys, defaultColors } from '$lib/utils/WheelConfig'
-import { confettiTypes } from '$lib/utils/ConfettiLauncher'
+import { confettiTypes } from '$lib/utils/WheelConfig'
 import { wheelVisibilities } from '$lib/utils/Api'
 
 const wheelConfigSchema = z.object({

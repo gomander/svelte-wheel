@@ -1,5 +1,8 @@
 import type { SKRSContext2D } from '@napi-rs/canvas'
-import type { Context } from '$lib/utils/WheelPainter'
+
+type Context = CanvasRenderingContext2D
+  | OffscreenCanvasRenderingContext2D
+  | SKRSContext2D
 
 export default class FontPicker {
   resultCache = new Map<string, string>()
@@ -14,7 +17,7 @@ export default class FontPicker {
    * @returns CSS font string
    */
   getFont(
-    context: Context | SKRSContext2D,
+    context: Context,
     texts: string[],
     wheelRadius: number,
     hubRadius: number,
@@ -78,7 +81,7 @@ export default class FontPicker {
  * @returns The ideal font size
  */
 const getFontSize = (
-  context: Context | SKRSContext2D,
+  context: Context,
   displayText: string,
   fontName: string,
   wheelRadius: number,
@@ -110,7 +113,7 @@ const getFontSize = (
  * @returns Ideal font size
  */
 const bisectSearch = (
-  context: Context | SKRSContext2D,
+  context: Context,
   wheelRadius: number,
   hubRadius: number,
   smallestAngle: number,
@@ -153,7 +156,7 @@ const bisectSearch = (
  * @returns Whether or not the text fits
  */
 const textFits = (
-  context: Context | SKRSContext2D,
+  context: Context,
   radius: number,
   innerRadius: number,
   angle: number,

@@ -1,4 +1,4 @@
-import { FPS } from '$lib/utils/Ticker'
+export const FPS = 60
 
 export interface WheelState {
   angle: number

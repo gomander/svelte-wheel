@@ -1,7 +1,5 @@
 import confetti from 'canvas-confetti'
-
-export const confettiTypes = ['fireworks', 'cannons', 'stars', 'off'] as const
-export type ConfettiType = typeof confettiTypes[number]
+import type { ConfettiType } from '$lib/utils/WheelConfig'
 
 export const launchConfetti = (
   confettiType: ConfettiType, colors: string[]

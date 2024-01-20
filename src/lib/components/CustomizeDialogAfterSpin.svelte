@@ -1,7 +1,7 @@
 <script lang="ts">
   import WheelConfig from '$lib/utils/WheelConfig'
   import { afterSpinSounds } from '$lib/utils/Audio'
-  import { confettiTypes } from '$lib/utils/ConfettiLauncher'
+  import { confettiTypes } from '$lib/utils/WheelConfig'
 
   export let config: WheelConfig
 </script>

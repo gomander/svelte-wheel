@@ -3,8 +3,8 @@ import { expect, test } from '@playwright/test'
 const defaultEntries = 'Ali\nBeatriz\nCharles\nDiya\nEric\nFatima\nGabriel\nHanna'
 
 test('Toolbar has page title', async ({ page }) => {
-	await page.goto('/')
-	await expect(page.getByRole('heading', { name: 'SvelteWheel' })).toBeVisible()
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'SvelteWheel' })).toBeVisible()
 })
 
 test('Wheel canvas is visible', async ({ page }) => {

@@ -9,7 +9,7 @@
   const modalStore = getModalStore()
 
   const config = structuredClone($wheelStore.config)
-	let openTab = 'basic'
+  let openTab = 'basic'
 
   const save = () => {
     if (config.type === 'image' && !config.image) config.type = 'color'

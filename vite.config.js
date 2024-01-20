@@ -5,7 +5,7 @@ import { purgeCss } from 'vite-plugin-tailwind-purgecss'
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 
 export default defineConfig({
-	plugins: [
+  plugins: [
     sveltekit(),
     purgeCss(),
     SvelteKitPWA({

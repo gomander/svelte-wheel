@@ -7,7 +7,7 @@
   import WheelMultiThread from '$lib/components/WheelMultiThread.svelte'
   import EditorColumn from '$lib/components/EditorColumn.svelte'
   import wheelStore from '$lib/stores/WheelStore'
-	import fullscreenStore from '$lib/stores/FullscreenStore'
+  import fullscreenStore from '$lib/stores/FullscreenStore'
   import debugStore from '$lib/stores/DebugStore'
   import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { OnStoppedData } from '$lib/utils/Wheel'
@@ -15,7 +15,7 @@
 
   const modalStore = getModalStore()
 
-	const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
+  const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
     type: 'component',
     component: 'winnerDialog',
     title: $wheelStore.config.winnerMessage || 'We have a winner!',
@@ -23,11 +23,11 @@
     meta: data
   })
 
-	const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
+  const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
     launchConfetti($wheelStore.config.confetti, $wheelStore.config.colors)
-		if (!$wheelStore.config.displayWinnerDialog) return
-		modalStore.trigger(createWinnerModal(e.detail))
-	}
+    if (!$wheelStore.config.displayWinnerDialog) return
+    modalStore.trigger(createWinnerModal(e.detail))
+  }
 
   const openOpenDialog = () => modalStore.trigger({
     type: 'component', component: 'openDialog'
@@ -121,7 +121,7 @@
     <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">
       {#if !$fullscreenStore.active}
         <EditorColumn />
-			{/if}
+      {/if}
     </div>
   </main>
 </div>

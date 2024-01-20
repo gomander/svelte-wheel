@@ -1,15 +1,15 @@
 <script lang="ts">
-	import '../app.postcss'
+  import '../app.postcss'
   import { onMount } from 'svelte'
   import { pwaInfo } from 'virtual:pwa-info'
-	import {
+  import {
     initializeStores, Modal, Toast, storePopup, type ModalComponent
   } from '@skeletonlabs/skeleton'
-	import {
+  import {
     computePosition, autoUpdate, flip, shift, offset, arrow
   } from '@floating-ui/dom'
   import fullscreenStore from '$lib/stores/FullscreenStore'
-	import WinnerDialog from '$lib/components/WinnerDialog.svelte'
+  import WinnerDialog from '$lib/components/WinnerDialog.svelte'
   import OpenDialog from '$lib/components/OpenDialog.svelte'
   import OpenCloudDialog from '$lib/components/OpenCloudDialog.svelte'
   import SaveDialog from '$lib/components/SaveDialog.svelte'
@@ -22,11 +22,11 @@
   import CustomizeDialog from '$lib/components/CustomizeDialog.svelte'
   import ShareDialog from '$lib/components/ShareDialog.svelte'
 
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
-	initializeStores()
+  storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
+  initializeStores()
 
   const modalRegistry: Record<string, ModalComponent> = {
-		winnerDialog: { ref: WinnerDialog },
+    winnerDialog: { ref: WinnerDialog },
     openDialog: { ref: OpenDialog },
     openCloudDialog: { ref: OpenCloudDialog },
     saveDialog: { ref: SaveDialog },
@@ -38,7 +38,7 @@
     resetPasswordDialog: { ref: ResetPasswordDialog },
     customizeDialog: { ref: CustomizeDialog },
     shareDialog: { ref: ShareDialog }
-	}
+  }
 
   onMount(fullscreenStore.initialize)
 
@@ -56,5 +56,5 @@
 <slot />
 
 {#await import('$lib/components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
-	<ReloadPrompt />
+  <ReloadPrompt />
 {/await}

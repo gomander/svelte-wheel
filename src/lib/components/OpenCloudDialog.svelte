@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import {
-    ProgressRadial, getModalStore, getToastStore
+    ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
@@ -11,9 +11,23 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
+  let innerHeight = 0
+  $: wheelsPerPage = innerHeight < 1024 ? 4 : 6
+
   let form: HTMLFormElement
   let loading = false
-  let wheels: ApiWheelMeta[] = []
+  let apiWheels: ApiWheelMeta[] = []
+  $: filteredWheels = apiWheels.filter(
+    wheel => wheel.title.toLowerCase().includes(filter.toLowerCase())
+  )
+  $: pageWheels = filteredWheels.slice(page * wheelsPerPage, page * wheelsPerPage + wheelsPerPage)
+  let selectedWheel: string
+  let filter = ''
+  let page = 0
+
+  $: while (page && page > Math.floor(filteredWheels.length / wheelsPerPage) - 1) {
+    page--
+  }
 
   onMount(async () => {
     loading = true
@@ -31,8 +45,12 @@
       if (!response.success) {
         throw new Error(response.error.message)
       }
-      wheels = response.data.wheels
-      if (!wheels.length) {
+      apiWheels = response.data.wheels.sort((a, b) => {
+        const aDate = new Date(a.updated || a.created)
+        const bDate = new Date(b.updated || b.created)
+        return bDate.getTime() - aDate.getTime()
+      })
+      if (!apiWheels.length) {
         throw new Error('No saved wheels')
       }
     } catch (error) {
@@ -50,6 +68,7 @@
   })
 
   const open = async () => {
+    if (!selectedWheel) return
     if (loading) return
     loading = true
     const formData = new FormData(form)
@@ -91,11 +110,10 @@
   // TODO: Use tabs to separate private and public wheels. Display the wheels in
   // a paginated list. The wheels should be sorted by date modified. The user
   // should be able to search for a wheel by title. The user should be able to
-  // delete a wheel by clicking on a delete button. Each wheel should have a
-  // thumbnail, the title, the date modified, and the wheel ID/path. Other items
-  // that may be displayed include the number of entries, the original save
-  // date, and the beginning of the wheel's description.
+  // delete a wheel by clicking on a delete button.
 </script>
+
+<svelte:window bind:innerHeight />
 
 {#if $modalStore[0]}
   <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
@@ -104,25 +122,68 @@
       <h1>Open a wheel</h1>
     </header>
 
+    {#if apiWheels.length > 4}
+      <label class="input-group grid-cols-[auto_1fr]">
+        <div><i class="fas fa-search" /></div>
+        <input
+          type="search"
+          class="input"
+          placeholder="Search..."
+          bind:value={filter}
+          aria-label="Search"
+        />
+      </label>
+    {/if}
+
     <form
       bind:this={form}
       on:submit|preventDefault={open}
       class="flex flex-col gap-4"
     >
-      <label class="label">
-        <span>Wheel</span>
-        <select
-          name="wheel"
-          disabled={loading}
-          class="select"
-        >
-          {#each wheels as wheel}
-            <option value={wheel.path}>
-              {wheel.title}
-            </option>
+      {#if pageWheels.length}
+        <RadioGroup rounded="rounded-container-token" flexDirection="flex-col">
+          {#each pageWheels as wheel}
+            <RadioItem bind:group={selectedWheel} name="wheel" value={wheel.path}>
+              <div class="flex flex-col gap-1">
+                <h2 class="text-lg font-semibold">{wheel.title}</h2>
+                <p class="text-sm">{wheel.path}</p>
+              </div>
+            </RadioItem>
           {/each}
-        </select>
-      </label>
+        </RadioGroup>
+      {:else}
+        {#if loading}
+          <div class="flex justify-center">
+            <ProgressRadial width="w-6" />
+          </div>
+        {:else}
+          <p class="text-center">No wheels found</p>
+        {/if}
+      {/if}
+
+      {#if filteredWheels.length > wheelsPerPage}
+        <footer class="flex justify-evenly items-center">
+          <button
+            type="button"
+            class="btn variant-soft"
+            disabled={page === 0}
+            on:click={() => page--}
+          >
+            <i class="fas fa-chevron-left" />
+          </button>
+          <span class="text-center">
+            {page + 1} / {Math.floor(filteredWheels.length / wheelsPerPage)}
+          </span>
+          <button
+            type="button"
+            class="btn variant-soft"
+            disabled={page >= Math.floor(filteredWheels.length / wheelsPerPage) - 1}
+            on:click={() => page++}
+          >
+            <i class="fas fa-chevron-right" />
+          </button>
+        </footer>
+      {/if}
 
       <footer class="flex justify-end gap-2">
         <button
@@ -132,7 +193,10 @@
         >
           Cancel
         </button>
-        <button class="btn variant-filled-primary">
+        <button
+          class="btn variant-filled-primary"
+          disabled={!selectedWheel}
+        >
           {#if loading}
             <ProgressRadial width="w-6" />
           {:else}

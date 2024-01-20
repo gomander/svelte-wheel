@@ -67,17 +67,25 @@ export default defineConfig({
         protocol_handlers: [{ protocol: 'web+wheel', url: '/%s' }]
       },
       workbox: {
-        navigateFallbackDenylist: [/^\/\w\w\w\-\w\w\w$/],
-        runtimeCaching: [{
-          urlPattern: ({ url, sameOrigin }) => {
-            return sameOrigin && url.pathname.match(/^\/\w\w\w\-\w\w\w$/)
+        navigateFallbackDenylist: [/^\/\w\w\w\-\w\w\w$/, /^\/thumbnails/],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.match(/^\/\w\w\w\-\w\w\w$/),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'ssr-pages-cache',
+              cacheableResponse: { statuses: [200] }
+            }
           },
-          handler: 'StaleWhileRevalidate',
-          options: {
-            cacheName: 'ssr-pages-cache',
-            cacheableResponse: { statuses: [200] }
+          {
+            urlPattern: ({ url }) => url.pathname.match(/^\/thumbnails/),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'thumbnails-cache',
+              cacheableResponse: { statuses: [200] }
+            }
           }
-        }]
+        ]
       }
     })
   ],

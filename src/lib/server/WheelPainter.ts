@@ -9,7 +9,11 @@ export default class WheelPainter {
   imageCache = new Map<string, Canvas | null>()
   fontPicker = new FontPicker()
 
-  async draw(context: Context, wheel: Wheel) {
+  async draw(context: Context, wheel: Wheel, background?: string) {
+    if (background) {
+      context.fillStyle = background
+      context.fillRect(0, 0, context.canvas.width, context.canvas.height)
+    }
     this.drawShadow(context)
     await this.drawBackground(context, wheel)
     this.drawWheel(context, wheel)

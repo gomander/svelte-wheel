@@ -25,7 +25,7 @@
   }
 
   wheelStore.setConfig(wheel.config)
-  wheelStore.setEntries(wheel.entries)
+  wheelStore.setNewEntries(wheel.entries)
 </script>
 
 <svelte:head>

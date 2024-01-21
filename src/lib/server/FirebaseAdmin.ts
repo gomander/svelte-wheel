@@ -82,7 +82,11 @@ export const saveWheel = async (
     views: 0
   } satisfies CreateWheelMeta)
   await db.collection('wheels').doc(path).create(
-    { path, ...wheel } satisfies ApiWheel
+    {
+      path,
+      config: wheel.config,
+      entries: wheel.entries.map(entry => ({ text: entry.text }))
+    } satisfies ApiWheel
   )
   const userDoc = await db.doc(`users/${uid}`).get()
   const user = userDoc.data() as ApiUser
@@ -116,7 +120,10 @@ export const updateWheel = async (
   }
   await metaDoc.update(newMeta)
   const wheelDoc = db.doc(`wheels/${path}`)
-  await wheelDoc.update(wheel)
+  await wheelDoc.update({
+    config: wheel.config,
+    entries: wheel.entries?.map(entry => ({ text: entry.text }))
+  } satisfies Partial<ApiWheel>)
   return meta.path
 }
 

@@ -111,7 +111,7 @@ export interface ApiUser {
 export interface ApiWheel {
   path: string
   config: WheelConfig
-  entries: Entry[]
+  entries: Omit<Entry, 'id'>[]
 }
 
 export const wheelVisibilities = ['public', 'private'] as const
@@ -127,7 +127,9 @@ export interface ApiWheelMeta {
   views: number
 }
 
-export interface CreateWheelMeta extends Omit<ApiWheelMeta, 'created' | 'updated'> {
+export interface CreateWheelMeta extends Omit<
+  ApiWheelMeta, 'created' | 'updated'
+> {
   created: Date
   updated: Date | null
 }

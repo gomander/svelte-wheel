@@ -1,7 +1,7 @@
 import { get, writable } from 'svelte/store'
 import { localStorageStore } from '@skeletonlabs/skeleton'
 import WheelConfig from '$lib/utils/WheelConfig'
-import { defaultEntries, type Entry } from '$lib/utils/Wheel'
+import { defaultEntries, getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
 interface WheelStoreData {
   config: WheelConfig
@@ -23,6 +23,13 @@ const createWheelStore = (state: WheelStoreData) => {
   const setEntries = (entries: Entry[]) => {
     update(state => {
       state.entries = entries
+      return state
+    })
+  }
+
+  const setNewEntries = (entries: Omit<Entry, 'id'>[]) => {
+    update(state => {
+      state.entries = entries.map(entry => ({ ...entry, id: getNewEntryId() }))
       return state
     })
   }
@@ -51,7 +58,9 @@ const createWheelStore = (state: WheelStoreData) => {
     })
   }
 
-  return { subscribe, setConfig, setEntries, setWinners, setPath, reset }
+  return {
+    subscribe, setConfig, setEntries, setNewEntries, setWinners, setPath, reset
+  }
 }
 
 const initialState: WheelStoreData = {

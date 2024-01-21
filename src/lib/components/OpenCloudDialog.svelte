@@ -133,7 +133,7 @@
       }
       const { config, entries } = response.data.wheel
       wheelStore.setConfig(config)
-      wheelStore.setEntries(entries)
+      wheelStore.setNewEntries(entries)
       wheelStore.setWinners([])
       wheelStore.setPath(path)
       modalStore.close()

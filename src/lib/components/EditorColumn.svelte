@@ -1,5 +1,6 @@
 <script lang="ts">
   import { TabGroup, Tab } from '@skeletonlabs/skeleton'
+  import wheelStore from '$lib/stores/WheelStore'
   import EditorButtons from '$lib/components/EditorButtons.svelte'
   import EntriesTextbox from '$lib/components/EntriesTextbox.svelte'
   import ResultsButtons from '$lib/components/ResultsButtons.svelte'
@@ -17,7 +18,12 @@
     name="editor"
     value={0}
   >
-    <span id="entries-label">Entries</span>
+    <div class="flex items-center gap-2">
+      <span id="entries-label">Entries</span>
+      <div>
+        <span class="badge variant-filled">{$wheelStore.entries.length}</span>
+      </div>
+    </div>
   </Tab>
 
   <Tab
@@ -25,7 +31,12 @@
     name="results"
     value={1}
   >
-    <span id="results-label">Results</span>
+    <div class="flex items-center gap-2">
+      <span id="results-label">Results</span>
+      <div>
+        <span class="badge variant-filled">{$wheelStore.winners.length}</span>
+      </div>
+    </div>
   </Tab>
 
   <svelte:fragment slot="panel">

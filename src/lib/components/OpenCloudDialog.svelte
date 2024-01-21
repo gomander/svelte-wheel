@@ -43,7 +43,7 @@
   let page = 0
 
   $: while (
-    page && page > Math.floor(filteredWheels.length / wheelsPerPage) - 1
+    page && page > Math.ceil(filteredWheels.length / wheelsPerPage) - 1
   ) {
     page--
   }
@@ -138,7 +138,7 @@
     <form
       bind:this={form}
       on:submit|preventDefault={open}
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-2"
     >
       {#if apiWheels.length}
         {#if apiWheels.length > wheelsPerPage}
@@ -168,56 +168,61 @@
         <RadioGroup
           rounded="rounded-container-token"
           flexDirection="flex-col"
-          padding="px-2 py-0"
+          padding="px-1 pt-0 pb-1"
         >
           {#each pageWheels as wheel, i}
+            {#if i !== 0}
+              <hr />
+            {/if}
             <RadioItem
               bind:group={selectedWheel}
               name="wheel"
               value={wheel.path}
             >
-              <div class="flex flex-col gap-1">
-                {#if i !== 0}
-                  <hr />
-                {/if}
-                <h2 class="text-lg font-semibold">{wheel.title}</h2>
-                <p class="text-sm">{wheel.path}</p>
-              </div>
+              <div class="text-lg font-semibold">{wheel.title}</div>
+              <div class="text-sm mt-1">{wheel.path}</div>
             </RadioItem>
           {/each}
+          {#if !pageWheels.length}
+            <div class="flex justify-center items-center min-h-14">
+              No wheels found
+            </div>
+          {/if}
         </RadioGroup>
+      {:else if loading}
+        <div class="flex justify-center">
+          <ProgressRadial width="w-12" />
+        </div>
       {:else}
-        {#if loading}
-          <div class="flex justify-center">
-            <ProgressRadial width="w-6" />
-          </div>
-        {:else}
-          <p class="text-center">No wheels found</p>
-        {/if}
+        <p class="text-center">No wheels found</p>
       {/if}
 
-      {#if filteredWheels.length > wheelsPerPage}
-        <footer class="flex justify-evenly items-center">
+      {#if apiWheels.length > wheelsPerPage}
+        <div class="flex justify-evenly items-center">
           <button
             type="button"
             class="btn variant-soft"
             disabled={page === 0}
             on:click={() => page--}
+            aria-label="Previous page"
+            title="Previous page"
           >
             <i class="fas fa-chevron-left" />
           </button>
           <span class="text-center">
-            {page + 1} / {Math.floor(filteredWheels.length / wheelsPerPage)}
+            {page + 1} / {Math.ceil(filteredWheels.length / wheelsPerPage) || 1}
           </span>
           <button
             type="button"
             class="btn variant-soft"
-            disabled={page >= Math.floor(filteredWheels.length / wheelsPerPage) - 1}
+            disabled={page >= Math.ceil(filteredWheels.length / wheelsPerPage) - 1}
             on:click={() => page++}
+            aria-label="Next page"
+            title="Next page"
           >
             <i class="fas fa-chevron-right" />
           </button>
-        </footer>
+        </div>
       {/if}
 
       <footer class="flex justify-end gap-2">

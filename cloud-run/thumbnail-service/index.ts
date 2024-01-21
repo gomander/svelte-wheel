@@ -3,7 +3,7 @@ import cors from 'cors'
 import 'module-alias/register'
 import validateColor from 'validate-color'
 import { getWheel } from '$lib/server/FirebaseAdmin'
-import Wheel from '$lib/utils/Wheel'
+import Wheel, { addIdsToEntries } from '$lib/utils/Wheel'
 import { createThumbnail } from '$lib/server/Thumbnail'
 
 const app = express()
@@ -22,7 +22,14 @@ app.get('/thumbnails/:path', async (req, res) => {
   if (background && !validateColor(background)) {
     background = undefined
   }
-  const image = await createThumbnail(new Wheel(wheelData), size, background)
+  const image = await createThumbnail(
+    new Wheel({
+      config: wheelData.config,
+      entries: addIdsToEntries(wheelData.entries)
+    }),
+    size,
+    background
+  )
   res.setHeader('Content-Type', 'image/webp').setHeader(
     'Content-Length', image.byteLength.toString()
   ).send(image)

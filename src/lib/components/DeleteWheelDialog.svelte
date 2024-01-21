@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
+  import {
+    getModalStore, getToastStore, ProgressRadial
+  } from '@skeletonlabs/skeleton'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { deleteWheel as apiDeleteWheel } from '$lib/utils/Api'
   import { toastDefaults } from '$lib/utils/Toast'
@@ -10,7 +12,11 @@
   const path: string = $modalStore[0].meta.path
   const title: string = $modalStore[0].meta.title
 
+  let loading = false
+
   const deleteWheel = async () => {
+    if (loading) return
+    loading = true
     const user = getCurrentUser()
     try {
       if (!user) {
@@ -28,6 +34,7 @@
         })
       }
     } finally {
+      loading = false
       modalStore.close()
     }
   }
@@ -62,7 +69,11 @@
         class="btn variant-filled-error"
         on:click={deleteWheel}
       >
-        Delete
+        {#if loading}
+          <ProgressRadial width="w-6" />
+        {:else}
+          Delete
+        {/if}
       </button>
   </article>
 {/if}

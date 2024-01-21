@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 import { FirebaseError } from 'firebase/app'
 import { firebaseConfig, type DbWheelMeta } from '$lib/utils/Firebase'
+import { addIdsToEntries } from '$lib/utils/Wheel'
 import type {
   ApiUser, ApiWheel, CreateWheelMeta, WheelVisibility
 } from '$lib/utils/Api'
@@ -71,6 +72,10 @@ export const getWheelMetaForPaths = async (paths: string[]) => {
 export const saveWheel = async (
   wheel: Omit<ApiWheel, 'path'>, uid: string, visibility: WheelVisibility
 ) => {
+  const userDoc = await db.doc(`users/${uid}`).get()
+  if (!userDoc.exists) {
+    return null
+  }
   const path = await getNewWheelPath()
   await db.collection('wheel-meta').doc(path).create({
     path,
@@ -85,13 +90,12 @@ export const saveWheel = async (
     {
       path,
       config: wheel.config,
-      entries: wheel.entries.map(entry => ({ text: entry.text }))
+      entries: addIdsToEntries(wheel.entries)
     } satisfies ApiWheel
   )
-  const userDoc = await db.doc(`users/${uid}`).get()
   const user = userDoc.data() as ApiUser
   await db.doc(`users/${uid}`).update({
-    wheels: [...user?.wheels, path]
+    wheels: [...user.wheels, path]
   } satisfies Partial<ApiUser>)
   return path
 }
@@ -122,7 +126,7 @@ export const updateWheel = async (
   const wheelDoc = db.doc(`wheels/${path}`)
   await wheelDoc.update({
     config: wheel.config,
-    entries: wheel.entries?.map(entry => ({ text: entry.text }))
+    entries: wheel.entries ? addIdsToEntries(wheel.entries) : undefined
   } satisfies Partial<ApiWheel>)
   return meta.path
 }

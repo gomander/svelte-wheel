@@ -101,6 +101,10 @@ const getColorAtPointer = (
   ]
 }
 
+export const addIdsToEntries = (entries: Omit<Entry, 'id'>[]) => {
+  return entries.map(entry => ({ ...entry, id: getNewEntryId() }))
+}
+
 export const getNewEntryId = () => uuid().split('-')[0]
 
 export const defaultEntries: Entry[] = [

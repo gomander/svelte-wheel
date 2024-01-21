@@ -1,9 +1,11 @@
 <script lang="ts">
   import '../app.postcss'
   import { onMount } from 'svelte'
+  import { onNavigate } from '$app/navigation'
   import { pwaInfo } from 'virtual:pwa-info'
   import {
-    initializeStores, Modal, Toast, storePopup, type ModalComponent
+    initializeStores, Modal, Toast, getModalStore, storePopup,
+    type ModalComponent
   } from '@skeletonlabs/skeleton'
   import {
     computePosition, autoUpdate, flip, shift, offset, arrow
@@ -21,9 +23,11 @@
   import ResetPasswordDialog from '$lib/components/ResetPasswordDialog.svelte'
   import CustomizeDialog from '$lib/components/CustomizeDialog.svelte'
   import ShareDialog from '$lib/components/ShareDialog.svelte'
+  import SharedLinkDialog from '$lib/components/SharedLinkDialog.svelte'
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
   initializeStores()
+  const modalStore = getModalStore()
 
   const modalRegistry: Record<string, ModalComponent> = {
     winnerDialog: { ref: WinnerDialog },
@@ -37,10 +41,12 @@
     signUpDialog: { ref: SignUpDialog },
     resetPasswordDialog: { ref: ResetPasswordDialog },
     customizeDialog: { ref: CustomizeDialog },
-    shareDialog: { ref: ShareDialog }
+    shareDialog: { ref: ShareDialog },
+    sharedLinkDialog: { ref: SharedLinkDialog }
   }
 
   onMount(fullscreenStore.initialize)
+  onNavigate(modalStore.close)
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 </script>

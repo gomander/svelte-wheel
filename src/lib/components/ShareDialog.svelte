@@ -87,11 +87,10 @@
         throw new Error('Could not share wheel')
       }
       modalStore.close()
-      toastStore.trigger({
-        ...toastDefaults,
-        message: `Wheel shared! You can view it at ${window.location.origin}/${path}`,
-        background: 'variant-filled-primary',
-        timeout: 7000
+      modalStore.trigger({
+        type: 'component',
+        component: 'sharedLinkDialog',
+        meta: { path }
       })
     } catch (error) {
       if (error instanceof Error) {

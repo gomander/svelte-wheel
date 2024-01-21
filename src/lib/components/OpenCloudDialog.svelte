@@ -1,8 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import {
-    Avatar,
-    ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore
+    Avatar, ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
@@ -49,20 +48,20 @@
     page--
   }
 
-  const wheelImages = new Map<string, string>()
+  const wheelImages: Record<string, string> = {}
   $: if (pageWheels.length) {
     Promise.all(
       pageWheels.map(async wheel => {
-        if (wheelImages.has(wheel.path)) return true
+        if (wheel.path in wheelImages) return true
+        wheelImages[wheel.path] = ''
         const response = await fetch(
           `${window.location.origin.replace('5173', '8080')}/thumbnails/${wheel.path}?size=56`,
           { headers: { authorization: getCurrentUser()?.uid || '' } }
         )
         if (response.ok) {
           const buffer = await response.arrayBuffer()
-          wheelImages.set(
-            wheel.path,
-            URL.createObjectURL(new Blob([buffer], { type: 'image/webp' }))
+          wheelImages[wheel.path] = URL.createObjectURL(
+            new Blob([buffer], { type: 'image/webp' })
           )
           return true
         }
@@ -204,8 +203,9 @@
             >
               <div class="flex items-center">
                 <Avatar
-                  src={wheelImages.get(wheel.path)}
+                  src={wheelImages[wheel.path]}
                   width="w-14"
+                  initials="?"
                 />
                 <div class="min-h-14 flex-1 flex flex-col justify-center">
                   <div class="flex gap-2 justify-center items-center">

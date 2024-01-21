@@ -12,7 +12,7 @@
   const toastStore = getToastStore()
 
   let innerHeight = 0
-  $: wheelsPerPage = innerHeight < 1024 ? 4 : 6
+  $: wheelsPerPage = Math.floor(innerHeight / 200)
 
   let form: HTMLFormElement
   let loading = false
@@ -179,8 +179,20 @@
               name="wheel"
               value={wheel.path}
             >
-              <div class="text-lg font-semibold">{wheel.title}</div>
-              <div class="text-sm mt-1">{wheel.path}</div>
+              <div class="min-h-12 flex flex-col justify-center">
+                <div class="flex gap-2 justify-center items-center">
+                  <span class="text-lg font-semibold">{wheel.title}</span>
+                  {#if wheel.visibility === 'private'}
+                    <i class="fas fa-lock text-xs" title="Private" />
+                  {/if}
+                </div>
+                {#if wheel.visibility === 'public'}
+                  <div class="text-sm mt-1 flex gap-2 justify-center items-center">
+                    <i class="fas fa-globe" title="Public" />
+                    <span>{wheel.path}</span>
+                  </div>
+                {/if}
+              </div>
             </RadioItem>
           {/each}
           {#if !pageWheels.length}

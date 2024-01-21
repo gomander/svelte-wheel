@@ -1,10 +1,11 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import {
     ProgressRadial, getModalStore, getToastStore
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
-  import { createWheel } from '$lib/utils/Api'
+  import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
   import { toastDefaults } from '$lib/utils/Toast'
 
   const modalStore = getModalStore()
@@ -12,16 +13,35 @@
 
   let title = $wheelStore.config.title
   let loading = false
+  let shareMode: 'overwrite' | 'new' = 'new'
 
-  const user = getCurrentUser()
-  if (!user) {
-    modalStore.close()
-    modalStore.trigger({
-      type: 'component',
-      component: 'loginDialog',
-      meta: { next: 'shareDialog' }
-    })
-  }
+  onMount(async () => {
+    const user = getCurrentUser()
+    if (!user) {
+      modalStore.close()
+      modalStore.trigger({
+        type: 'component',
+        component: 'loginDialog',
+        meta: { next: 'shareDialog' }
+      })
+      return
+    }
+    if ($wheelStore.path) {
+      loading = true
+      try {
+        const response = await getWheel($wheelStore.path, user.uid)
+        if (!response.success) {
+          wheelStore.setPath(null)
+          return
+        }
+        shareMode = 'overwrite'
+      } catch (error) {
+        wheelStore.setPath(null)
+      } finally {
+        loading = false
+      }
+    }
+  })
 
   const share = async () => {
     if (loading) return
@@ -30,24 +50,46 @@
       if (!title) {
         throw new Error('Title is required')
       }
+      const user = getCurrentUser()
       if (!user) {
         throw new Error('User is not logged in')
       }
-      const response = await createWheel({
-        wheel: {
-          config: { ...$wheelStore.config, title },
-          entries: $wheelStore.entries
-        },
-        visibility: 'public',
-        uid: user.uid
-      }, user.uid)
-      if (!response.success) {
-        throw new Error(response.error.message)
+      let path: string | null = null
+      if (shareMode === 'new') {
+        const response = await createWheel({
+          wheel: {
+            config: { ...$wheelStore.config, title },
+            entries: $wheelStore.entries
+          },
+          visibility: 'public',
+          uid: user.uid
+        }, user.uid)
+        if (!response.success) {
+          throw new Error(response.error.message)
+        }
+        path = response.data.path
+      }
+      if (shareMode === 'overwrite' && $wheelStore.path) {
+        const response = await updateWheel($wheelStore.path, {
+          wheel: {
+            config: { ...$wheelStore.config, title },
+            entries: $wheelStore.entries
+          },
+          uid: user.uid,
+          visibility: 'public'
+        }, user.uid)
+        if (!response.success) {
+          throw new Error(response.error.message)
+        }
+        path = response.data.path
+      }
+      if (!path) {
+        throw new Error('Could not share wheel')
       }
       modalStore.close()
       toastStore.trigger({
         ...toastDefaults,
-        message: `Wheel shared! You can view it at ${window.location.origin}/${response.data.path}`,
+        message: `Wheel shared! You can view it at ${window.location.origin}/${path}`,
         background: 'variant-filled-primary',
         timeout: 7000
       })
@@ -91,9 +133,36 @@
       on:submit|preventDefault={share}
       class="flex flex-col gap-4"
     >
+      {#if $wheelStore.path}
+        <div class="flex flex-col gap-2">
+          <label class="flex items-center gap-2">
+            <input
+              type="radio"
+              name="saveMode"
+              value="overwrite"
+              bind:group={shareMode}
+              class="radio"
+            />
+            <span>
+              Overwrite "{$wheelStore.config.title}" ({$wheelStore.path})
+            </span>
+          </label>
+          <label class="flex items-center gap-2">
+            <input
+              type="radio"
+              name="saveMode"
+              value="new"
+              bind:group={shareMode}
+              checked
+              class="radio"
+            />
+            <span>Share as a new wheel</span>
+          </label>
+        </div>
+      {/if}
+
       <label class="label">
         <span class="required">Title</span>
-
         <input
           type="text"
           name="title"
@@ -120,7 +189,7 @@
           {#if loading}
             <ProgressRadial width="w-6" />
           {:else}
-            Save
+            Share
           {/if}
         </button>
       </footer>

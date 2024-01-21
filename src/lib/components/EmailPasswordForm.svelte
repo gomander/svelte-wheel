@@ -56,8 +56,7 @@
   on:submit|preventDefault={submit}
 >
   <label class="label">
-    <span>Email</span>
-
+    <span class="required">Email</span>
     <input
       type="email"
       name="email"
@@ -73,8 +72,7 @@
   </label>
 
   <label class="label">
-    <span>Password</span>
-
+    <span class="required">Password</span>
     <div class="input-group grid-cols-[1fr_auto]">
       <input
         type={showPassword ? 'text' : 'password'}

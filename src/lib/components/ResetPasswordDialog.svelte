@@ -54,8 +54,7 @@
       on:submit|preventDefault={resetPassword}
     >
       <label class="label">
-        <span>Email</span>
-
+        <span class="required">Email</span>
         <input
           type="email"
           name="email"

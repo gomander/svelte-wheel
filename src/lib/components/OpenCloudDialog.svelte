@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import {
+    Avatar,
     ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
@@ -46,6 +47,28 @@
     page && page > Math.ceil(filteredWheels.length / wheelsPerPage) - 1
   ) {
     page--
+  }
+
+  const wheelImages = new Map<string, string>()
+  $: if (pageWheels.length) {
+    Promise.all(
+      pageWheels.map(async wheel => {
+        if (wheelImages.has(wheel.path)) return true
+        const response = await fetch(
+          `${window.location.origin.replace('5173', '8080')}/thumbnails/${wheel.path}?size=56`,
+          { headers: { authorization: getCurrentUser()?.uid || '' } }
+        )
+        if (response.ok) {
+          const buffer = await response.arrayBuffer()
+          wheelImages.set(
+            wheel.path,
+            URL.createObjectURL(new Blob([buffer], { type: 'image/webp' }))
+          )
+          return true
+        }
+        return false
+      })
+    )
   }
 
   onMount(async () => {
@@ -179,19 +202,25 @@
               name="wheel"
               value={wheel.path}
             >
-              <div class="min-h-14 flex flex-col justify-center">
-                <div class="flex gap-2 justify-center items-center">
-                  <span class="text-lg font-semibold">{wheel.title}</span>
-                  {#if wheel.visibility === 'private'}
-                    <i class="fas fa-lock text-xs" title="Private" />
+              <div class="flex items-center">
+                <Avatar
+                  src={wheelImages.get(wheel.path)}
+                  width="w-14"
+                />
+                <div class="min-h-14 flex-1 flex flex-col justify-center">
+                  <div class="flex gap-2 justify-center items-center">
+                    <span class="text-lg font-semibold">{wheel.title}</span>
+                    {#if wheel.visibility === 'private'}
+                      <i class="fas fa-lock text-xs" title="Private" />
+                    {/if}
+                  </div>
+                  {#if wheel.visibility === 'public'}
+                    <div class="text-sm mt-1 flex gap-2 justify-center items-center">
+                      <i class="fas fa-globe" title="Public" />
+                      <span>{wheel.path}</span>
+                    </div>
                   {/if}
                 </div>
-                {#if wheel.visibility === 'public'}
-                  <div class="text-sm mt-1 flex gap-2 justify-center items-center">
-                    <i class="fas fa-globe" title="Public" />
-                    <span>{wheel.path}</span>
-                  </div>
-                {/if}
               </div>
             </RadioItem>
           {/each}

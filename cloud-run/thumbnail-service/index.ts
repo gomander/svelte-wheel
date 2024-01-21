@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import 'module-alias/register'
 import validateColor from 'validate-color'
 import { getWheel } from '$lib/server/FirebaseAdmin'
@@ -6,11 +7,13 @@ import Wheel from '$lib/utils/Wheel'
 import { createThumbnail } from '$lib/server/Thumbnail'
 
 const app = express()
+app.use(cors())
 
 app.get('/thumbnails', (_, res) => res.send('OK'))
 
 app.get('/thumbnails/:path', async (req, res) => {
-  const wheelData = await getWheel(req.params.path)
+  const uid = req.headers.authorization
+  const wheelData = await getWheel(req.params.path, uid)
   if (!wheelData) {
     return res.status(404).send({ error: 'Wheel not found' })
   }

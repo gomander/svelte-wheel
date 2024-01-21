@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 import { FirebaseError } from 'firebase/app'
-import { firebaseConfig } from '$lib/utils/Firebase'
+import { firebaseConfig, type DbWheelMeta } from '$lib/utils/Firebase'
 import type {
-  ApiUser, ApiWheel, ApiWheelMeta, WheelVisibility
+  ApiUser, ApiWheel, CreateWheelMeta, WheelVisibility
 } from '$lib/utils/Api'
 
 try {
@@ -21,7 +21,7 @@ export const getWheel = async (path: string, uid?: string | null) => {
   if (!metaSnap.exists) {
     return null
   }
-  const meta = metaSnap.data() as ApiWheelMeta
+  const meta = metaSnap.data() as DbWheelMeta
   if (meta.visibility === 'private' && meta.uid !== uid) {
     return null
   }
@@ -36,7 +36,7 @@ export const getWheels = async (uid: string) => {
   const metaSnap = await db.collection('wheel-meta').where(
     'uid', '==', uid
   ).get()
-  const paths = metaSnap.docs.map(doc => (doc.data() as ApiWheelMeta).path)
+  const paths = metaSnap.docs.map(doc => (doc.data() as DbWheelMeta).path)
   const wheelSnaps = await db.getAll(
     ...paths.map(path => db.doc(`wheels/${path}`))
   )
@@ -59,7 +59,13 @@ export const getWheelMetaForPaths = async (paths: string[]) => {
   const metaSnaps = await db.getAll(
     ...paths.map(path => db.doc(`wheel-meta/${path}`))
   )
-  return metaSnaps.map(snap => snap.data() as ApiWheelMeta)
+  return metaSnaps.map(
+    snap => snap.data() as DbWheelMeta
+  ).map(meta => ({
+    ...meta,
+    created: meta.created._seconds * 1000,
+    updated: meta.updated ? meta.updated._seconds * 1000 : null
+  }))
 }
 
 export const saveWheel = async (
@@ -74,7 +80,7 @@ export const saveWheel = async (
     updated: null,
     title: wheel.config.title,
     views: 0
-  } satisfies ApiWheelMeta)
+  } satisfies CreateWheelMeta)
   await db.collection('wheels').doc(path).create(
     { path, ...wheel } satisfies ApiWheel
   )
@@ -97,11 +103,11 @@ export const updateWheel = async (
   if (!metaSnap.exists) {
     return null
   }
-  const meta = metaSnap.data() as ApiWheelMeta
+  const meta = metaSnap.data() as DbWheelMeta
   if (meta.uid !== uid) {
     return null
   }
-  const newMeta: Partial<ApiWheelMeta> = { updated: new Date() }
+  const newMeta: Partial<CreateWheelMeta> = { updated: new Date() }
   if (wheel.config && wheel.config.title !== meta.title) {
     newMeta.title = wheel.config.title
   }

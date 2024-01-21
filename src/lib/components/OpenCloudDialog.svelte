@@ -20,9 +20,9 @@
   $: sortedWheels = apiWheels.sort((a, b) => {
     switch (sort) {
       case 'updated-desc':
-        return Number(b.updated || b.created) - Number(a.updated || a.created)
+        return (b.updated || b.created) - (a.updated || a.created)
       case 'updated-asc':
-        return Number(a.updated || a.created) - Number(b.updated || b.created)
+        return (a.updated || a.created) - (b.updated || b.created)
       case 'title-asc':
         return a.title.localeCompare(b.title)
       case 'title-desc':
@@ -179,7 +179,7 @@
               name="wheel"
               value={wheel.path}
             >
-              <div class="min-h-12 flex flex-col justify-center">
+              <div class="min-h-14 flex flex-col justify-center">
                 <div class="flex gap-2 justify-center items-center">
                   <span class="text-lg font-semibold">{wheel.title}</span>
                   {#if wheel.visibility === 'private'}
@@ -199,6 +199,8 @@
             <div class="flex justify-center items-center min-h-14">
               No wheels found
             </div>
+          {:else if filteredWheels.length > wheelsPerPage}
+            <div style="height: {4 * (wheelsPerPage - pageWheels.length)}rem" />
           {/if}
         </RadioGroup>
       {:else if loading}

@@ -111,10 +111,15 @@ export interface ApiWheelMeta {
   path: string
   uid: string
   visibility: WheelVisibility
-  created: Date
-  updated: Date | null
+  created: number
+  updated: number | null
   title: string
   views: number
+}
+
+export interface CreateWheelMeta extends Omit<ApiWheelMeta, 'created' | 'updated'> {
+  created: Date
+  updated: Date | null
 }
 
 export interface CreateWheelData {

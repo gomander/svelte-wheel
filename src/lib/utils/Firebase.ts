@@ -13,6 +13,17 @@ import {
   PUBLIC_FIREBASE_MESSAGING_SENDER_ID, PUBLIC_FIREBASE_APP_ID,
   PUBLIC_FIREBASE_MEASUREMENT_ID
 } from '$env/static/public'
+import type { ApiWheelMeta } from '$lib/utils/Api'
+
+interface DbDate {
+  _seconds: number
+  _nanoseconds: number
+}
+
+export interface DbWheelMeta extends Omit<ApiWheelMeta, 'created' | 'updated'> {
+  created: DbDate,
+  updated: DbDate | null
+}
 
 interface DbUser {
   createdAt: Date

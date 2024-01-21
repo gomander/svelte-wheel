@@ -120,6 +120,25 @@ export const updateWheel = async (
   return meta.path
 }
 
+export const deleteWheel = async (path: string, uid: string) => {
+  const userDoc = await db.doc(`users/${uid}`).get()
+  if (!userDoc.exists) {
+    return null
+  }
+  const user = userDoc.data() as ApiUser
+  if (!user.wheels.includes(path)) {
+    return null
+  }
+  await Promise.all([
+    db.doc(`users/${uid}`).update({
+      wheels: user.wheels.filter(wheel => wheel !== path)
+    } satisfies Partial<ApiUser>),
+    db.doc(`wheel-meta/${path}`).delete(),
+    db.doc(`wheels/${path}`).delete()
+  ])
+  return true
+}
+
 const getNewWheelPath = async () => {
   let path: string
   let snap: FirebaseFirestore.DocumentSnapshot

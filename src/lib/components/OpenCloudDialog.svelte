@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import {
-    Avatar, ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore
+    Avatar, ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore,
+    popup
   } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
@@ -68,6 +69,17 @@
         return false
       })
     )
+  }
+
+  const settingsPopup = { event: 'click', placement: 'left' } as const
+
+  const deleteWheel = (path: string) => {
+    modalStore.close()
+    modalStore.trigger({
+      type: 'component',
+      component: 'deleteWheelDialog',
+      meta: { path, title: apiWheels.find(wheel => wheel.path === path)?.title }
+    })
   }
 
   onMount(async () => {
@@ -190,7 +202,7 @@
         <RadioGroup
           rounded="rounded-container-token"
           flexDirection="flex-col"
-          padding="px-1 pt-0 pb-1"
+          padding="p-1"
         >
           {#each pageWheels as wheel, i}
             {#if i !== 0}
@@ -201,7 +213,7 @@
               name="wheel"
               value={wheel.path}
             >
-              <div class="flex items-center">
+              <div class="flex items-center gap-2">
                 <Avatar
                   src={wheelImages[wheel.path]}
                   width="w-14"
@@ -220,6 +232,37 @@
                       <span>{wheel.path}</span>
                     </div>
                   {/if}
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    class="btn-icon btn-icon-sm"
+                    use:popup={{ ...settingsPopup, target: `popup(${wheel.path})` }}
+                  >
+                    <i class="fas fa-ellipsis-v" />
+                  </button>
+
+                  <div class="card p-2 rounded-xl" data-popup="popup({wheel.path})">
+                    <div class=" flex flex-col gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-sm variant-filled-error flex items-center gap-2"
+                        on:click={() => deleteWheel(wheel.path)}
+                      >
+                        <i class="fas fa-trash" /> Delete wheel
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm variant-filled-warning flex items-center gap-2"
+                      >
+                        {#if wheel.visibility === 'private'}
+                          <i class="fas fa-lock-open" /> Make public
+                        {:else}
+                          <i class="fas fa-lock" /> Make private
+                        {/if}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </RadioItem>

@@ -24,6 +24,7 @@
   import CustomizeDialog from '$lib/components/CustomizeDialog.svelte'
   import ShareDialog from '$lib/components/ShareDialog.svelte'
   import SharedLinkDialog from '$lib/components/SharedLinkDialog.svelte'
+  import DeleteWheelDialog from '$lib/components/DeleteWheelDialog.svelte'
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
   initializeStores()
@@ -42,7 +43,8 @@
     resetPasswordDialog: { ref: ResetPasswordDialog },
     customizeDialog: { ref: CustomizeDialog },
     shareDialog: { ref: ShareDialog },
-    sharedLinkDialog: { ref: SharedLinkDialog }
+    sharedLinkDialog: { ref: SharedLinkDialog },
+    deleteWheelDialog: { ref: DeleteWheelDialog }
   }
 
   onMount(fullscreenStore.initialize)

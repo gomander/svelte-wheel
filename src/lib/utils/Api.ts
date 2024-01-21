@@ -75,6 +75,16 @@ export const getWheels = async (uid: string, fetch = window.fetch) => {
   return await response.json() as ApiResponse<{ wheels: ApiWheelMeta[] }>
 }
 
+export const deleteWheel = async (
+  path: string, uid: string, fetch = window.fetch
+) => {
+  const response = await fetch(
+    `/api/wheels/${path}`,
+    { method: 'DELETE', headers: { authorization: uid } }
+  )
+  return await response.json() as ApiResponse<null>
+}
+
 export type ApiResponse<T = any> = ApiSuccess<T> | ApiError
 
 export interface ApiSuccess<T = any> {

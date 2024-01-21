@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { SVELTE_WHEEL_API_KEY } from '$env/static/private'
-import { getWheel, updateWheel } from '$lib/server/FirebaseAdmin'
+import { getWheel, updateWheel, deleteWheel } from '$lib/server/FirebaseAdmin'
 import { updateWheelSchema } from '$lib/utils/Schemas'
 import type { ApiError, ApiSuccess, ApiWheel } from '$lib/utils/Api'
 
@@ -102,6 +102,35 @@ export const PUT = async ({ request, params }) => {
       JSON.stringify({
         success: false,
         error : { message: `Error updating wheel "${params.path}"` }
+      } satisfies ApiError),
+      { status: 500 }
+    )
+  }
+}
+
+export const DELETE = async ({ request, params }) => {
+  const uid = request.headers.get('authorization')
+  if (!uid) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error : { message: 'Unauthorized' }
+      } satisfies ApiError),
+      { status: 401 }
+    )
+  }
+  try {
+    await deleteWheel(params.path, uid)
+    return new Response(
+      JSON.stringify({ success: true, data: null } satisfies ApiSuccess<null>),
+      { status: 200 }
+    )
+  } catch (error) {
+    console.error(error)
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error : { message: `Error deleting wheel "${params.path}"` }
       } satisfies ApiError),
       { status: 500 }
     )

@@ -34,7 +34,7 @@ test('New button resets wheel', async ({ page }) => {
   await page.goto('/')
   const entriesTextbox = page.getByRole('textbox', { name: 'Entries' })
   const shuffleButton = page.getByRole('button', { name: 'Shuffle' })
-  const newButton = page.getByRole('button', { name: 'New' })
+  const newButton = page.getByRole('menuitem', { name: 'New' })
   await shuffleButton.click()
   await newButton.click()
   await expect(entriesTextbox).toHaveValue(defaultEntries)
@@ -46,11 +46,11 @@ test('Buttons are disabled when the wheel is spun', async ({ page }) => {
   const shuffleButton = page.getByRole('button', { name: 'Shuffle' })
   const entriesTextbox = page.getByRole('textbox', { name: 'Entries' })
   const resetButton = page.getByRole('button', { name: 'Reset' })
-  const newButton = page.getByRole('button', { name: 'New' })
-  const openButton = page.getByRole('button', { name: 'Open' })
-  const saveButton = page.getByRole('button', { name: 'Save' })
-  const customizeButton = page.getByRole('button', { name: 'Customize' })
-  const shareButton = page.getByRole('button', { name: 'Share' })
+  const newButton = page.getByRole('menuitem', { name: 'New' })
+  const openButton = page.getByRole('menuitem', { name: 'Open' })
+  const saveButton = page.getByRole('menuitem', { name: 'Save' })
+  const customizeButton = page.getByRole('menuitem', { name: 'Customize' })
+  const shareButton = page.getByRole('menuitem', { name: 'Share' })
   const entriesTab = page.getByRole('tab', { name: 'Entries' })
   const resultsTab = page.getByRole('tab', { name: 'Results' })
   const wheel = page.getByLabel('Wheel', { exact: true })
@@ -85,7 +85,7 @@ test('Buttons are disabled when the wheel is spun', async ({ page }) => {
 
 test('Wheel can be customized', async ({ page }) => {
   await page.goto('/')
-  const customizeButton = page.getByRole('button', { name: 'Customize' })
+  const customizeButton = page.getByRole('menuitem', { name: 'Customize' })
   const customizeDialog = page.getByRole('dialog')
   const titleInput = customizeDialog.getByLabel('Title')
   const descriptionInput = customizeDialog.getByLabel('Description')
@@ -125,7 +125,7 @@ test('Wheel can be customized', async ({ page }) => {
 
 test('Wheel can be spun and a result is generated', async ({ page }) => {
   await page.goto('/')
-  const customizeButton = page.getByRole('button', { name: 'Customize' })
+  const customizeButton = page.getByRole('menuitem', { name: 'Customize' })
   const customizeDialog = page.getByRole('dialog')
   const spinTimeSlider = customizeDialog.getByRole('slider', { name: 'Spin time' })
   const saveButton = customizeDialog.getByRole('button', { name: 'Save' })
@@ -157,7 +157,7 @@ test('Wheel can be spun and a result is generated', async ({ page }) => {
 
 test('Login dialog opens when user who is not logged in clicks on open button', async ({ page }) => {
   await page.goto('/')
-  const openButton = page.getByRole('button', { name: 'Open' })
+  const openButton = page.getByRole('menuitem', { name: 'Open' })
   const openFromCloudButton = page.getByRole('button', { name: 'Open from the cloud' })
   const logInHeading = page.getByRole('heading', { name: 'Log in' })
   await openButton.click()

@@ -25,6 +25,7 @@
   import ShareDialog from '$lib/components/ShareDialog.svelte'
   import SharedLinkDialog from '$lib/components/SharedLinkDialog.svelte'
   import DeleteWheelDialog from '$lib/components/DeleteWheelDialog.svelte'
+  import { PUBLIC_FIREBASE_MEASUREMENT_ID } from '$env/static/public'
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
   initializeStores()
@@ -55,6 +56,20 @@
 
 <svelte:head>
   {@html webManifestLink}
+  {#if process.env.NODE_ENV === 'production'}
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id={PUBLIC_FIREBASE_MEASUREMENT_ID}"
+    />
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', PUBLIC_FIREBASE_MEASUREMENT_ID)
+    </script>
+  {/if}
 </svelte:head>
 
 <Toast />

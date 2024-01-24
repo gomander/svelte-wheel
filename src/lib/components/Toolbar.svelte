@@ -36,7 +36,7 @@
       <i class="fas fa-bars" />
     </button>
 
-    <div data-popup="mobileMenu">
+    <div class="z-50" data-popup="mobileMenu">
       <MobileMenu
         on:new={() => dispatch('new')}
         on:open={() => dispatch('open')}
@@ -124,7 +124,7 @@
         <i class="fas fa-bars" />
       </button>
 
-      <div data-popup="moreMenu">
+      <div class="z-50" data-popup="moreMenu">
         <MoreMenu
           on:account={() => dispatch('account')}
           on:debug={() => dispatch('debug')}

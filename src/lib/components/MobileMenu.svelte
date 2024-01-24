@@ -88,7 +88,7 @@
     target="_blank"
     class="btn text-xl hover:variant-soft-primary"
   >
-    <i class="fab fa-github w-6" />
+    <i class="fas fa-code w-6" />
     <span class="flex-grow text-left">GitHub</span>
   </a>
 

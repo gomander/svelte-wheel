@@ -56,7 +56,7 @@
 
 <svelte:head>
   {@html webManifestLink}
-  {#if process.env.NODE_ENV === 'production'}
+  {#if process.env.NODE_ENV !== 'development'}
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id={PUBLIC_FIREBASE_MEASUREMENT_ID}"

@@ -17,11 +17,7 @@
   }>()
 </script>
 
-<header
-  class="px-4 py-2 bg-surface-200-700-token shadow-2xl flex justify-between items-center"
-  role="menubar"
-  aria-label="Toolbar"
->
+<header class="px-4 py-2 bg-surface-200-700-token shadow-2xl flex justify-between items-center">
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
   </a>
@@ -30,7 +26,6 @@
     <button
       class="btn btn-icon-sm text-xl hover:variant-soft-primary"
       use:popup={{ event: 'click', target: 'mobileMenu' }}
-      role="menuitem"
       aria-haspopup="menu"
       aria-controls="mobileMenu"
       aria-label="Toggle menu"
@@ -58,7 +53,11 @@
     </div>
   </div>
 
-  <div class="hidden lg:flex items-center">
+  <div
+    class="hidden lg:flex items-center"
+    role="menubar"
+    aria-label="Toolbar"
+  >
     {#if !$fullscreenStore.active}
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"

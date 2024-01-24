@@ -6,7 +6,6 @@ name: Deploy to Firebase Hosting on merge
 jobs:
   build_and_deploy:
     env:
-      NODE_ENV: production
       SVELTE_WHEEL_API_KEY: '${{ secrets.SVELTE_WHEEL_API_KEY }}'
       PUBLIC_FIREBASE_API_KEY: '${{ secrets.PUBLIC_FIREBASE_API_KEY }}'
       PUBLIC_FIREBASE_AUTH_DOMAIN: '${{ secrets.PUBLIC_FIREBASE_AUTH_DOMAIN }}'

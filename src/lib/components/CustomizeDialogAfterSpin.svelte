@@ -14,7 +14,7 @@
     bind:value={config.afterSpinSound}
   >
     <option value="">No sound</option>
-    {#each afterSpinSounds as item}
+    {#each afterSpinSounds as item (item.file)}
       <option value={item.file}>{item.name}</option>
     {/each}
   </select>

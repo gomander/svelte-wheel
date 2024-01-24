@@ -14,7 +14,7 @@
   >
     <option value="">No sound</option>
     <option value="tick">Tick</option>
-    {#each duringSpinSounds as item}
+    {#each duringSpinSounds as item (item.file)}
       <option value={item.file}>{item.name}</option>
     {/each}
   </select>

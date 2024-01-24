@@ -27,7 +27,7 @@
     on:finalize={handleSortColors}
     class="p-2 flex flex-wrap gap-2 w-fit rounded-3xl variant-soft"
   >
-    {#each colorsArray as item(item.id)}
+    {#each colorsArray as item (item.id)}
       <div
         animate:flip={{ duration: 100 }}
         class="flex flex-col"

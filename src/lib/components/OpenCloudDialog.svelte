@@ -156,14 +156,14 @@
     }
   }
 
-  // TODO: Use tabs to separate private and public wheels. The user should be
-  // able to delete a wheel by clicking on a delete button.
+  // TODO: Use tabs to separate private and public wheels. Allow users to change
+  // a wheel's visibility.
 </script>
 
 <svelte:window bind:innerHeight />
 
 {#if $modalStore[0]}
-  <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
+  <article class="card w-modal p-4 shadow-xl overflow-hidden flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk" />
       <h1>Open a wheel</h1>
@@ -204,7 +204,7 @@
           flexDirection="flex-col"
           padding="p-1"
         >
-          {#each pageWheels as wheel, i}
+          {#each pageWheels as wheel, i (wheel.path)}
             {#if i !== 0}
               <hr />
             {/if}

@@ -77,7 +77,8 @@
       if ((x ** 2 + y ** 2) ** 0.5 > center * 0.85) return
     }
     if (e instanceof KeyboardEvent) {
-      if (e.key !== 'Enter' && e.key !== ' ') return
+      if (!['Enter', ' '].includes(e.key)) return
+      e.preventDefault()
     }
     wheel.click()
   }

@@ -19,7 +19,8 @@
 
 <header
   class="px-4 py-2 bg-surface-200-700-token shadow-2xl flex justify-between items-center"
-  role="toolbar"
+  role="menubar"
+  aria-label="Toolbar"
 >
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
@@ -29,14 +30,22 @@
     <button
       class="btn btn-icon-sm text-xl hover:variant-soft-primary"
       use:popup={{ event: 'click', target: 'mobileMenu' }}
-      role="menu"
-      aria-label="Menu"
+      role="menuitem"
+      aria-haspopup="menu"
+      aria-controls="mobileMenu"
+      aria-label="Toggle menu"
       title="Menu"
     >
       <i class="fas fa-bars" />
     </button>
 
-    <div class="z-50" data-popup="mobileMenu">
+    <div
+      id="mobileMenu"
+      role="menu"
+      aria-label="Menu"
+      class="z-50"
+      data-popup="mobileMenu"
+    >
       <MobileMenu
         on:new={() => dispatch('new')}
         on:open={() => dispatch('open')}
@@ -55,6 +64,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('new')}
         disabled={$busyStore.spinning}
+        role="menuitem"
         aria-label="New"
         title="New"
       >
@@ -65,6 +75,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('open')}
         disabled={$busyStore.spinning}
+        role="menuitem"
         aria-label="Open"
         title="Open"
       >
@@ -75,6 +86,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('save')}
         disabled={$busyStore.spinning}
+        role="menuitem"
         aria-label="Save"
         title="Save"
       >
@@ -85,6 +97,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('customize')}
         disabled={$busyStore.spinning}
+        role="menuitem"
         aria-label="Customize"
         title="Customize"
       >
@@ -95,6 +108,7 @@
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => dispatch('share')}
         disabled={$busyStore.spinning}
+        role="menuitem"
         aria-label="Share"
         title="Share"
       >
@@ -106,6 +120,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         on:click={() => fullscreenStore.toggleFullscreen()}
+        role="menuitem"
         aria-label="Toggle fullscreen"
         title="Toggle fullscreen"
       >
@@ -117,14 +132,22 @@
       <button
         class="btn btn-icon-sm text-xl hover:variant-soft-primary"
         use:popup={{ event: 'click', target: 'moreMenu' }}
-        role="menu"
-        aria-label="More"
+        role="menuitem"
+        aria-haspopup="menu"
+        aria-controls="moreMenu"
+        aria-label="Toggle more menu"
         title="More"
       >
         <i class="fas fa-bars" />
       </button>
 
-      <div class="z-50" data-popup="moreMenu">
+      <div
+        id="moreMenu"
+        role="menu"
+        aria-label="More options"
+        class="z-50"
+        data-popup="moreMenu"
+      >
         <MoreMenu
           on:account={() => dispatch('account')}
           on:debug={() => dispatch('debug')}

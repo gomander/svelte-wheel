@@ -50,7 +50,6 @@ export const GET = async ({ request, params }) => {
 }
 
 export const PUT = async ({ request, params }) => {
-  console.log('NODE_ENV:', process.env.NODE_ENV, import.meta.env.NODE_ENV)
   const uid = request.headers.get('authorization')
   const apiKey = request.headers.get('x-api-key')
   if (

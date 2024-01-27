@@ -30,17 +30,21 @@ test('Shuffle and Sort buttons change entry order', async ({ page }) => {
   await expect(entriesTextbox).toHaveValue(defaultEntries)
 })
 
-test('New button resets wheel', async ({ page }) => {
+test('New button resets wheel', async ({ page, isMobile }) => {
   await page.goto('/')
   const entriesTextbox = page.getByRole('textbox', { name: 'Entries' })
   const shuffleButton = page.getByRole('button', { name: 'Shuffle' })
   const newButton = page.getByRole('menuitem', { name: 'New' })
   await shuffleButton.click()
+  if (isMobile) {
+    const mobileMenuButton = page.getByRole('button', { name: 'Toggle menu' })
+    await mobileMenuButton.click()
+  }
   await newButton.click()
   await expect(entriesTextbox).toHaveValue(defaultEntries)
 })
 
-test('Buttons are disabled when the wheel is spun', async ({ page }) => {
+test('Buttons are disabled when the wheel is spun', async ({ page, isMobile }) => {
   await page.goto('/')
   const sortButton = page.getByRole('button', { name: 'Sort' })
   const shuffleButton = page.getByRole('button', { name: 'Shuffle' })
@@ -54,6 +58,10 @@ test('Buttons are disabled when the wheel is spun', async ({ page }) => {
   const entriesTab = page.getByRole('tab', { name: 'Entries' })
   const resultsTab = page.getByRole('tab', { name: 'Results' })
   const wheel = page.getByLabel('Wheel', { exact: true })
+  if (isMobile) {
+    const mobileMenuButton = page.getByRole('button', { name: 'Toggle menu' })
+    await mobileMenuButton.click()
+  }
   await Promise.all([
     expect(entriesTab).toBeVisible(),
     expect(resultsTab).toBeVisible(),
@@ -71,6 +79,10 @@ test('Buttons are disabled when the wheel is spun', async ({ page }) => {
   await wheel.click()
   await expect(resetButton).toBeDisabled()
   await entriesTab.click()
+  if (isMobile) {
+    const mobileMenuButton = page.getByRole('button', { name: 'Toggle menu' })
+    await mobileMenuButton.click()
+  }
   await Promise.all([
     expect(sortButton).toBeDisabled(),
     expect(shuffleButton).toBeDisabled(),
@@ -83,7 +95,7 @@ test('Buttons are disabled when the wheel is spun', async ({ page }) => {
   ])
 })
 
-test('Wheel can be customized', async ({ page }) => {
+test('Wheel can be customized', async ({ page, isMobile }) => {
   await page.goto('/')
   const customizeButton = page.getByRole('menuitem', { name: 'Customize' })
   const customizeDialog = page.getByRole('dialog')
@@ -96,6 +108,10 @@ test('Wheel can be customized', async ({ page }) => {
   const saveButton = customizeDialog.getByRole('button', { name: 'Save' })
   const title = page.getByRole('heading', { name: 'Wheel title' })
   const description = page.getByLabel('Wheel description')
+  if (isMobile) {
+    const mobileMenuButton = page.getByRole('button', { name: 'Toggle menu' })
+    await mobileMenuButton.click()
+  }
   await customizeButton.click()
   await Promise.all([
     expect(customizeDialog).toBeVisible(),
@@ -123,7 +139,7 @@ test('Wheel can be customized', async ({ page }) => {
   expect(await page.title()).toBe('My Custom Wheel - Svelte Wheel')
 })
 
-test('Wheel can be spun and a result is generated', async ({ page }) => {
+test('Wheel can be spun and a result is generated', async ({ page, isMobile }) => {
   await page.goto('/')
   const customizeButton = page.getByRole('menuitem', { name: 'Customize' })
   const customizeDialog = page.getByRole('dialog')
@@ -135,6 +151,10 @@ test('Wheel can be spun and a result is generated', async ({ page }) => {
   const removeButton = resultDialog.getByRole('button', { name: 'Remove' })
   const resultsTab = page.getByRole('tab', { name: 'Results' })
   const resultsTextbox = page.getByRole('textbox', { name: 'Results' })
+  if (isMobile) {
+    const mobileMenuButton = page.getByRole('button', { name: 'Toggle menu' })
+    await mobileMenuButton.click()
+  }
   await customizeButton.click()
   await spinTimeSlider.click({ force: true, position: { x: 0, y: 0 } })
   await saveButton.click()
@@ -155,11 +175,15 @@ test('Wheel can be spun and a result is generated', async ({ page }) => {
   ])
 })
 
-test('Login dialog opens when user who is not logged in clicks on open button', async ({ page }) => {
+test('Login dialog opens when user who is not logged in clicks on open button', async ({ page, isMobile }) => {
   await page.goto('/')
   const openButton = page.getByRole('menuitem', { name: 'Open' })
   const openFromCloudButton = page.getByRole('button', { name: 'Open from the cloud' })
   const logInHeading = page.getByRole('heading', { name: 'Log in' })
+  if (isMobile) {
+    const mobileMenuButton = page.getByRole('button', { name: 'Toggle menu' })
+    await mobileMenuButton.click()
+  }
   await openButton.click()
   await openFromCloudButton.isVisible()
   await openFromCloudButton.click()

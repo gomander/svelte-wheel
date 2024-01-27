@@ -20,6 +20,7 @@
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('new')}
     disabled={$busyStore.spinning}
+    role="menuitem"
   >
     <i class="fas fa-file w-6" />
     <span class="flex-grow text-left">New</span>
@@ -29,6 +30,7 @@
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('open')}
     disabled={$busyStore.spinning}
+    role="menuitem"
   >
     <i class="fas fa-folder-open w-6" />
     <span class="flex-grow text-left">Open</span>
@@ -38,6 +40,7 @@
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('save')}
     disabled={$busyStore.spinning}
+    role="menuitem"
   >
     <i class="fas fa-floppy-disk w-6" />
     <span class="flex-grow text-left">Save</span>
@@ -47,6 +50,7 @@
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('customize')}
     disabled={$busyStore.spinning}
+    role="menuitem"
   >
     <i class="fas fa-palette w-6" />
     <span class="flex-grow text-left">Customize</span>
@@ -56,6 +60,7 @@
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('share')}
     disabled={$busyStore.spinning}
+    role="menuitem"
   >
     <i class="fas fa-share-nodes w-6" />
     <span class="flex-grow text-left">Share</span>
@@ -65,6 +70,7 @@
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('account')}
     disabled={$busyStore.spinning}
+    role="menuitem"
   >
     <i class="fas fa-user w-6" />
     <span class="flex-grow text-left">Account</span>
@@ -73,6 +79,7 @@
   <a
     href="/faq"
     class="btn text-xl hover:variant-soft-primary"
+    role="menuitem"
   >
     <i class="fas fa-question w-6" />
     <span class="flex-grow text-left">FAQ</span>
@@ -87,6 +94,7 @@
     href="https://github.com/gomander/svelte-wheel"
     target="_blank"
     class="btn text-xl hover:variant-soft-primary"
+    role="menuitem"
   >
     <i class="fas fa-code w-6" />
     <span class="flex-grow text-left">GitHub</span>
@@ -96,6 +104,7 @@
     class="btn text-xl hover:variant-soft-primary"
     on:click={() => dispatch('debug')}
     disabled={$busyStore.spinning}
+    role="menuitem"
   >
     <i class="fas {$debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6" />
     <span class="flex-grow text-left">Debug</span>

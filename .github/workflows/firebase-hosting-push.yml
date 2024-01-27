@@ -24,8 +24,8 @@ jobs:
         run: npm install
       - name: Run unit tests
         run: npm run test:unit
-      - name: Install browsers
-        run: npx playwright install
+      - name: Set up Playwright
+        run: npx playwright install --with-deps
       - name: Run integration tests
         run: npm run test:integration
       - uses: FirebaseExtended/action-hosting-deploy@v0

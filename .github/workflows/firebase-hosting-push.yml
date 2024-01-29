@@ -1,5 +1,5 @@
 name: Deploy to Firebase Hosting on merge
-'on':
+on:
   push:
     branches:
       - master
@@ -16,18 +16,17 @@ jobs:
       PUBLIC_FIREBASE_MEASUREMENT_ID: '${{ secrets.PUBLIC_FIREBASE_MEASUREMENT_ID }}'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: '20'
-      - name: Install depedencies
-        run: npm install
+          version: 8
+          run_install: true
       - name: Run unit tests
-        run: npm run test:unit
+        run: pnpm test:unit
       - name: Set up Playwright
         run: npx playwright install --with-deps
       - name: Run integration tests
-        run: npm run test:integration
+        run: pnpm test:integration
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
@@ -39,20 +38,20 @@ jobs:
   thumbnail-service:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: '20'
+          version: 8
       - name: Install depedencies
-        run: cd cloud-run/thumbnail-service; npm i
+        run: cd cloud-run/thumbnail-service; pnpm i
       - name: Create env.js
         run: echo '${{ secrets.THUMBNAIL_SERVICE_ENV_FILE }}' > cloud-run/thumbnail-service/env.js
       - name: Prepare authorization with Google Cloud
         id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}'
       - name: Set up Google Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v1'
+        uses: google-github-actions/setup-gcloud@v2
       - name: Build and deploy
-        run: cd cloud-run/thumbnail-service; npm run deploy
+        run: cd cloud-run/thumbnail-service; pnpm run deploy

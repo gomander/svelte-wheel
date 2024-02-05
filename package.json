@@ -19,22 +19,22 @@
     "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 static/images/icons/favicon.svg"
   },
   "devDependencies": {
-    "@playwright/test": "^1.41.1",
-    "@skeletonlabs/skeleton": "^2.7.1",
+    "@playwright/test": "^1.41.2",
+    "@skeletonlabs/skeleton": "^2.8.0",
     "@skeletonlabs/tw-plugin": "~0.3.1",
     "@sveltejs/adapter-auto": "^3.1.1",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@tailwindcss/forms": "~0.5.7",
     "@tailwindcss/typography": "~0.5.10",
     "@types/canvas-confetti": "^1.6.4",
-    "@types/node": "^20.11.8",
+    "@types/node": "^20.11.16",
     "@types/uuid": "^9.0.8",
     "@vite-pwa/assets-generator": "~0.2.3",
     "@vite-pwa/sveltekit": "~0.3.0",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.33",
     "postcss-load-config": "^5.0.2",
-    "svelte": "^4.2.9",
+    "svelte": "^4.2.10",
     "svelte-check": "^3.6.3",
     "svelte-dnd-action": "~0.9.38",
     "tailwindcss": "^3.4.1",
@@ -47,12 +47,12 @@
     "workbox-window": "^7.0.0"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.6.0",
-    "@napi-rs/canvas": "~0.1.44",
+    "@floating-ui/dom": "^1.6.1",
+    "@napi-rs/canvas": "~0.1.45",
     "@sveltejs/kit": "^2.5.0",
     "browser-fs-access": "~0.35.0",
     "canvas-confetti": "^1.9.2",
-    "firebase": "^10.7.2",
+    "firebase": "^10.8.0",
     "firebase-admin": "^12.0.0",
     "firebase-frameworks": "~0.11.2",
     "firebase-functions": "^4.6.0",
@@ -60,6 +60,7 @@
     "zod": "^3.22.4"
   },
   "engines": {
-    "node": "20"
+    "node": "20",
+    "pnpm": ">=8"
   }
 }

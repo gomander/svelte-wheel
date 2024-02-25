@@ -61,14 +61,16 @@
       async
       src="https://www.googletagmanager.com/gtag/js?id={PUBLIC_FIREBASE_MEASUREMENT_ID}"
     />
-    <script>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
-      gtag('js', new Date())
-      gtag('config', PUBLIC_FIREBASE_MEASUREMENT_ID)
-    </script>
+    {@html `
+      <script>
+        window.dataLayer = window.dataLayer || []
+        function gtag() {
+          dataLayer.push(arguments)
+        }
+        gtag('js', new Date())
+        gtag('config', ${PUBLIC_FIREBASE_MEASUREMENT_ID})
+      </script>
+    `}
   {/if}
 </svelte:head>
 

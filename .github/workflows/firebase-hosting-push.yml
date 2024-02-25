@@ -6,21 +6,21 @@ on:
 jobs:
   build_and_deploy:
     env:
-      SVELTE_WHEEL_API_KEY: '${{ secrets.SVELTE_WHEEL_API_KEY }}'
-      PUBLIC_FIREBASE_API_KEY: '${{ secrets.PUBLIC_FIREBASE_API_KEY }}'
-      PUBLIC_FIREBASE_AUTH_DOMAIN: '${{ secrets.PUBLIC_FIREBASE_AUTH_DOMAIN }}'
-      PUBLIC_FIREBASE_PROJECT_ID: '${{ secrets.PUBLIC_FIREBASE_PROJECT_ID }}'
-      PUBLIC_FIREBASE_STORAGE_BUCKET: '${{ secrets.PUBLIC_FIREBASE_STORAGE_BUCKET }}'
-      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '${{ secrets.PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}'
-      PUBLIC_FIREBASE_APP_ID: '${{ secrets.PUBLIC_FIREBASE_APP_ID }}'
-      PUBLIC_FIREBASE_MEASUREMENT_ID: '${{ secrets.PUBLIC_FIREBASE_MEASUREMENT_ID }}'
+      SVELTE_WHEEL_API_KEY: ${{ secrets.SVELTE_WHEEL_API_KEY }}
+      PUBLIC_FIREBASE_API_KEY: ${{ secrets.PUBLIC_FIREBASE_API_KEY }}
+      PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PUBLIC_FIREBASE_AUTH_DOMAIN }}
+      PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.PUBLIC_FIREBASE_PROJECT_ID }}
+      PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.PUBLIC_FIREBASE_STORAGE_BUCKET }}
+      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+      PUBLIC_FIREBASE_APP_ID: ${{ secrets.PUBLIC_FIREBASE_APP_ID }}
+      PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.PUBLIC_FIREBASE_MEASUREMENT_ID }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
           run_install: true
@@ -32,8 +32,8 @@ jobs:
         run: pnpm test:integration
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}'
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}
           channelId: live
           projectId: svelte-wheel
         env:
@@ -42,7 +42,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
       - name: Install depedencies
@@ -50,10 +53,9 @@ jobs:
       - name: Create env.js
         run: echo '${{ secrets.THUMBNAIL_SERVICE_ENV_FILE }}' > cloud-run/thumbnail-service/env.js
       - name: Prepare authorization with Google Cloud
-        id: 'auth'
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}'
+          credentials_json: ${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
       - name: Build and deploy

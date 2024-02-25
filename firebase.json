@@ -4,7 +4,10 @@
     "rewrites": [
       {
         "source": "**",
-        "run": { "serviceId": "app" }
+        "run": {
+          "serviceId": "app",
+          "region": "europe-west1"
+        }
       }
     ]
   }

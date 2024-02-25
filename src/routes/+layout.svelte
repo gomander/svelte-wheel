@@ -68,7 +68,7 @@
           dataLayer.push(arguments)
         }
         gtag('js', new Date())
-        gtag('config', ${PUBLIC_FIREBASE_MEASUREMENT_ID})
+        gtag('config', '${PUBLIC_FIREBASE_MEASUREMENT_ID}')
       </script>
     `}
   {/if}

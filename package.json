@@ -57,6 +57,7 @@
     "firebase-frameworks": "~0.11.2",
     "firebase-functions": "^4.7.0",
     "uuid": "^9.0.1",
+    "validate-color": "^2.2.4",
     "zod": "^3.22.4"
   },
   "engines": {

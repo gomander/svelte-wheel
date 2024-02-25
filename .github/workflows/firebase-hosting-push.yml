@@ -7,20 +7,23 @@ jobs:
   build_and_deploy:
     env:
       SVELTE_WHEEL_API_KEY: ${{ secrets.SVELTE_WHEEL_API_KEY }}
-      PUBLIC_FIREBASE_API_KEY: ${{ secrets.PUBLIC_FIREBASE_API_KEY }}
-      PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PUBLIC_FIREBASE_AUTH_DOMAIN }}
-      PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.PUBLIC_FIREBASE_PROJECT_ID }}
-      PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.PUBLIC_FIREBASE_STORAGE_BUCKET }}
-      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-      PUBLIC_FIREBASE_APP_ID: ${{ secrets.PUBLIC_FIREBASE_APP_ID }}
-      PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.PUBLIC_FIREBASE_MEASUREMENT_ID }}
+      PUBLIC_FIREBASE_API_KEY: ${{ vars.PUBLIC_FIREBASE_API_KEY }}
+      PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.PUBLIC_FIREBASE_AUTH_DOMAIN }}
+      PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.PUBLIC_FIREBASE_PROJECT_ID }}
+      PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ vars.PUBLIC_FIREBASE_STORAGE_BUCKET }}
+      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+      PUBLIC_FIREBASE_APP_ID: ${{ vars.PUBLIC_FIREBASE_APP_ID }}
+      PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ vars.PUBLIC_FIREBASE_MEASUREMENT_ID }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Node.js 20
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v3
+      - name: Install pnpm and dependencies
+        uses: pnpm/action-setup@v3
         with:
           version: 8
           run_install: true
@@ -30,33 +33,15 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run integration tests
         run: pnpm test:integration
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}
-          channelId: live
-          projectId: svelte-wheel
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
-  thumbnail-service:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-      - name: Install depedencies
-        run: cd cloud-run/thumbnail-service; pnpm i
-      - name: Create env.js
-        run: echo '${{ secrets.THUMBNAIL_SERVICE_ENV_FILE }}' > cloud-run/thumbnail-service/env.js
-      - name: Prepare authorization with Google Cloud
+      - name: Build app
+        run: npm run build
+      - name: Copy necessary files to build directory
+        run: cp package.json pnpm-lock.yaml Dockerfile build
+      - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}
-      - name: Set up Google Cloud SDK
+      - name: Install Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-      - name: Build and deploy
-        run: cd cloud-run/thumbnail-service; pnpm run deploy
+      - name: Deploy to Cloud Run
+        run: gcloud run deploy app --source build --platform managed --memory 128Mi --region ${{ vars.GCP_SERVICE_REGION }} --allow-unauthenticated --project ${{ vars.GCP_PROJECT_ID }}

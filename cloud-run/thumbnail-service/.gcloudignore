@@ -1,8 +1,0 @@
-# Upload all files except node_modules to Google Cloud.
-# If this file wasn't here, .gitignore would stop the .env files from being
-# uploaded. Then the application wouldn't get the environment variables that it
-# needs to run.
-node_modules/*
-env.example.js
-tsconfig.json
-pnpm-lock.yaml

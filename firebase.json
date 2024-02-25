@@ -1,26 +1,10 @@
 {
   "hosting": {
-    "source": ".",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "frameworksBackend": { "region": "europe-west1" },
+    "site": "svelte-wheel",
     "rewrites": [
       {
-        "source": "/thumbnails",
-        "run": { "serviceId": "thumbnails-service", "region": "us-central1" }
-      },
-      {
-        "source": "/thumbnails/**",
-        "run": { "serviceId": "thumbnails-service", "region": "us-central1" }
-      }
-    ],
-    "headers": [
-      {
-        "source": "/thumbnails/**",
-        "headers": [{ "key": "Cache-Control", "value": "max-age=14400" }]
-      },
-      {
-        "source": "**/*.@(png|webp|mp3|ttf)",
-        "headers": [{ "key": "Cache-Control", "value": "max-age=604800" }]
+        "source": "**",
+        "run": { "serviceId": "app" }
       }
     ]
   }

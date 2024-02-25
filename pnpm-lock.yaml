@@ -35,6 +35,9 @@ dependencies:
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
+  validate-color:
+    specifier: ^2.2.4
+    version: 2.2.4
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -6681,6 +6684,10 @@ packages:
   /uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
+    dev: false
+
+  /validate-color@2.2.4:
+    resolution: {integrity: sha512-Znolz+b6CwW6eBXYld7MFM3O7funcdyRfjKC/X9hqYV/0VcC5LB/L45mff7m3dIn9wdGdNOAQ/fybNuD5P/HDw==}
     dev: false
 
   /vary@1.1.2:

@@ -56,7 +56,7 @@
         if (wheel.path in wheelImages) return true
         wheelImages[wheel.path] = ''
         const response = await fetch(
-          `${window.location.origin.replace('5173', '8080')}/thumbnails/${wheel.path}?size=56`,
+          `${window.location.origin}/thumbnails/${wheel.path}?size=56`,
           { headers: { authorization: getCurrentUser()?.uid || '' } }
         )
         if (response.ok) {

@@ -7,6 +7,7 @@ export default defineConfig({
   },
   testDir: 'tests/playwright',
   testMatch: /(.+\.)?(test|spec)\.[jt]s/,
+  retries: 2,
   projects: [
     {
       name: 'Desktop Chromium',

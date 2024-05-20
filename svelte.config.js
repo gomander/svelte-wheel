@@ -1,4 +1,3 @@
-// @ts-check
 import adapter from '@sveltejs/adapter-node'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
@@ -10,6 +9,11 @@ export default {
   kit: {
     adapter: adapter(),
     serviceWorker: { register: false },
-    paths: { relative: false }
+    paths: { relative: false },
+    typescript: {
+      config(config) {
+        config.include.push('../*.config.js')
+      }
+    }
   }
 }

@@ -16,7 +16,7 @@
     on:click={() => dispatch('account')}
     disabled={$busyStore.spinning}
   >
-    <i class="fas fa-user w-6" />
+    <i class="fas fa-user w-6"></i>
     <span class="flex-grow text-left">Account</span>
   </button>
 
@@ -24,7 +24,7 @@
     href="/faq"
     class="btn text-xl hover:variant-soft-primary"
   >
-    <i class="fas fa-question w-6" />
+    <i class="fas fa-question w-6"></i>
     <span class="flex-grow text-left">FAQ</span>
   </a>
 
@@ -38,7 +38,7 @@
     target="_blank"
     class="btn text-xl hover:variant-soft-primary"
   >
-    <i class="fas fa-code w-6" />
+    <i class="fas fa-code w-6"></i>
     <span class="flex-grow text-left">GitHub</span>
   </a>
 
@@ -47,7 +47,7 @@
     on:click={() => dispatch('debug')}
     disabled={$busyStore.spinning}
   >
-    <i class="fas {$debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6" />
+    <i class="fas {$debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>
     <span class="flex-grow text-left">Debug</span>
   </button>
 </div>

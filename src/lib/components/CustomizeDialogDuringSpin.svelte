@@ -25,7 +25,7 @@
     type="checkbox"
     bind:checked={config.indefiniteSpin}
     class="checkbox"
-  />
+  >
 
   <span>Keep spinning until the wheel is clicked</span>
 </label>

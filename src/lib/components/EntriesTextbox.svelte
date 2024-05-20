@@ -43,7 +43,7 @@
   on:input={setEntries}
   disabled={$busyStore.spinning}
   aria-labelledby="entries-label"
-/>
+></textarea>
 
 {#if $debugStore.active}
   <pre>{$wheelStore.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>

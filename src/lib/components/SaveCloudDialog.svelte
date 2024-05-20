@@ -107,7 +107,7 @@
 {#if $modalStore[0]}
   <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
-      <i class="fas fa-floppy-disk" />
+      <i class="fas fa-floppy-disk"></i>
       <h1>Save a wheel</h1>
     </header>
 
@@ -124,7 +124,7 @@
               value="overwrite"
               bind:group={saveMode}
               class="radio"
-            />
+            >
             <span>
               Overwrite "{$wheelStore.config.title}" ({$wheelStore.path})
             </span>
@@ -137,7 +137,7 @@
               bind:group={saveMode}
               checked
               class="radio"
-            />
+            >
             <span>Save a new wheel</span>
           </label>
         </div>
@@ -152,7 +152,7 @@
           bind:value={title}
           placeholder="Enter a title for your wheel"
           class="input"
-        />
+        >
       </label>
 
       <footer class="flex justify-end gap-2">

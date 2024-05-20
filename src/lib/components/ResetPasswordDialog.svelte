@@ -45,7 +45,7 @@
 {#if $modalStore[0]}
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
-      <i class="fas fa-key" />
+      <i class="fas fa-key"></i>
       <h1>Reset password</h1>
     </header>
 
@@ -63,7 +63,7 @@
           required
           bind:value={email}
           class="input"
-        />
+        >
 
         {#if errors.email}
           <span class="text-sm text-error-400-500-token">

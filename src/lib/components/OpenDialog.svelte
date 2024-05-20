@@ -43,7 +43,7 @@
 {#if $modalStore[0]}
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
-      <i class="fas fa-folder-open" />
+      <i class="fas fa-folder-open"></i>
       <h1>Open a wheel</h1>
     </header>
 
@@ -52,7 +52,7 @@
         class="btn variant-filled-primary flex flex-col gap-2"
         on:click={openOpenCloudDialog}
       >
-        <i class="fas fa-cloud text-4xl" />
+        <i class="fas fa-cloud text-4xl"></i>
         <span>Open from the cloud</span>
       </button>
 
@@ -60,7 +60,7 @@
         class="btn variant-filled"
         on:click={openLocalFile}
       >
-        <i class="fas fa-hard-drive text-4xl" />
+        <i class="fas fa-hard-drive text-4xl"></i>
         <span>Open a local file</span>
       </button>
     </div>

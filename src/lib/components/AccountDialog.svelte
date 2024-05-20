@@ -44,13 +44,13 @@
 {#if $modalStore[0]}
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
-      <i class="fas fa-user" />
+      <i class="fas fa-user"></i>
       <h1>Account</h1>
     </header>
 
     {#if !authUser?.emailVerified}
       <aside class="alert variant-soft-warning">
-        <i class="fas fa-exclamation-triangle" />
+        <i class="fas fa-exclamation-triangle"></i>
 
         <p class="alert-message">Your email address is not verified.</p>
 

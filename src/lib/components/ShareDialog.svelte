@@ -109,7 +109,7 @@
 {#if $modalStore[0]}
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
-      <i class="fas fa-share-nodes" />
+      <i class="fas fa-share-nodes"></i>
       <h1>Share wheel</h1>
     </header>
 
@@ -141,7 +141,7 @@
               value="overwrite"
               bind:group={shareMode}
               class="radio"
-            />
+            >
             <span>
               Overwrite "{$wheelStore.config.title}" ({$wheelStore.path})
             </span>
@@ -154,7 +154,7 @@
               bind:group={shareMode}
               checked
               class="radio"
-            />
+            >
             <span>Share as a new wheel</span>
           </label>
         </div>
@@ -170,7 +170,7 @@
           bind:value={title}
           placeholder="Enter a title for your wheel"
           class="input"
-        />
+        >
       </label>
 
       <footer class="flex justify-end gap-2">

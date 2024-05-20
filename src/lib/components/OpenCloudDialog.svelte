@@ -165,7 +165,7 @@
 {#if $modalStore[0]}
   <article class="card w-modal p-4 shadow-xl overflow-hidden flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
-      <i class="fas fa-floppy-disk" />
+      <i class="fas fa-floppy-disk"></i>
       <h1>Open a wheel</h1>
     </header>
 
@@ -177,14 +177,14 @@
       {#if apiWheels.length}
         {#if apiWheels.length > wheelsPerPage}
           <label class="input-group grid-cols-[auto_1fr]">
-            <div><i class="fas fa-search" /></div>
+            <div><i class="fas fa-search"></i></div>
             <input
               type="search"
               class="input"
               placeholder="Search..."
               bind:value={filter}
               aria-label="Search"
-            />
+            >
           </label>
           <select
             class="select"
@@ -206,7 +206,7 @@
         >
           {#each pageWheels as wheel, i (wheel.path)}
             {#if i !== 0}
-              <hr />
+              <hr>
             {/if}
             <RadioItem
               bind:group={selectedWheel}
@@ -223,12 +223,12 @@
                   <div class="flex gap-2 justify-center items-center">
                     <span class="text-lg font-semibold">{wheel.title}</span>
                     {#if wheel.visibility === 'private'}
-                      <i class="fas fa-lock text-xs" title="Private" />
+                      <i class="fas fa-lock text-xs" title="Private"></i>
                     {/if}
                   </div>
                   {#if wheel.visibility === 'public'}
                     <div class="text-sm mt-1 flex gap-2 justify-center items-center">
-                      <i class="fas fa-globe" title="Public" />
+                      <i class="fas fa-globe" title="Public"></i>
                       <span>{wheel.path}</span>
                     </div>
                   {/if}
@@ -239,7 +239,7 @@
                     class="btn-icon btn-icon-sm"
                     use:popup={{ ...settingsPopup, target: `popup(${wheel.path})` }}
                   >
-                    <i class="fas fa-ellipsis-v" />
+                    <i class="fas fa-ellipsis-v"></i>
                   </button>
 
                   <div class="card p-2 rounded-xl" data-popup="popup({wheel.path})">
@@ -249,16 +249,16 @@
                         class="btn btn-sm variant-filled-error flex items-center gap-2"
                         on:click={() => deleteWheel(wheel.path)}
                       >
-                        <i class="fas fa-trash" /> Delete wheel
+                        <i class="fas fa-trash"></i> Delete wheel
                       </button>
                       <button
                         type="button"
                         class="btn btn-sm variant-filled-warning flex items-center gap-2"
                       >
                         {#if wheel.visibility === 'private'}
-                          <i class="fas fa-lock-open" /> Make public
+                          <i class="fas fa-lock-open"></i> Make public
                         {:else}
-                          <i class="fas fa-lock" /> Make private
+                          <i class="fas fa-lock"></i> Make private
                         {/if}
                       </button>
                     </div>
@@ -272,7 +272,7 @@
               No wheels found
             </div>
           {:else if filteredWheels.length > wheelsPerPage}
-            <div style="height: {4 * (wheelsPerPage - pageWheels.length)}rem" />
+            <div style="height: {4 * (wheelsPerPage - pageWheels.length)}rem"></div>
           {/if}
         </RadioGroup>
       {:else if loading}
@@ -293,7 +293,7 @@
             aria-label="Previous page"
             title="Previous page"
           >
-            <i class="fas fa-chevron-left" />
+            <i class="fas fa-chevron-left"></i>
           </button>
           <span class="text-center">
             {page + 1} / {Math.ceil(filteredWheels.length / wheelsPerPage) || 1}
@@ -306,7 +306,7 @@
             aria-label="Next page"
             title="Next page"
           >
-            <i class="fas fa-chevron-right" />
+            <i class="fas fa-chevron-right"></i>
           </button>
         </div>
       {/if}

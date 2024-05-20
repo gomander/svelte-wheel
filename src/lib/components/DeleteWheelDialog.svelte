@@ -43,7 +43,7 @@
 {#if $modalStore[0]}
   <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
-      <i class="fas fa-trash" />
+      <i class="fas fa-trash"></i>
       <h1>Delete wheel</h1>
     </header>
 

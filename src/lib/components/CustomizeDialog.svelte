@@ -21,7 +21,7 @@
 {#if $modalStore[0]}
   <article class="p-4 card w-modal flex flex-col gap-4 shadow-xl">
     <header class="text-2xl font-semibold flex items-center gap-2">
-      <i class="fas fa-palette" />
+      <i class="fas fa-palette"></i>
       <h1>Customize</h1>
     </header>
 

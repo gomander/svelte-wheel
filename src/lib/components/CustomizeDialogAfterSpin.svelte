@@ -25,7 +25,7 @@
     type="checkbox"
     bind:checked={config.displayWinnerDialog}
     class="checkbox"
-  />
+  >
 
   <span>Display winner dialog</span>
 </label>
@@ -40,7 +40,7 @@
     bind:value={config.winnerMessage}
     placeholder="We have a winner!"
     disabled={!config.displayWinnerDialog}
-  />
+  >
 </label>
 
 <label class="label">

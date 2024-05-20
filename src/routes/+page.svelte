@@ -61,8 +61,8 @@
   <meta
     property="og:image"
     content="https://sveltewheel.com/images/sveltewheel.webp"
-  />
-  <meta name="theme-color" content="#022a4f" />
+  >
+  <meta name="theme-color" content="#022a4f">
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
@@ -128,7 +128,7 @@
 </div>
 
 {#if !$fullscreenStore.active}
-  <hr />
+  <hr>
 
   <aside class="p-4 flex justify-center">
     <AboutCards />

@@ -31,7 +31,7 @@
       aria-label="Toggle menu"
       title="Menu"
     >
-      <i class="fas fa-bars" />
+      <i class="fas fa-bars"></i>
     </button>
 
     <div
@@ -67,7 +67,7 @@
         aria-label="New"
         title="New"
       >
-        <i class="fas fa-file" />
+        <i class="fas fa-file"></i>
       </button>
 
       <button
@@ -78,7 +78,7 @@
         aria-label="Open"
         title="Open"
       >
-        <i class="fas fa-folder-open" />
+        <i class="fas fa-folder-open"></i>
       </button>
 
       <button
@@ -89,7 +89,7 @@
         aria-label="Save"
         title="Save"
       >
-        <i class="fas fa-floppy-disk" />
+        <i class="fas fa-floppy-disk"></i>
       </button>
 
       <button
@@ -100,7 +100,7 @@
         aria-label="Customize"
         title="Customize"
       >
-        <i class="fas fa-palette" />
+        <i class="fas fa-palette"></i>
       </button>
 
       <button
@@ -111,7 +111,7 @@
         aria-label="Share"
         title="Share"
       >
-        <i class="fas fa-share-nodes" />
+        <i class="fas fa-share-nodes"></i>
       </button>
     {/if}
 
@@ -123,7 +123,7 @@
         aria-label="Toggle fullscreen"
         title="Toggle fullscreen"
       >
-        <i class="fas fa-{$fullscreenStore.active ? 'compress' : 'expand'}" />
+        <i class="fas fa-{$fullscreenStore.active ? 'compress' : 'expand'}"></i>
       </button>
     {/if}
 
@@ -137,7 +137,7 @@
         aria-label="Toggle more menu"
         title="More"
       >
-        <i class="fas fa-bars" />
+        <i class="fas fa-bars"></i>
       </button>
 
       <div

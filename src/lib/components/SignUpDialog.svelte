@@ -39,7 +39,7 @@
 {#if $modalStore[0]}
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
-      <i class="fas fa-user" />
+      <i class="fas fa-user"></i>
       <h1>Sign up</h1>
     </header>
 

@@ -22,7 +22,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas fa-file w-6" />
+    <i class="fas fa-file w-6"></i>
     <span class="flex-grow text-left">New</span>
   </button>
 
@@ -32,7 +32,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas fa-folder-open w-6" />
+    <i class="fas fa-folder-open w-6"></i>
     <span class="flex-grow text-left">Open</span>
   </button>
 
@@ -42,7 +42,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas fa-floppy-disk w-6" />
+    <i class="fas fa-floppy-disk w-6"></i>
     <span class="flex-grow text-left">Save</span>
   </button>
 
@@ -52,7 +52,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas fa-palette w-6" />
+    <i class="fas fa-palette w-6"></i>
     <span class="flex-grow text-left">Customize</span>
   </button>
 
@@ -62,7 +62,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas fa-share-nodes w-6" />
+    <i class="fas fa-share-nodes w-6"></i>
     <span class="flex-grow text-left">Share</span>
   </button>
 
@@ -72,7 +72,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas fa-user w-6" />
+    <i class="fas fa-user w-6"></i>
     <span class="flex-grow text-left">Account</span>
   </button>
 
@@ -81,7 +81,7 @@
     class="btn text-xl hover:variant-soft-primary"
     role="menuitem"
   >
-    <i class="fas fa-question w-6" />
+    <i class="fas fa-question w-6"></i>
     <span class="flex-grow text-left">FAQ</span>
   </a>
 
@@ -96,7 +96,7 @@
     class="btn text-xl hover:variant-soft-primary"
     role="menuitem"
   >
-    <i class="fas fa-code w-6" />
+    <i class="fas fa-code w-6"></i>
     <span class="flex-grow text-left">GitHub</span>
   </a>
 
@@ -106,7 +106,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas {$debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6" />
+    <i class="fas {$debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>
     <span class="flex-grow text-left">Debug</span>
   </button>
 </div>

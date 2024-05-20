@@ -25,7 +25,7 @@
     disabled={$busyStore.spinning}
     aria-label="Sort"
   >
-    <i class="fas fa-arrow-down-a-z" />
+    <i class="fas fa-arrow-down-a-z"></i>
     <span>Sort</span>
   </button>
 
@@ -35,7 +35,7 @@
     disabled={$busyStore.spinning}
     aria-label="Shuffle"
   >
-    <i class="fas fa-shuffle" />
+    <i class="fas fa-shuffle"></i>
     <span>Shuffle</span>
   </button>
 </div>

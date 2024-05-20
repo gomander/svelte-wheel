@@ -12,7 +12,7 @@
   readonly
   bind:value={text}
   aria-labelledby="results-label"
-/>
+></textarea>
 
 {#if $debugStore.active}
   <pre>{$wheelStore.winners.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>

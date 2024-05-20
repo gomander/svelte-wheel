@@ -48,7 +48,7 @@
 {#if $modalStore[0]}
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
-      <i class="fas fa-floppy-disk" />
+      <i class="fas fa-floppy-disk"></i>
       <h1>Save a wheel</h1>
     </header>
 
@@ -65,7 +65,7 @@
             maxlength="50"
             bind:value={fileName}
             placeholder="Untitled"
-          />
+          >
 
           <div>.wheel</div>
         </div>

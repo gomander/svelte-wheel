@@ -100,5 +100,5 @@
     class="w-full h-auto rounded-full outline-offset-[-1rem]"
     aria-label="Wheel"
     tabindex="0"
-  />
+  ></canvas>
 </div>

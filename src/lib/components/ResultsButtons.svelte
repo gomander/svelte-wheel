@@ -29,7 +29,7 @@
     on:click={sortWinners}
     aria-label="Sort"
   >
-    <i class="fas fa-arrow-down-a-z" />
+    <i class="fas fa-arrow-down-a-z"></i>
     <span>Sort</span>
   </button>
 
@@ -39,7 +39,7 @@
     disabled={$busyStore.spinning}
     aria-label="Reset"
   >
-    <i class="fas fa-rotate-left" />
+    <i class="fas fa-rotate-left"></i>
     <span>Reset</span>
   </button>
 
@@ -48,7 +48,7 @@
     on:click={clearWinners}
     aria-label="Clear"
   >
-    <i class="fas fa-x" />
+    <i class="fas fa-x"></i>
     <span>Clear</span>
   </button>
 </div>

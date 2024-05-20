@@ -48,7 +48,7 @@
         class="input"
         accept="image/*"
         on:input={updateWheelImage}
-      />
+      >
     </div>
 
     {#if config.image}
@@ -65,7 +65,7 @@
           title="Remove image"
           aria-label="Remove image"
         >
-          <i class="fas fa-times" />
+          <i class="fas fa-times"></i>
         </button>
       </div>
     {/if}

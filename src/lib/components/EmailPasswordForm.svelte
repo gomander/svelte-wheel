@@ -64,7 +64,7 @@
       maxlength="64"
       required
       class="input"
-    />
+    >
 
     {#if errors.email}
       <span class="text-sm text-error-400-500-token">{errors.email[0]}</span>
@@ -81,7 +81,7 @@
         maxlength="64"
         required
         bind:this={passwordInput}
-      />
+      >
 
       <button
         type="button"
@@ -90,7 +90,7 @@
         title={showPassword ? 'Hide password' : 'Show password'}
         aria-label={showPassword ? 'Hide password' : 'Show password'}
       >
-        <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'} w-6" />
+        <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'} w-6"></i>
       </button>
     </div>
 

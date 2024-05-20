@@ -10,7 +10,7 @@
 {#if $modalStore[0]}
 <article class="card p-4 w-modal-slim shadow-lg overflow-hidden flex flex-col gap-4">
   <header class="h3 flex items-center gap-2">
-    <i class="fas fa-share-nodes" />
+    <i class="fas fa-share-nodes"></i>
     <h1>Wheel shared</h1>
   </header>
 
@@ -27,7 +27,7 @@
         aria-label="Copy link to clipboard"
         title="Copy link to clipboard"
       >
-        <i class="fas fa-clipboard" />
+        <i class="fas fa-clipboard"></i>
       </button>
     </div>
   </section>

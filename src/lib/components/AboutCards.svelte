@@ -23,7 +23,7 @@
       </p>
     </div>
 
-    <span class="hidden lg:block divider-vertical" />
+    <span class="hidden lg:block divider-vertical"></span>
 
     <table class="text-left min-w-fit">
       <thead>

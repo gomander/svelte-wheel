@@ -18,7 +18,7 @@
       class="input"
       maxlength="50"
       bind:value={config.title}
-    />
+    >
   </label>
 
   <label class="label">
@@ -28,7 +28,7 @@
       class="textarea resize-none"
       maxlength="200"
       bind:value={config.description}
-    />
+    ></textarea>
   </label>
 
   <RangeSlider

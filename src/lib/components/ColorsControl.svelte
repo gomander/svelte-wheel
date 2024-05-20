@@ -37,7 +37,7 @@
           class="h-6 flex justify-center items-center bg-surface-50-900-token rounded-t-full"
           title="Drag to reorder"
         >
-          <i class="fas fa-grip text-surface-300-600-token" />
+          <i class="fas fa-grip text-surface-300-600-token"></i>
         </div>
 
         <input
@@ -47,7 +47,7 @@
           style="background-color: {item.name}"
           title="Edit color"
           aria-label="Edit color"
-        />
+        >
 
         <button
           on:click={() => deleteColor(item.id)}
@@ -55,7 +55,7 @@
           title="Delete color"
           aria-label="Delete color"
         >
-          <i class="fas fa-times text-surface-400-500-token" />
+          <i class="fas fa-times text-surface-400-500-token"></i>
         </button>
       </div>
     {/each}
@@ -67,6 +67,6 @@
     title="Add color"
     aria-label="Add color"
   >
-    <i class="fas fa-plus" />
+    <i class="fas fa-plus"></i>
   </button>
 </div>

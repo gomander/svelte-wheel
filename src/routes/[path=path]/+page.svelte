@@ -30,27 +30,27 @@
 
 <svelte:head>
   <title>{wheel.config.title} - Svelte Wheel</title>
-  <meta name="title" content={wheel.config.title} />
-  <meta property="og:title" content={wheel.config.title} />
+  <meta name="title" content={wheel.config.title}>
+  <meta property="og:title" content={wheel.config.title}>
   {#if wheel.config.description}
-    <meta name="description" content={wheel.config.description} />
-    <meta property="og:description" content={wheel.config.description} />
+    <meta name="description" content={wheel.config.description}>
+    <meta property="og:description" content={wheel.config.description}>
   {:else}
     <meta
       name="description"
       content="Spin this custom wheel and get a random result!"
-    />
+    >
     <meta
       property="og:description"
       content="Spin this custom wheel and get a random result!"
-    />
+    >
   {/if}
-  <meta property="og:url" content="https://sveltewheel.com/{wheel.path}" />
+  <meta property="og:url" content="https://sveltewheel.com/{wheel.path}">
   <meta
     property="og:image"
     content="https://sveltewheel.com/thumbnails/{wheel.path}"
-  />
-  <meta name="twitter:card" content="summary_large_image" />
+  >
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content={wheel.config.colors.at(0)}>
 </svelte:head>
 

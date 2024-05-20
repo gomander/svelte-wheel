@@ -14,6 +14,9 @@ jobs:
       PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
       PUBLIC_FIREBASE_APP_ID: ${{ vars.PUBLIC_FIREBASE_APP_ID }}
       PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ vars.PUBLIC_FIREBASE_MEASUREMENT_ID }}
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_SERVICE_ID: ${{ vars.GCP_SERVICE_ID }}
+      GCP_SERVICE_REGION: ${{ vars.GCP_SERVICE_REGION }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -43,5 +46,7 @@ jobs:
           credentials_json: ${{ secrets.FIREBASE_DEPLOYER_SERVICE_ACCOUNT }}
       - name: Install Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+      - name: Clean up old versions
+        run: (gcloud container images list-tags "$GCP_SERVICE_REGION-docker.pkg.dev/$GCP_PROJECT_ID/cloud-run-source-deploy/$GCP_SERVICE_ID" --filter='-tags:*' --format='get(digest)' --limit=unlimited | awk '{print "'"$GCP_SERVICE_REGION"'-docker.pkg.dev/'"$GCP_PROJECT_ID"'/cloud-run-source-deploy/'"$GCP_SERVICE_ID"'@" $1}' | xargs gcloud container images delete --quiet) || true
       - name: Deploy to Cloud Run
-        run: gcloud run deploy app --source build --platform managed --memory 128Mi --region ${{ vars.GCP_SERVICE_REGION }} --allow-unauthenticated --project ${{ vars.GCP_PROJECT_ID }}
+        run: gcloud run deploy "$GCP_SERVICE_ID" --source build --platform managed --memory 128Mi --region "$GCP_SERVICE_REGION" --allow-unauthenticated --project "$GCP_PROJECT_ID"

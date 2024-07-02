@@ -4,8 +4,7 @@
   import { onNavigate } from '$app/navigation'
   import { pwaInfo } from 'virtual:pwa-info'
   import {
-    initializeStores, Modal, Toast, getModalStore, storePopup,
-    type ModalComponent
+    initializeStores, Modal, Toast, getModalStore, storePopup, type ModalComponent
   } from '@skeletonlabs/skeleton'
   import {
     computePosition, autoUpdate, flip, shift, offset, arrow

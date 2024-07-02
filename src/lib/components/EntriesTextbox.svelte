@@ -8,28 +8,35 @@
 
   $: text = $wheelStore.entries.map(e => e.text).join('\n')
 
-  const setEntries = () => {
-    const lines = text.split('\n')
+  function setEntries(e: Event & { currentTarget: EventTarget & HTMLTextAreaElement }) {
+    const lines = e.currentTarget.value.split('\n')
     let changeStartIndex = lines.length
-    const entries: Entry[] = lines.map((text, index) => {
-      let id = $wheelStore.entries.at(index)?.id
-      if (!id || $wheelStore.entries.at(index)?.text !== text) {
-        if (index < changeStartIndex) changeStartIndex = index
+    const oldEntries = $wheelStore.entries
+    const newEntries: Entry[] = lines.map((text, index) => {
+      let id = oldEntries.at(index)?.id
+      if (!id || oldEntries.at(index)?.text !== text) {
+        if (index < changeStartIndex) {
+          changeStartIndex = index
+        }
         id = getNewEntryId()
       }
       return { text, id }
     })
-    if (lines.length !== $wheelStore.entries.length) {
-      const stopIndex = lines.length > $wheelStore.entries.length
-        ? changeStartIndex - entries.length
-        : changeStartIndex - entries.length - 1
+    if (lines.length !== oldEntries.length) {
+      const stopIndex = lines.length > oldEntries.length
+        ? changeStartIndex - newEntries.length
+        : changeStartIndex - newEntries.length - 1
       for (let i = -1; i > stopIndex; i--) {
-        if ($wheelStore.entries.at(i)?.text === entries.at(i)?.text) {
-          entries.at(i)!.id = $wheelStore.entries.at(i)!.id
-        } else break
+        const newEntry = newEntries.at(i)
+        const oldEntry = oldEntries.at(i)
+        if (newEntry && newEntry.text === oldEntry?.text) {
+          newEntry.id = oldEntry.id
+        } else {
+          break
+        }
       }
     }
-    wheelStore.setEntries(entries)
+    wheelStore.setEntries(newEntries)
   }
 </script>
 
@@ -38,9 +45,9 @@
   spellcheck="false"
   autocomplete="off"
   maxlength="1000"
-  bind:this={textarea}
-  bind:value={text}
   on:input={setEntries}
+  bind:value={text}
+  bind:this={textarea}
   disabled={$busyStore.spinning}
   aria-labelledby="entries-label"
 ></textarea>

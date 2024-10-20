@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type WheelConfig from '$lib/utils/WheelConfig'
   import { duringSpinSounds } from '$lib/utils/Audio'
 
   let {

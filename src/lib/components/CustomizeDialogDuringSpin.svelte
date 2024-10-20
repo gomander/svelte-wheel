@@ -2,7 +2,13 @@
   import type WheelConfig from '$lib/utils/WheelConfig'
   import { duringSpinSounds } from '$lib/utils/Audio'
 
-  let { config = $bindable() }: { config: WheelConfig } = $props()
+  let {
+    duringSpinSound = $bindable(),
+    indefiniteSpin = $bindable()
+  }: {
+    duringSpinSound: string
+    indefiniteSpin: boolean
+  } = $props()
 </script>
 
 <label class="label">
@@ -10,7 +16,7 @@
 
   <select
     class="select"
-    bind:value={config.duringSpinSound}
+    bind:value={duringSpinSound}
   >
     <option value="">No sound</option>
     <option value="tick">Tick</option>
@@ -23,7 +29,7 @@
 <label class="flex items-center space-x-2 w-fit">
   <input
     type="checkbox"
-    bind:checked={config.indefiniteSpin}
+    bind:checked={indefiniteSpin}
     class="checkbox"
   >
 

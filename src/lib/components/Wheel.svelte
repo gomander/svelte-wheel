@@ -38,7 +38,7 @@
     dispatch('stop', data)
     wheelStore.setWinners([...$wheelStore.winners, data.winner])
   }
-  const wheel = $state(new Wheel({ ...$wheelStore, onStarted, onStopped }))
+  const wheel = new Wheel({ ...$wheelStore, onStarted, onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()
 

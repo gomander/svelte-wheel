@@ -1,8 +1,15 @@
 <script lang="ts">
   import { RangeSlider } from '@skeletonlabs/skeleton'
-  import type WheelConfig from '$lib/utils/WheelConfig'
 
-  let { config = $bindable() }: { config: WheelConfig } = $props()
+  let {
+    title = $bindable(),
+    description = $bindable(),
+    spinTime = $bindable()
+  }: {
+    title: string,
+    description: string,
+    spinTime: number
+  } = $props()
 
   const secondsFormat: Intl.NumberFormatOptions = {
     style: 'unit', unit: 'second', unitDisplay: 'long'
@@ -17,7 +24,7 @@
       type="text"
       class="input"
       maxlength="50"
-      bind:value={config.title}
+      bind:value={title}
     >
   </label>
 
@@ -27,7 +34,7 @@
     <textarea
       class="textarea resize-none"
       maxlength="200"
-      bind:value={config.description}
+      bind:value={description}
     ></textarea>
   </label>
 
@@ -37,13 +44,13 @@
     min={1}
     max={60}
     ticked
-    bind:value={config.spinTime}
+    bind:value={spinTime}
   >
     <div class="flex justify-between items-center">
       <span>Spin time</span>
 
       <span class="text-sm">
-        {config.spinTime.toLocaleString('en', secondsFormat)}
+        {spinTime.toLocaleString('en', secondsFormat)}
       </span>
     </div>
   </RangeSlider>

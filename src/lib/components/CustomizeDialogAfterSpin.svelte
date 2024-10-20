@@ -1,9 +1,18 @@
 <script lang="ts">
-  import type WheelConfig from '$lib/utils/WheelConfig'
   import { afterSpinSounds } from '$lib/utils/Audio'
-  import { confettiTypes } from '$lib/utils/WheelConfig'
+  import { confettiTypes, type ConfettiType } from '$lib/utils/WheelConfig'
 
-  let { config = $bindable() }: { config: WheelConfig } = $props()
+  let {
+    afterSpinSound = $bindable(),
+    displayWinnerDialog = $bindable(),
+    winnerMessage = $bindable(),
+    confetti = $bindable()
+  }: {
+    afterSpinSound: string
+    displayWinnerDialog: boolean
+    winnerMessage: string
+    confetti: ConfettiType
+  } = $props()
 </script>
 
 <label class="label">
@@ -11,7 +20,7 @@
 
   <select
     class="select"
-    bind:value={config.afterSpinSound}
+    bind:value={afterSpinSound}
   >
     <option value="">No sound</option>
     {#each afterSpinSounds as item (item.file)}
@@ -23,7 +32,7 @@
 <label class="flex items-center space-x-2 w-fit">
   <input
     type="checkbox"
-    bind:checked={config.displayWinnerDialog}
+    bind:checked={displayWinnerDialog}
     class="checkbox"
   >
 
@@ -37,9 +46,9 @@
     type="text"
     class="input"
     maxlength="50"
-    bind:value={config.winnerMessage}
+    bind:value={winnerMessage}
     placeholder="We have a winner!"
-    disabled={!config.displayWinnerDialog}
+    disabled={!displayWinnerDialog}
   >
 </label>
 
@@ -48,7 +57,7 @@
 
   <select
     class="select"
-    bind:value={config.confetti}
+    bind:value={confetti}
   >
     {#each confettiTypes as item}
       <option value={item}>{item}</option>

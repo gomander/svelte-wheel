@@ -13,7 +13,7 @@
 
   const save = () => {
     if (config.type === 'image' && !config.image) config.type = 'color'
-    wheelStore.setConfig(config)
+    wheelStore.setConfig($state.snapshot(config))
     modalStore.close()
   }
 </script>
@@ -44,13 +44,30 @@
 
       {#snippet panel()}
         {#if openTab === 'basic'}
-          <CustomizeDialogBasic {config} />
+          <CustomizeDialogBasic
+            bind:title={config.title}
+            bind:description={config.description}
+            bind:spinTime={config.spinTime}
+          />
         {:else if openTab === 'appearance'}
-          <CustomizeDialogAppearance {config} />
+          <CustomizeDialogAppearance
+            bind:type={config.type}
+            bind:colors={config.colors}
+            bind:image={config.image}
+            bind:hubSize={config.hubSize}
+          />
         {:else if openTab === 'duringSpin'}
-          <CustomizeDialogDuringSpin {config} />
+          <CustomizeDialogDuringSpin
+            bind:duringSpinSound={config.duringSpinSound}
+            bind:indefiniteSpin={config.indefiniteSpin}
+          />
         {:else if openTab === 'afterSpin'}
-          <CustomizeDialogAfterSpin {config} />
+          <CustomizeDialogAfterSpin
+            bind:afterSpinSound={config.afterSpinSound}
+            bind:displayWinnerDialog={config.displayWinnerDialog}
+            bind:winnerMessage={config.winnerMessage}
+            bind:confetti={config.confetti}
+          />
         {/if}
       {/snippet}
     </TabGroup>

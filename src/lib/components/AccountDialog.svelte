@@ -56,7 +56,7 @@
 
         <button
           class="btn btn-sm variant-filled"
-          on:click={sendEmailVerificationEmail}
+          onclick={sendEmailVerificationEmail}
         >
           Send verification email
         </button>
@@ -83,7 +83,7 @@
       <div>
         <button
           class="btn variant-soft-warning"
-          on:click={logOut}
+          onclick={logOut}
         >
           Log out
         </button>
@@ -93,7 +93,7 @@
     <footer class="flex justify-end gap-2">
       <button
         class="btn variant-filled"
-        on:click={modalStore.close}
+        onclick={modalStore.close}
       >
         Close
       </button>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { RangeSlider } from '@skeletonlabs/skeleton'
-  import WheelConfig from '$lib/utils/WheelConfig'
+  import type WheelConfig from '$lib/utils/WheelConfig'
 
-  export let config: WheelConfig
+  let { config = $bindable() }: { config: WheelConfig } = $props()
 
   const secondsFormat: Intl.NumberFormatOptions = {
     style: 'unit', unit: 'second', unitDisplay: 'long'

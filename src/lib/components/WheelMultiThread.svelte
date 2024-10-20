@@ -35,10 +35,10 @@
     wheelStore.setWinners([...$wheelStore.winners, data.winner])
   }
 
-  let canvas: HTMLCanvasElement
+  let canvas: HTMLCanvasElement = $state(null!)
   let offscreen: OffscreenCanvas
-  let painter: Worker
-  const wheel = new Wheel({ ...$wheelStore, onStarted, onStopped })
+  let painter: Worker = $state(null!)
+  const wheel = $state(new Wheel({ ...$wheelStore, onStarted, onStopped }))
   const ticker = new Ticker()
   let animationFrameId = 0
 
@@ -60,16 +60,16 @@
 
   onMount(loadWheelPainterWorker)
 
-  $: {
+  $effect(() => {
     wheel.setConfig($wheelStore.config)
     painter?.postMessage({ config: wheel.config })
     painter?.postMessage({ refresh: true })
-  }
-  $: {
+  })
+  $effect(() => {
     wheel.setEntries($wheelStore.entries)
     painter?.postMessage({ entries: wheel.entries })
     painter?.postMessage({ refresh: true })
-  }
+  })
 
   const click = (e: MouseEvent | KeyboardEvent) => {
     if (e instanceof MouseEvent) {
@@ -95,8 +95,8 @@
     width="700"
     height="700"
     bind:this={canvas}
-    on:click={click}
-    on:keydown={click}
+    onclick={click}
+    onkeydown={click}
     class="w-full h-auto rounded-full outline-offset-[-1rem]"
     aria-label="Wheel"
     tabindex="0"

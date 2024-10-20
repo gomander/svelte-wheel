@@ -5,7 +5,7 @@
   import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { OnStoppedData } from '$lib/utils/Wheel'
 
-  export let data
+  let { data } = $props()
   const { wheel } = data
 
   const modalStore = getModalStore()

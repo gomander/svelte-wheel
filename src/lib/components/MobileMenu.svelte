@@ -18,7 +18,7 @@
 <div class="card flex flex-col w-fit shadow-xl p-2">
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('new')}
+    onclick={() => dispatch('new')}
     disabled={$busyStore.spinning}
     role="menuitem"
   >
@@ -28,7 +28,7 @@
 
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('open')}
+    onclick={() => dispatch('open')}
     disabled={$busyStore.spinning}
     role="menuitem"
   >
@@ -38,7 +38,7 @@
 
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('save')}
+    onclick={() => dispatch('save')}
     disabled={$busyStore.spinning}
     role="menuitem"
   >
@@ -48,7 +48,7 @@
 
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('customize')}
+    onclick={() => dispatch('customize')}
     disabled={$busyStore.spinning}
     role="menuitem"
   >
@@ -58,7 +58,7 @@
 
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('share')}
+    onclick={() => dispatch('share')}
     disabled={$busyStore.spinning}
     role="menuitem"
   >
@@ -68,7 +68,7 @@
 
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('account')}
+    onclick={() => dispatch('account')}
     disabled={$busyStore.spinning}
     role="menuitem"
   >
@@ -102,7 +102,7 @@
 
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('debug')}
+    onclick={() => dispatch('debug')}
     disabled={$busyStore.spinning}
     role="menuitem"
   >

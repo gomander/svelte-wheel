@@ -26,7 +26,7 @@
 <div class="flex gap-2 sm:gap-4">
   <button
     class="btn variant-filled flex-1"
-    on:click={sortWinners}
+    onclick={sortWinners}
     aria-label="Sort"
   >
     <i class="fas fa-arrow-down-a-z"></i>
@@ -35,7 +35,7 @@
 
   <button
     class="btn variant-filled flex-1"
-    on:click={resetEntries}
+    onclick={resetEntries}
     disabled={$busyStore.spinning}
     aria-label="Reset"
   >
@@ -45,7 +45,7 @@
 
   <button
     class="btn variant-filled flex-1"
-    on:click={clearWinners}
+    onclick={clearWinners}
     aria-label="Clear"
   >
     <i class="fas fa-x"></i>

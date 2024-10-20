@@ -61,7 +61,7 @@
     {#if !$fullscreenStore.active}
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => dispatch('new')}
+        onclick={() => dispatch('new')}
         disabled={$busyStore.spinning}
         role="menuitem"
         aria-label="New"
@@ -72,7 +72,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => dispatch('open')}
+        onclick={() => dispatch('open')}
         disabled={$busyStore.spinning}
         role="menuitem"
         aria-label="Open"
@@ -83,7 +83,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => dispatch('save')}
+        onclick={() => dispatch('save')}
         disabled={$busyStore.spinning}
         role="menuitem"
         aria-label="Save"
@@ -94,7 +94,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => dispatch('customize')}
+        onclick={() => dispatch('customize')}
         disabled={$busyStore.spinning}
         role="menuitem"
         aria-label="Customize"
@@ -105,7 +105,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => dispatch('share')}
+        onclick={() => dispatch('share')}
         disabled={$busyStore.spinning}
         role="menuitem"
         aria-label="Share"
@@ -118,7 +118,7 @@
     {#if $fullscreenStore.supported}
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        on:click={() => fullscreenStore.toggleFullscreen()}
+        onclick={() => fullscreenStore.toggleFullscreen()}
         role="menuitem"
         aria-label="Toggle fullscreen"
         title="Toggle fullscreen"

@@ -13,7 +13,7 @@
 <div class="card flex flex-col w-fit shadow-xl p-2">
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('account')}
+    onclick={() => dispatch('account')}
     disabled={$busyStore.spinning}
   >
     <i class="fas fa-user w-6"></i>
@@ -44,7 +44,7 @@
 
   <button
     class="btn text-xl hover:variant-soft-primary"
-    on:click={() => dispatch('debug')}
+    onclick={() => dispatch('debug')}
     disabled={$busyStore.spinning}
   >
     <i class="fas {$debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>

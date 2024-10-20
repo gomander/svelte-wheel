@@ -7,10 +7,11 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let fileName = $wheelStore.config.title
+  let fileName = $state($wheelStore.config.title)
   let loading = false
 
-  const save = async () => {
+  const save = async (e: Event) => {
+    e.preventDefault()
     if (loading) return
     loading = true
     try {
@@ -53,7 +54,7 @@
     </header>
 
     <form
-      on:submit|preventDefault={save}
+      onsubmit={save}
       class="px-4 flex flex-col gap-4"
     >
       <label class="label">
@@ -75,14 +76,14 @@
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
       <button
         class="btn variant-soft"
-        on:click={modalStore.close}
+        onclick={modalStore.close}
       >
         Cancel
       </button>
 
       <button
         class="btn variant-filled-primary"
-        on:click={save}
+        onclick={save}
       >
         Save
       </button>

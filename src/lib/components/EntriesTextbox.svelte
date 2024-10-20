@@ -4,12 +4,19 @@
   import debugStore from '$lib/stores/DebugStore'
   import { getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
-  let textarea: HTMLTextAreaElement
+  let textarea: HTMLTextAreaElement = $state(null!)
 
-  $: text = $wheelStore.entries.map(e => e.text).join('\n')
+  const text = {
+    get value() {
+      return $wheelStore.entries.map(e => e.text).join('\n')
+    },
+    set value(value: string) {
+      textarea.value = value
+      setEntries(textarea.value.split('\n'))
+    }
+  }
 
-  function setEntries(e: Event & { currentTarget: EventTarget & HTMLTextAreaElement }) {
-    const lines = e.currentTarget.value.split('\n')
+  function setEntries(lines: string[]) {
     let changeStartIndex = lines.length
     const oldEntries = $wheelStore.entries
     const newEntries: Entry[] = lines.map((text, index) => {
@@ -45,8 +52,7 @@
   spellcheck="false"
   autocomplete="off"
   maxlength="1000"
-  on:input={setEntries}
-  bind:value={text}
+  bind:value={text.value}
   bind:this={textarea}
   disabled={$busyStore.spinning}
   aria-labelledby="entries-label"

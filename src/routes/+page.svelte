@@ -49,7 +49,7 @@
     type: 'component', component: 'accountDialog'
   })
 
-  let WheelComponent = Wheel
+  let WheelComponent = $state(Wheel)
 </script>
 
 <svelte:head>
@@ -113,8 +113,7 @@
     </div>
 
     <div class="col-span-2 flex-1 flex flex-col justify-center items-center">
-      <svelte:component
-        this={WheelComponent}
+      <WheelComponent
         on:stop={openWinnerModal}
       />
     </div>

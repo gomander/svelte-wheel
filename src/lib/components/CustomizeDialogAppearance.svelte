@@ -4,7 +4,7 @@
   import { compressImage } from '$lib/utils/WheelPainter'
   import ColorsControl from '$lib/components/ColorsControl.svelte'
 
-  export let config: WheelConfig
+  let { config = $bindable() }: { config: WheelConfig } = $props()
 
   const updateWheelImage = async (
     event: Event & { currentTarget: EventTarget & HTMLInputElement }
@@ -47,7 +47,7 @@
         type="file"
         class="input"
         accept="image/*"
-        on:input={updateWheelImage}
+        oninput={updateWheelImage}
       >
     </div>
 
@@ -61,7 +61,7 @@
 
         <button
           class="btn btn-icon variant-soft"
-          on:click={() => (config.image = '')}
+          onclick={() => (config.image = '')}
           title="Remove image"
           aria-label="Remove image"
         >

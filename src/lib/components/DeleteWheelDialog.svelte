@@ -12,7 +12,7 @@
   const path: string = $modalStore[0].meta.path
   const title: string = $modalStore[0].meta.title
 
-  let loading = false
+  let loading = $state(false)
 
   const deleteWheel = async () => {
     if (loading) return
@@ -61,13 +61,13 @@
     <footer class="flex justify-end gap-2">
       <button
         class="btn variant-filled"
-        on:click={modalStore.close}
+        onclick={modalStore.close}
       >
         Cancel
       </button>
       <button
         class="btn variant-filled-error"
-        on:click={deleteWheel}
+        onclick={deleteWheel}
       >
         {#if loading}
           <ProgressRadial width="w-6" />

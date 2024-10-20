@@ -12,64 +12,18 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let innerHeight = 0
-  $: wheelsPerPage = Math.floor(innerHeight / 200)
+  let innerHeight = $state(0)
 
-  let form: HTMLFormElement
-  let loading = false
-  let apiWheels: ApiWheelMeta[] = []
-  $: sortedWheels = apiWheels.sort((a, b) => {
-    switch (sort) {
-      case 'updated-desc':
-        return (b.updated || b.created) - (a.updated || a.created)
-      case 'updated-asc':
-        return (a.updated || a.created) - (b.updated || b.created)
-      case 'title-asc':
-        return a.title.localeCompare(b.title)
-      case 'title-desc':
-        return b.title.localeCompare(a.title)
-      default:
-        return 0
-    }
-  })
-  $: filteredWheels = sortedWheels.filter(
-    wheel => wheel.title.toLowerCase().includes(filter.toLowerCase())
-  )
-  $: pageWheels = filteredWheels.slice(
-    page * wheelsPerPage, page * wheelsPerPage + wheelsPerPage
-  )
-  let selectedWheel: string
-  let filter = ''
-  let sort: 'updated-desc' | 'updated-asc' | 'title-asc' | 'title-desc' = 'updated-desc'
-  let page = 0
+  let form: HTMLFormElement = $state(null!)
+  let loading = $state(false)
+  let apiWheels: ApiWheelMeta[] = $state([])
+  let selectedWheel: string = $state('')
+  let filter = $state('')
+  let sort: 'updated-desc' | 'updated-asc' | 'title-asc' | 'title-desc' = $state('updated-desc')
+  let page = $state(0)
 
-  $: while (
-    page && page > Math.ceil(filteredWheels.length / wheelsPerPage) - 1
-  ) {
-    page--
-  }
 
-  const wheelImages: Record<string, string> = {}
-  $: if (pageWheels.length) {
-    Promise.all(
-      pageWheels.map(async wheel => {
-        if (wheel.path in wheelImages) return true
-        wheelImages[wheel.path] = ''
-        const response = await fetch(
-          `${window.location.origin}/thumbnails/${wheel.path}?size=56`,
-          { headers: { authorization: getCurrentUser()?.uid || '' } }
-        )
-        if (response.ok) {
-          const buffer = await response.arrayBuffer()
-          wheelImages[wheel.path] = URL.createObjectURL(
-            new Blob([buffer], { type: 'image/webp' })
-          )
-          return true
-        }
-        return false
-      })
-    )
-  }
+  const wheelImages: Record<string, string> = $state({})
 
   const settingsPopup = { event: 'click', placement: 'left' } as const
 
@@ -116,7 +70,8 @@
     }
   })
 
-  const open = async () => {
+  const open = async (e: Event) => {
+    e.preventDefault()
     if (!selectedWheel) return
     if (loading) return
     loading = true
@@ -158,6 +113,56 @@
 
   // TODO: Use tabs to separate private and public wheels. Allow users to change
   // a wheel's visibility.
+  let wheelsPerPage = $derived(Math.floor(innerHeight / 200))
+  let sortedWheels = $derived(apiWheels.sort((a, b) => {
+    switch (sort) {
+      case 'updated-desc':
+        return (b.updated || b.created) - (a.updated || a.created)
+      case 'updated-asc':
+        return (a.updated || a.created) - (b.updated || b.created)
+      case 'title-asc':
+        return a.title.localeCompare(b.title)
+      case 'title-desc':
+        return b.title.localeCompare(a.title)
+      default:
+        return 0
+    }
+  }))
+  let filteredWheels = $derived(sortedWheels.filter(
+    wheel => wheel.title.toLowerCase().includes(filter.toLowerCase())
+  ))
+  $effect(() => {
+    while (
+      page && page > Math.ceil(filteredWheels.length / wheelsPerPage) - 1
+    ) {
+      page--
+    }
+  })
+  let pageWheels = $derived(filteredWheels.slice(
+    page * wheelsPerPage, page * wheelsPerPage + wheelsPerPage
+  ))
+  $effect(() => {
+    if (pageWheels.length) {
+      Promise.all(
+        pageWheels.map(async wheel => {
+          if (wheel.path in wheelImages) return true
+          wheelImages[wheel.path] = ''
+          const response = await fetch(
+            `${window.location.origin}/thumbnails/${wheel.path}?size=56`,
+            { headers: { authorization: getCurrentUser()?.uid || '' } }
+          )
+          if (response.ok) {
+            const buffer = await response.arrayBuffer()
+            wheelImages[wheel.path] = URL.createObjectURL(
+              new Blob([buffer], { type: 'image/webp' })
+            )
+            return true
+          }
+          return false
+        })
+      )
+    }
+  })
 </script>
 
 <svelte:window bind:innerHeight />
@@ -171,7 +176,7 @@
 
     <form
       bind:this={form}
-      on:submit|preventDefault={open}
+      onsubmit={open}
       class="flex flex-col gap-2"
     >
       {#if apiWheels.length}
@@ -237,6 +242,7 @@
                   <button
                     type="button"
                     class="btn-icon btn-icon-sm"
+                    aria-label="Settings"
                     use:popup={{ ...settingsPopup, target: `popup(${wheel.path})` }}
                   >
                     <i class="fas fa-ellipsis-v"></i>
@@ -247,7 +253,7 @@
                       <button
                         type="button"
                         class="btn btn-sm variant-filled-error flex items-center gap-2"
-                        on:click={() => deleteWheel(wheel.path)}
+                        onclick={() => deleteWheel(wheel.path)}
                       >
                         <i class="fas fa-trash"></i> Delete wheel
                       </button>
@@ -289,7 +295,7 @@
             type="button"
             class="btn variant-soft"
             disabled={page === 0}
-            on:click={() => page--}
+            onclick={() => page--}
             aria-label="Previous page"
             title="Previous page"
           >
@@ -302,7 +308,7 @@
             type="button"
             class="btn variant-soft"
             disabled={page >= Math.ceil(filteredWheels.length / wheelsPerPage) - 1}
-            on:click={() => page++}
+            onclick={() => page++}
             aria-label="Next page"
             title="Next page"
           >
@@ -315,7 +321,7 @@
         <button
           type="button"
           class="btn variant-soft"
-          on:click={modalStore.close}
+          onclick={modalStore.close}
         >
           Cancel
         </button>

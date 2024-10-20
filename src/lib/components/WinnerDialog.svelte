@@ -35,10 +35,10 @@
     </div>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
-      <button class="btn variant-soft" on:click={modalStore.close}>
+      <button class="btn variant-soft" onclick={modalStore.close}>
         Close
       </button>
-      <button class="btn variant-soft-warning" on:click={remove}>
+      <button class="btn variant-soft-warning" onclick={remove}>
         Remove
       </button>
     </footer>

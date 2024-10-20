@@ -24,7 +24,7 @@
     <div class="px-4 flex flex-col gap-4">
       <button
         class="btn variant-filled-primary flex flex-col gap-2"
-        on:click={openSaveCloudDialog}
+        onclick={openSaveCloudDialog}
       >
         <i class="fas fa-cloud text-4xl"></i>
         <span>Save to the cloud</span>
@@ -32,7 +32,7 @@
 
       <button
         class="btn variant-filled"
-        on:click={openSaveLocalDialog}
+        onclick={openSaveLocalDialog}
       >
         <i class="fas fa-hard-drive text-4xl"></i>
         <span>Save to a local file</span>
@@ -42,7 +42,7 @@
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
       <button
         class="btn variant-soft"
-        on:click={modalStore.close}
+        onclick={modalStore.close}
       >
         Cancel
       </button>

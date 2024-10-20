@@ -10,8 +10,9 @@
 
   const shuffleEntries = () => {
     const array = [...$wheelStore.entries]
+    let j: number
     for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]]
     }
     wheelStore.setEntries(array)
@@ -21,7 +22,7 @@
 <div class="flex gap-2 sm:gap-4">
   <button
     class="btn variant-filled flex-1"
-    on:click={sortEntries}
+    onclick={sortEntries}
     disabled={$busyStore.spinning}
     aria-label="Sort"
   >
@@ -31,7 +32,7 @@
 
   <button
     class="btn variant-filled flex-1"
-    on:click={shuffleEntries}
+    onclick={shuffleEntries}
     disabled={$busyStore.spinning}
     aria-label="Shuffle"
   >

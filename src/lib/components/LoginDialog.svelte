@@ -7,7 +7,7 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let formError: string | null = null
+  let formError: string | null = $state(null)
 
   const onSubmit = async (user: { email: string, password: string }) => {
     await signIn(user.email, user.password)
@@ -49,32 +49,35 @@
     </header>
 
     <EmailPasswordForm {onSubmit} {formError}>
-      <div class="flex flex-wrap justify-between gap-2">
+      {#snippet body()}
+        <div class="flex flex-wrap justify-between gap-2">
+          <button
+            type="button"
+            class="btn btn-sm variant-soft"
+            onclick={resetPassword}
+          >
+            Forgot password
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-sm variant-soft"
+            onclick={signUp}
+          >
+            Don't have an account? Sign up
+          </button>
+        </div>
+      {/snippet}
+
+      {#snippet footerButtons()}
         <button
           type="button"
-          class="btn btn-sm variant-soft"
-          on:click={resetPassword}
+          class="btn variant-soft"
+          onclick={modalStore.close}
         >
-          Forgot password
+          Close
         </button>
-
-        <button
-          type="button"
-          class="btn btn-sm variant-soft"
-          on:click={signUp}
-        >
-          Don't have an account? Sign up
-        </button>
-      </div>
-
-      <button
-        slot="footer-buttons"
-        type="button"
-        class="btn variant-soft"
-        on:click={modalStore.close}
-      >
-        Close
-      </button>
+      {/snippet}
     </EmailPasswordForm>
   </article>
 {/if}

@@ -2,13 +2,15 @@
   import { flip } from 'svelte/animate'
   import { dndzone } from 'svelte-dnd-action'
 
-  export let colors: string[] = []
+  let { colors = $bindable([]) }: { colors?: string[] } = $props()
 
-  let colorsArray = colors.map((hex, i) => ({ name: hex, id: i }))
-  $: colors = colorsArray.map(item => item.name)
+  let colorsArray = $state(colors.map((hex, i) => ({ name: hex, id: i })))
+  $effect(() => {
+    colors = colorsArray.map(item => item.name)
+  })
 
   const addColor = () => (
-    colorsArray = [...colorsArray, { name: '#000000', id: colorsArray.length }]
+    colorsArray.push({ name: '#000000', id: colorsArray.length })
   )
   const deleteColor = (id: number) => {
     if (colorsArray.length === 1) return
@@ -23,8 +25,8 @@
 <div class="flex items-center gap-2">
   <div
     use:dndzone={{ items: colorsArray, flipDurationMs: 100 }}
-    on:consider={handleSortColors}
-    on:finalize={handleSortColors}
+    onconsider={handleSortColors}
+    onfinalize={handleSortColors}
     class="p-2 flex flex-wrap gap-2 w-fit rounded-3xl variant-soft"
   >
     {#each colorsArray as item (item.id)}
@@ -50,7 +52,7 @@
         >
 
         <button
-          on:click={() => deleteColor(item.id)}
+          onclick={() => deleteColor(item.id)}
           class="h-6 bg-surface-50-900-token rounded-b-full"
           title="Delete color"
           aria-label="Delete color"
@@ -63,7 +65,7 @@
 
   <button
     class="btn btn-icon-sm variant-filled"
-    on:click={addColor}
+    onclick={addColor}
     title="Add color"
     aria-label="Add color"
   >

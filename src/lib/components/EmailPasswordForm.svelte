@@ -1,22 +1,26 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte'
   import { ProgressRadial } from '@skeletonlabs/skeleton'
   import { z } from 'zod'
   import { FirebaseError } from 'firebase/app'
   import { userSchema } from '$lib/utils/Schemas'
 
-  export let onSubmit: (
-    user: { email: string, password: string }
-  ) => Promise<void>
-  export let formError: string | null
+  let { onSubmit, formError, body, footerButtons }: {
+    onSubmit: (user: { email: string, password: string }) => Promise<void>,
+    formError: string | null,
+    body: Snippet,
+    footerButtons: Snippet
+  } = $props()
 
-  let form: HTMLFormElement
-  let loading = false
-  let errors: Record<string, string[] | undefined> = { }
+  let form: HTMLFormElement = $state(null!)
+  let loading = $state(false)
+  let errors: Record<string, string[] | undefined> = $state({})
 
-  let passwordInput: HTMLInputElement
-  let showPassword = false
+  let passwordInput: HTMLInputElement = $state(null!)
+  let showPassword = $state(false)
 
-  const submit = async () => {
+  const submit = async (e: Event) => {
+    e.preventDefault()
     if (loading) return
     loading = true
     formError = null
@@ -53,7 +57,7 @@
 <form
   class="flex flex-col gap-4"
   bind:this={form}
-  on:submit|preventDefault={submit}
+  onsubmit={submit}
 >
   <label class="label">
     <span class="required">Email</span>
@@ -86,7 +90,7 @@
       <button
         type="button"
         class="btn variant-soft rounded-none"
-        on:click={() => showPassword = !showPassword}
+        onclick={() => showPassword = !showPassword}
         title={showPassword ? 'Hide password' : 'Show password'}
         aria-label={showPassword ? 'Hide password' : 'Show password'}
       >
@@ -99,10 +103,10 @@
     {/if}
   </label>
 
-  <slot />
+  {@render body()}
 
   <footer class="flex justify-end gap-2">
-    <slot name="footer-buttons" />
+    {@render footerButtons()}
 
     <button
       class="btn variant-filled-primary"

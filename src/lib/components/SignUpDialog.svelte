@@ -7,7 +7,7 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let formError: string | null = null
+  let formError: string | null = $state(null)
 
   const onSubmit = async (user: { email: string, password: string }) => {
     await registerUser(user.email, user.password)
@@ -44,24 +44,27 @@
     </header>
 
     <EmailPasswordForm {onSubmit} {formError}>
-      <div>
+      {#snippet body()}
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm variant-soft"
+            onclick={login}
+          >
+            Already have an account? Log in
+          </button>
+        </div>
+      {/snippet}
+
+      {#snippet footerButtons()}
         <button
           type="button"
-          class="btn btn-sm variant-soft"
-          on:click={login}
+          class="btn variant-soft"
+          onclick={modalStore.close}
         >
-          Already have an account? Log in
+          Close
         </button>
-      </div>
-
-      <button
-        slot="footer-buttons"
-        type="button"
-        class="btn variant-soft"
-        on:click={modalStore.close}
-      >
-        Close
-      </button>
+      {/snippet}
     </EmailPasswordForm>
   </article>
 {/if}

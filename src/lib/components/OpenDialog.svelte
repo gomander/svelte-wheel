@@ -50,7 +50,7 @@
     <div class="px-4 flex flex-col gap-4">
       <button
         class="btn variant-filled-primary flex flex-col gap-2"
-        on:click={openOpenCloudDialog}
+        onclick={openOpenCloudDialog}
       >
         <i class="fas fa-cloud text-4xl"></i>
         <span>Open from the cloud</span>
@@ -58,7 +58,7 @@
 
       <button
         class="btn variant-filled"
-        on:click={openLocalFile}
+        onclick={openLocalFile}
       >
         <i class="fas fa-hard-drive text-4xl"></i>
         <span>Open a local file</span>
@@ -68,7 +68,7 @@
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
       <button
         class="btn variant-soft"
-        on:click={modalStore.close}
+        onclick={modalStore.close}
       >
         Cancel
       </button>

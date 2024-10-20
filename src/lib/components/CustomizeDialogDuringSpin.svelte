@@ -1,8 +1,8 @@
 <script lang="ts">
-  import WheelConfig from '$lib/utils/WheelConfig'
+  import type WheelConfig from '$lib/utils/WheelConfig'
   import { duringSpinSounds } from '$lib/utils/Audio'
 
-  export let config: WheelConfig
+  let { config = $bindable() }: { config: WheelConfig } = $props()
 </script>
 
 <label class="label">

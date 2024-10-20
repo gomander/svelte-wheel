@@ -10,11 +10,12 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let email = ''
-  let loading = false
-  let errors: Record<string, string[] | undefined> = { }
+  let email = $state('')
+  let loading = $state(false)
+  let errors: Record<string, string[] | undefined> = $state({ })
 
-  const resetPassword = async () => {
+  const resetPassword = async (e: Event) => {
+    e.preventDefault()
     if (loading) return
     loading = true
     try {
@@ -51,7 +52,7 @@
 
     <form
       class="flex flex-col gap-4"
-      on:submit|preventDefault={resetPassword}
+      onsubmit={resetPassword}
     >
       <label class="label">
         <span class="required">Email</span>
@@ -76,7 +77,7 @@
         <button
           type="button"
           class="btn btn-sm variant-soft"
-          on:click={modalStore.close}
+          onclick={modalStore.close}
         >
           Close
         </button>

@@ -2,7 +2,11 @@
   import wheelStore from '$lib/stores/WheelStore'
   import debugStore from '$lib/stores/DebugStore'
 
-  $: text = $wheelStore.winners.map(e => e.text).join('\n')
+  const text = {
+    get value() {
+      return $wheelStore.winners.map(e => e.text).join('\n')
+    }
+  }
 </script>
 
 <textarea
@@ -10,7 +14,7 @@
   spellcheck="false"
   autocomplete="off"
   readonly
-  bind:value={text}
+  bind:value={text.value}
   aria-labelledby="results-label"
 ></textarea>
 

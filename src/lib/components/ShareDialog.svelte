@@ -11,9 +11,9 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let title = $wheelStore.config.title
-  let loading = false
-  let shareMode: 'overwrite' | 'new' = 'new'
+  let title = $state($wheelStore.config.title)
+  let loading = $state(false)
+  let shareMode: 'overwrite' | 'new' = $state('new')
 
   onMount(async () => {
     const user = getCurrentUser()
@@ -43,7 +43,8 @@
     }
   })
 
-  const share = async () => {
+  const share = async (e: Event) => {
+    e.preventDefault()
     if (loading) return
     loading = true
     try {
@@ -129,7 +130,7 @@
     </section>
 
     <form
-      on:submit|preventDefault={share}
+      onsubmit={share}
       class="flex flex-col gap-4"
     >
       {#if $wheelStore.path}
@@ -177,7 +178,7 @@
         <button
           type="button"
           class="btn variant-soft"
-          on:click={modalStore.close}
+          onclick={modalStore.close}
         >
           Cancel
         </button>

@@ -11,8 +11,8 @@
 
   const dispatch = createEventDispatcher<{ stop: OnStoppedData }>()
 
-  let canvas: HTMLCanvasElement
-  let context: CanvasRenderingContext2D
+  let canvas: HTMLCanvasElement = $state(null!)
+  let context: CanvasRenderingContext2D = $state(null!)
 
   const onStarted = () => {
     busyStore.setSpinning(true)
@@ -38,7 +38,7 @@
     dispatch('stop', data)
     wheelStore.setWinners([...$wheelStore.winners, data.winner])
   }
-  const wheel = new Wheel({ ...$wheelStore, onStarted, onStopped })
+  const wheel = $state(new Wheel({ ...$wheelStore, onStarted, onStopped }))
   const painter = new WheelPainter()
   const ticker = new Ticker()
 
@@ -61,14 +61,14 @@
     tick(0)
   })
 
-  $: {
+  $effect(() => {
     wheel.setConfig($wheelStore.config)
     refreshPainter()
-  }
-  $: {
+  })
+  $effect(() => {
     wheel.setEntries($wheelStore.entries)
     refreshPainter()
-  }
+  })
 
   const click = (e: MouseEvent | KeyboardEvent) => {
     if (e instanceof MouseEvent) {
@@ -95,8 +95,8 @@
     width="700"
     height="700"
     bind:this={canvas}
-    on:click={click}
-    on:keydown={click}
+    onclick={click}
+    onkeydown={click}
     class="w-full h-auto rounded-full outline-offset-[-1rem]"
     aria-label="Wheel"
     tabindex="0"

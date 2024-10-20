@@ -26,6 +26,8 @@
   import DeleteWheelDialog from '$lib/components/DeleteWheelDialog.svelte'
   import { PUBLIC_FIREBASE_MEASUREMENT_ID } from '$env/static/public'
 
+  let { children } = $props()
+
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
   initializeStores()
   const modalStore = getModalStore()
@@ -50,7 +52,7 @@
   onMount(fullscreenStore.initialize)
   onNavigate(modalStore.close)
 
-  $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
+  let webManifestLink = $derived(pwaInfo?.webManifest.linkTag ?? '')
 </script>
 
 <svelte:head>
@@ -77,7 +79,7 @@
 
 <Modal components={modalRegistry} />
 
-<slot />
+{@render children?.()}
 
 {#await import('$lib/components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
   <ReloadPrompt />

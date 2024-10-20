@@ -36,7 +36,7 @@
     <button
       type="button"
       class="btn variant-soft"
-      on:click={modalStore.close}
+      onclick={modalStore.close}
     >
       Close
     </button>

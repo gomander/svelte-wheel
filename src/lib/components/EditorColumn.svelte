@@ -6,7 +6,7 @@
   import ResultsButtons from '$lib/components/ResultsButtons.svelte'
   import ResultsTextbox from '$lib/components/ResultsTextbox.svelte'
 
-  let openTab = 0
+  let openTab = $state(0)
 </script>
 
 <TabGroup
@@ -39,7 +39,7 @@
     </div>
   </Tab>
 
-  <svelte:fragment slot="panel">
+  {#snippet panel()}
     {#if openTab === 0}
       <EditorButtons />
 
@@ -49,5 +49,5 @@
 
       <ResultsTextbox />
     {/if}
-  </svelte:fragment>
+  {/snippet}
 </TabGroup>

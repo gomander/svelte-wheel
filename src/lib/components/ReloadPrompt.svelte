@@ -29,5 +29,7 @@
     })
   }
 
-  $: if ($needRefresh) toast()
+  $effect(() => {
+    if ($needRefresh) toast()
+  })
 </script>

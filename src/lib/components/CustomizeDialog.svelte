@@ -8,8 +8,8 @@
 
   const modalStore = getModalStore()
 
-  const config = structuredClone($wheelStore.config)
-  let openTab = 'basic'
+  const config = $state(structuredClone($wheelStore.config))
+  let openTab = $state('basic')
 
   const save = () => {
     if (config.type === 'image' && !config.image) config.type = 'color'
@@ -42,7 +42,7 @@
         After spin
       </Tab>
 
-      <svelte:fragment slot="panel">
+      {#snippet panel()}
         {#if openTab === 'basic'}
           <CustomizeDialogBasic {config} />
         {:else if openTab === 'appearance'}
@@ -52,14 +52,14 @@
         {:else if openTab === 'afterSpin'}
           <CustomizeDialogAfterSpin {config} />
         {/if}
-      </svelte:fragment>
+      {/snippet}
     </TabGroup>
 
     <footer class="flex justify-end gap-2">
-      <button class="btn variant-soft" on:click={modalStore.close}>
+      <button class="btn variant-soft" onclick={modalStore.close}>
         Cancel
       </button>
-      <button class="btn variant-filled-primary" on:click={save}>
+      <button class="btn variant-filled-primary" onclick={save}>
         Save
       </button>
     </footer>

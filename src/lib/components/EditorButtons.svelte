@@ -3,13 +3,13 @@
   import busyStore from '$lib/stores/BusyStore'
 
   const sortEntries = () => {
-    const entries = [...$wheelStore.entries]
+    const entries = [...wheelStore.value.entries]
     entries.sort((a, b) => a.text.localeCompare(b.text))
     wheelStore.setEntries(entries)
   }
 
   const shuffleEntries = () => {
-    const array = [...$wheelStore.entries]
+    const array = [...wheelStore.value.entries]
     let j: number
     for (let i = array.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));

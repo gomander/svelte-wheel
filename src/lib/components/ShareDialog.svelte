@@ -11,7 +11,7 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let title = $state($wheelStore.config.title)
+  let title = $state(wheelStore.value.config.title)
   let loading = $state(false)
   let shareMode: 'overwrite' | 'new' = $state('new')
 
@@ -26,10 +26,10 @@
       })
       return
     }
-    if ($wheelStore.path) {
+    if (wheelStore.value.path) {
       loading = true
       try {
-        const response = await getWheel($wheelStore.path, user.uid)
+        const response = await getWheel(wheelStore.value.path, user.uid)
         if (!response.success) {
           wheelStore.setPath(null)
           return
@@ -59,8 +59,8 @@
       if (shareMode === 'new') {
         const response = await createWheel({
           wheel: {
-            config: { ...$wheelStore.config, title },
-            entries: $wheelStore.entries
+            config: { ...wheelStore.value.config, title },
+            entries: wheelStore.value.entries
           },
           visibility: 'public',
           uid: user.uid
@@ -70,11 +70,11 @@
         }
         path = response.data.path
       }
-      if (shareMode === 'overwrite' && $wheelStore.path) {
-        const response = await updateWheel($wheelStore.path, {
+      if (shareMode === 'overwrite' && wheelStore.value.path) {
+        const response = await updateWheel(wheelStore.value.path, {
           wheel: {
-            config: { ...$wheelStore.config, title },
-            entries: $wheelStore.entries
+            config: { ...wheelStore.value.config, title },
+            entries: wheelStore.value.entries
           },
           uid: user.uid,
           visibility: 'public'
@@ -133,7 +133,7 @@
       onsubmit={share}
       class="flex flex-col gap-4"
     >
-      {#if $wheelStore.path}
+      {#if wheelStore.value.path}
         <div class="flex flex-col gap-2">
           <label class="flex items-center gap-2">
             <input
@@ -144,7 +144,7 @@
               class="radio"
             >
             <span>
-              Overwrite "{$wheelStore.config.title}" ({$wheelStore.path})
+              Overwrite "{wheelStore.value.config.title}" ({wheelStore.value.path})
             </span>
           </label>
           <label class="flex items-center gap-2">

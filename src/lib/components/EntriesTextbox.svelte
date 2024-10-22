@@ -8,7 +8,7 @@
 
   const text = {
     get value() {
-      return $wheelStore.entries.map(e => e.text).join('\n')
+      return wheelStore.value.entries.map(e => e.text).join('\n')
     },
     set value(value: string) {
       textarea.value = value
@@ -18,7 +18,7 @@
 
   function setEntries(lines: string[]) {
     let changeStartIndex = lines.length
-    const oldEntries = $wheelStore.entries
+    const oldEntries = wheelStore.value.entries
     const newEntries: Entry[] = lines.map((text, index) => {
       let id = oldEntries.at(index)?.id
       if (!id || oldEntries.at(index)?.text !== text) {
@@ -59,5 +59,5 @@
 ></textarea>
 
 {#if $debugStore.active}
-  <pre>{$wheelStore.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
+  <pre>{wheelStore.value.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
 {/if}

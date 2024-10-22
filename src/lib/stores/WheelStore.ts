@@ -1,5 +1,4 @@
-import { get, writable } from 'svelte/store'
-import { localStorageStore } from '@skeletonlabs/skeleton'
+import { persistedState } from '$lib/stores/PersistedState.svelte'
 import WheelConfig from '$lib/utils/WheelConfig'
 import { defaultEntries, getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
@@ -11,55 +10,56 @@ interface WheelStoreData {
 }
 
 const createWheelStore = (state: WheelStoreData) => {
-  const { subscribe, update } = writable(state)
+  const store = persistedState('wheel', state)
 
   const setConfig = (config: WheelConfig) => {
-    update(state => {
+    store.update(state => {
       state.config = config
       return state
     })
   }
 
   const setEntries = (entries: Entry[]) => {
-    update(state => {
+    store.update(state => {
       state.entries = entries
       return state
     })
   }
 
   const setNewEntries = (entries: Omit<Entry, 'id'>[]) => {
-    update(state => {
+    store.update(state => {
       state.entries = entries.map(entry => ({ ...entry, id: getNewEntryId() }))
       return state
     })
   }
 
   const setWinners = (winners: Entry[]) => {
-    update(state => {
+    store.update(state => {
       state.winners = winners
       return state
     })
   }
 
   const setPath = (path: string | null) => {
-    update(state => {
+    store.update(state => {
       state.path = path
       return state
     })
   }
 
-  const reset = () => {
-    update(state => {
-      state.config = new WheelConfig()
-      state.entries = defaultEntries
-      state.winners = []
-      state.path = null
-      return state
-    })
-  }
-
   return {
-    subscribe, setConfig, setEntries, setNewEntries, setWinners, setPath, reset
+    get value() {
+      return store.value
+    },
+    set value(newValue: WheelStoreData) {
+      store.value = newValue
+    },
+    reset: store.reset,
+    setConfig,
+    setEntries,
+    setNewEntries,
+    setWinners,
+    setPath
   }
 }
 
@@ -70,10 +70,4 @@ const initialState: WheelStoreData = {
   path: null
 }
 
-const localStorageWheelStore = localStorageStore('wheel', initialState)
-
-const wheelStore = createWheelStore(get(localStorageWheelStore))
-
-wheelStore.subscribe(localStorageWheelStore.set)
-
-export default wheelStore
+export default createWheelStore(initialState)

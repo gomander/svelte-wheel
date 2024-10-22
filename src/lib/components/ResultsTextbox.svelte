@@ -4,7 +4,7 @@
 
   const text = {
     get value() {
-      return $wheelStore.winners.map(e => e.text).join('\n')
+      return wheelStore.value.winners.map(e => e.text).join('\n')
     }
   }
 </script>
@@ -19,5 +19,5 @@
 ></textarea>
 
 {#if $debugStore.active}
-  <pre>{$wheelStore.winners.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
+  <pre>{wheelStore.value.winners.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
 {/if}

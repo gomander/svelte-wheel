@@ -3,13 +3,11 @@
   import busyStore from '$lib/stores/BusyStore'
 
   const sortWinners = () => {
-    const winners = [...$wheelStore.winners]
-    winners.sort((a, b) => a.text.localeCompare(b.text))
-    wheelStore.setWinners(winners)
+    wheelStore.setWinners(wheelStore.value.winners.toSorted((a, b) => a.text.localeCompare(b.text)))
   }
 
   const resetEntries = () => {
-    const combined = [...$wheelStore.entries, ...$wheelStore.winners]
+    const combined = [...wheelStore.value.entries, ...wheelStore.value.winners]
     const ids: string[] = []
     const entries = combined.filter(entry => {
       if (ids.includes(entry.id)) return false

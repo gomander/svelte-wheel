@@ -32,13 +32,13 @@
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
     }
     dispatch('stop', data)
-    wheelStore.setWinners([...$wheelStore.winners, data.winner])
+    wheelStore.setWinners([...wheelStore.value.winners, data.winner])
   }
 
   let canvas: HTMLCanvasElement = $state(null!)
   let offscreen: OffscreenCanvas
   let painter: Worker = $state(null!)
-  const wheel = $state(new Wheel({ ...$wheelStore, onStarted, onStopped }))
+  const wheel = new Wheel({ ...wheelStore.value, onStarted, onStopped })
   const ticker = new Ticker()
   let animationFrameId = 0
 
@@ -47,7 +47,7 @@
     painter = new WheelPainterWorker.default()
     offscreen = canvas.transferControlToOffscreen()
     painter.postMessage({ canvas: offscreen }, [offscreen])
-    painter.postMessage({ wheel: $wheelStore })
+    painter.postMessage({ wheel: wheelStore.value })
     refreshWheelOnFontLoad()
     tick(0)
   }
@@ -61,12 +61,12 @@
   onMount(loadWheelPainterWorker)
 
   $effect(() => {
-    wheel.setConfig($wheelStore.config)
+    wheel.setConfig(wheelStore.value.config)
     painter?.postMessage({ config: wheel.config })
     painter?.postMessage({ refresh: true })
   })
   $effect(() => {
-    wheel.setEntries($wheelStore.entries)
+    wheel.setEntries(wheelStore.value.entries)
     painter?.postMessage({ entries: wheel.entries })
     painter?.postMessage({ refresh: true })
   })

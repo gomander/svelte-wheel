@@ -36,9 +36,9 @@
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
     }
     dispatch('stop', data)
-    wheelStore.setWinners([...$wheelStore.winners, data.winner])
+    wheelStore.setWinners([...wheelStore.value.winners, data.winner])
   }
-  const wheel = new Wheel({ ...$wheelStore, onStarted, onStopped })
+  const wheel = new Wheel({ ...wheelStore.value, onStarted, onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()
 
@@ -62,11 +62,11 @@
   })
 
   $effect(() => {
-    wheel.setConfig($wheelStore.config)
+    wheel.setConfig(wheelStore.value.config)
     refreshPainter()
   })
   $effect(() => {
-    wheel.setEntries($wheelStore.entries)
+    wheel.setEntries(wheelStore.value.entries)
     refreshPainter()
   })
 

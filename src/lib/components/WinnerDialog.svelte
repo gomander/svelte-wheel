@@ -7,7 +7,7 @@
 
   const remove = () => {
     wheelStore.setEntries(
-      $wheelStore.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
+      wheelStore.value.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
     )
     modalStore.close()
   }

@@ -8,7 +8,7 @@
 
   const modalStore = getModalStore()
 
-  const config = $state(structuredClone($wheelStore.config))
+  const config = $state($state.snapshot(wheelStore.value.config))
   let openTab = $state('basic')
 
   const save = () => {

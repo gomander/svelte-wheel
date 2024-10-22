@@ -21,7 +21,7 @@
     <div class="flex items-center gap-2">
       <span id="entries-label">Entries</span>
       <div>
-        <span class="badge variant-filled">{$wheelStore.entries.length}</span>
+        <span class="badge variant-filled">{wheelStore.value.entries.length}</span>
       </div>
     </div>
   </Tab>
@@ -34,7 +34,7 @@
     <div class="flex items-center gap-2">
       <span id="results-label">Results</span>
       <div>
-        <span class="badge variant-filled">{$wheelStore.winners.length}</span>
+        <span class="badge variant-filled">{wheelStore.value.winners.length}</span>
       </div>
     </div>
   </Tab>

@@ -18,14 +18,14 @@
   const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
     type: 'component',
     component: 'winnerDialog',
-    title: $wheelStore.config.winnerMessage || 'We have a winner!',
+    title: wheelStore.value.config.winnerMessage || 'We have a winner!',
     body: data.winner.text,
     meta: data
   })
 
   const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
-    launchConfetti($wheelStore.config.confetti, $wheelStore.config.colors)
-    if (!$wheelStore.config.displayWinnerDialog) return
+    launchConfetti(wheelStore.value.config.confetti, $state.snapshot(wheelStore.value.config.colors))
+    if (!wheelStore.value.config.displayWinnerDialog) return
     modalStore.trigger(createWinnerModal(e.detail))
   }
 
@@ -53,8 +53,8 @@
 </script>
 
 <svelte:head>
-  {#if $wheelStore.config.title}
-    <title>{$wheelStore.config.title} - Svelte Wheel</title>
+  {#if wheelStore.value.config.title}
+    <title>{wheelStore.value.config.title} - Svelte Wheel</title>
   {:else}
     <title>Svelte Wheel</title>
   {/if}
@@ -81,10 +81,10 @@
       {#if !$fullscreenStore.active}
         <div>
           <h2 class="text-3xl" aria-label="Wheel title">
-            {$wheelStore.config.title}
+            {wheelStore.value.config.title}
           </h2>
           <p class="text-lg" aria-label="Wheel description">
-            {$wheelStore.config.description}
+            {wheelStore.value.config.description}
           </p>
           {#if $debugStore.active}
             <RadioGroup>

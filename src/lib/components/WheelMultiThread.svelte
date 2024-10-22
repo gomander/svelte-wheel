@@ -47,7 +47,7 @@
     painter = new WheelPainterWorker.default()
     offscreen = canvas.transferControlToOffscreen()
     painter.postMessage({ canvas: offscreen }, [offscreen])
-    painter.postMessage({ wheel: wheelStore.value })
+    painter.postMessage({ wheel: $state.snapshot(wheelStore.value) })
     refreshWheelOnFontLoad()
     tick(0)
   }
@@ -62,12 +62,12 @@
 
   $effect(() => {
     wheel.setConfig(wheelStore.value.config)
-    painter?.postMessage({ config: wheel.config })
+    painter?.postMessage({ config: $state.snapshot(wheel.config) })
     painter?.postMessage({ refresh: true })
   })
   $effect(() => {
     wheel.setEntries(wheelStore.value.entries)
-    painter?.postMessage({ entries: wheel.entries })
+    painter?.postMessage({ entries: $state.snapshot(wheel.entries) })
     painter?.postMessage({ refresh: true })
   })
 

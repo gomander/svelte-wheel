@@ -1,6 +1,6 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
-  import debugStore from '$lib/stores/DebugStore'
+  import debugStore from '$lib/stores/DebugStore.svelte'
 
   const text = {
     get value() {
@@ -18,6 +18,6 @@
   aria-labelledby="results-label"
 ></textarea>
 
-{#if $debugStore.active}
+{#if debugStore.active}
   <pre>{wheelStore.value.winners.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
 {/if}

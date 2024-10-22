@@ -1,7 +1,7 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
   import busyStore from '$lib/stores/BusyStore'
-  import debugStore from '$lib/stores/DebugStore'
+  import debugStore from '$lib/stores/DebugStore.svelte'
   import { getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
   let textarea: HTMLTextAreaElement = $state(null!)
@@ -58,6 +58,6 @@
   aria-labelledby="entries-label"
 ></textarea>
 
-{#if $debugStore.active}
+{#if debugStore.active}
   <pre>{wheelStore.value.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
 {/if}

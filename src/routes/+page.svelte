@@ -8,7 +8,7 @@
   import EditorColumn from '$lib/components/EditorColumn.svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import fullscreenStore from '$lib/stores/FullscreenStore'
-  import debugStore from '$lib/stores/DebugStore'
+  import debugStore from '$lib/stores/DebugStore.svelte'
   import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { OnStoppedData } from '$lib/utils/Wheel'
   import AboutCards from '$lib/components/AboutCards.svelte'
@@ -86,7 +86,7 @@
           <p class="text-lg" aria-label="Wheel description">
             {wheelStore.value.config.description}
           </p>
-          {#if $debugStore.active}
+          {#if debugStore.active}
             <RadioGroup>
               <RadioItem
                 name="wheel"

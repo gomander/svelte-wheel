@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte'
   import { LightSwitch } from '@skeletonlabs/skeleton'
   import busyStore from '$lib/stores/BusyStore'
-  import debugStore from '$lib/stores/DebugStore'
+  import debugStore from '$lib/stores/DebugStore.svelte'
 
   const dispatch = createEventDispatcher<{
     new: null,
@@ -106,7 +106,7 @@
     disabled={$busyStore.spinning}
     role="menuitem"
   >
-    <i class="fas {$debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>
+    <i class="fas {debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>
     <span class="flex-grow text-left">Debug</span>
   </button>
 </div>

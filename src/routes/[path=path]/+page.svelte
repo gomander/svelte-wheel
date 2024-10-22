@@ -13,18 +13,18 @@
   const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
     type: 'component',
     component: 'winnerDialog',
-    title: wheelStore.value.config.winnerMessage || 'We have a winner!',
+    title: wheelStore.config.winnerMessage || 'We have a winner!',
     body: data.winner.text,
     meta: data
   })
 
   const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
-    launchConfetti(wheelStore.value.config.confetti, $state.snapshot(wheelStore.value.config.colors))
-    if (!wheelStore.value.config.displayWinnerDialog) return
+    launchConfetti(wheelStore.config.confetti, $state.snapshot(wheelStore.config.colors))
+    if (!wheelStore.config.displayWinnerDialog) return
     modalStore.trigger(createWinnerModal(e.detail))
   }
 
-  wheelStore.setConfig(wheel.config)
+  wheelStore.config = wheel.config
   wheelStore.setNewEntries(wheel.entries)
 </script>
 

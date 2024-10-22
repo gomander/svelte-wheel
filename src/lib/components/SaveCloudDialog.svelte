@@ -11,7 +11,7 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let title = $state(wheelStore.value.config.title)
+  let title = $state(wheelStore.config.title)
   let loading = $state(false)
   let saveMode: 'overwrite' | 'new' = $state('new')
 
@@ -26,17 +26,17 @@
       })
       return
     }
-    if (wheelStore.value.path) {
+    if (wheelStore.path) {
       loading = true
       try {
-        const response = await getWheel(wheelStore.value.path, user.uid)
+        const response = await getWheel(wheelStore.path, user.uid)
         if (!response.success) {
-          wheelStore.setPath(null)
+          wheelStore.path = null
           return
         }
         saveMode = 'overwrite'
       } catch (error) {
-        wheelStore.setPath(null)
+        wheelStore.path = null
       } finally {
         loading = false
       }
@@ -58,8 +58,8 @@
       if (saveMode === 'new') {
         const response = await createWheel({
           wheel: {
-            config: { ...wheelStore.value.config, title },
-            entries: wheelStore.value.entries
+            config: { ...wheelStore.config, title },
+            entries: wheelStore.entries
           },
           visibility: 'private',
           uid: user.uid
@@ -68,11 +68,11 @@
           throw new Error(response.error.message)
         }
       }
-      if (saveMode === 'overwrite' && wheelStore.value.path) {
-        const response = await updateWheel(wheelStore.value.path, {
+      if (saveMode === 'overwrite' && wheelStore.path) {
+        const response = await updateWheel(wheelStore.path, {
           wheel: {
-            config: { ...wheelStore.value.config, title },
-            entries: wheelStore.value.entries
+            config: { ...wheelStore.config, title },
+            entries: wheelStore.entries
           },
           uid: user.uid
         }, user.uid)
@@ -116,7 +116,7 @@
       onsubmit={save}
       class="flex flex-col gap-4"
     >
-      {#if wheelStore.value.path}
+      {#if wheelStore.path}
         <div class="flex flex-col gap-2">
           <label class="flex items-center gap-2">
             <input
@@ -127,7 +127,7 @@
               class="radio"
             >
             <span>
-              Overwrite "{wheelStore.value.config.title}" ({wheelStore.value.path})
+              Overwrite "{wheelStore.config.title}" ({wheelStore.path})
             </span>
           </label>
           <label class="flex items-center gap-2">

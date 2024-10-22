@@ -20,9 +20,9 @@
       })
       const fileContent = await file.text()
       const { config, entries, winners } = JSON.parse(fileContent)
-      wheelStore.setConfig(config)
-      wheelStore.setEntries(entries)
-      wheelStore.setWinners(winners)
+      wheelStore.config = config
+      wheelStore.entries = entries
+      wheelStore.winners = winners
       modalStore.close()
       toastStore.trigger({
         ...toastDefaults,

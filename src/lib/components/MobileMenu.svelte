@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { LightSwitch } from '@skeletonlabs/skeleton'
-  import busyStore from '$lib/stores/BusyStore'
+  import busyStore from '$lib/stores/BusyStore.svelte'
   import debugStore from '$lib/stores/DebugStore.svelte'
 
   const dispatch = createEventDispatcher<{
@@ -19,7 +19,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('new')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     role="menuitem"
   >
     <i class="fas fa-file w-6"></i>
@@ -29,7 +29,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('open')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     role="menuitem"
   >
     <i class="fas fa-folder-open w-6"></i>
@@ -39,7 +39,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('save')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     role="menuitem"
   >
     <i class="fas fa-floppy-disk w-6"></i>
@@ -49,7 +49,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('customize')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     role="menuitem"
   >
     <i class="fas fa-palette w-6"></i>
@@ -59,7 +59,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('share')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     role="menuitem"
   >
     <i class="fas fa-share-nodes w-6"></i>
@@ -69,7 +69,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('account')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     role="menuitem"
   >
     <i class="fas fa-user w-6"></i>
@@ -103,7 +103,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('debug')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     role="menuitem"
   >
     <i class="fas {debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>

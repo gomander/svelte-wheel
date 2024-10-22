@@ -87,10 +87,10 @@
         throw new Error(response.error.message)
       }
       const { config, entries } = response.data.wheel
-      wheelStore.setConfig(config)
+      wheelStore.config = config
       wheelStore.setNewEntries(entries)
-      wheelStore.setWinners([])
-      wheelStore.setPath(path)
+      wheelStore.winners =[]
+      wheelStore.path = path
       modalStore.close()
       toastStore.trigger({
         ...toastDefaults,

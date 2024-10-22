@@ -48,18 +48,32 @@ const createWheelStore = (state: WheelStoreData) => {
   }
 
   return {
-    get value() {
-      return store.value
+    get config() {
+      return store.value.config
     },
-    set value(newValue: WheelStoreData) {
-      store.value = newValue
+    set config(newValue: WheelConfig) {
+      store.value.config = newValue
+    },
+    get entries() {
+      return store.value.entries
+    },
+    set entries(newValue: Entry[]) {
+      store.value.entries = newValue
+    },
+    get winners() {
+      return store.value.winners
+    },
+    set winners(newValue: Entry[]) {
+      store.value.winners = newValue
+    },
+    get path() {
+      return store.value.path
+    },
+    set path(newValue: string | null) {
+      store.value.path = newValue
     },
     reset: store.reset,
-    setConfig,
-    setEntries,
-    setNewEntries,
-    setWinners,
-    setPath
+    setNewEntries
   }
 }
 

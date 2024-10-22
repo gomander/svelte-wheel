@@ -1,6 +1,6 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
-  import busyStore from '$lib/stores/BusyStore'
+  import busyStore from '$lib/stores/BusyStore.svelte'
   import debugStore from '$lib/stores/DebugStore.svelte'
   import { getNewEntryId, type Entry } from '$lib/utils/Wheel'
 
@@ -8,7 +8,7 @@
 
   const text = {
     get value() {
-      return wheelStore.value.entries.map(e => e.text).join('\n')
+      return wheelStore.entries.map(e => e.text).join('\n')
     },
     set value(value: string) {
       textarea.value = value
@@ -18,7 +18,7 @@
 
   function setEntries(lines: string[]) {
     let changeStartIndex = lines.length
-    const oldEntries = wheelStore.value.entries
+    const oldEntries = wheelStore.entries
     const newEntries: Entry[] = lines.map((text, index) => {
       let id = oldEntries.at(index)?.id
       if (!id || oldEntries.at(index)?.text !== text) {
@@ -43,7 +43,7 @@
         }
       }
     }
-    wheelStore.setEntries(newEntries)
+    wheelStore.entries = newEntries
   }
 </script>
 
@@ -54,10 +54,10 @@
   maxlength="1000"
   bind:value={text.value}
   bind:this={textarea}
-  disabled={$busyStore.spinning}
+  disabled={busyStore.spinning}
   aria-labelledby="entries-label"
 ></textarea>
 
 {#if debugStore.active}
-  <pre>{wheelStore.value.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
+  <pre>{wheelStore.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
 {/if}

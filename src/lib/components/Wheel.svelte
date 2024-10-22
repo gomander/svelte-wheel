@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte'
   import wheelStore from '$lib/stores/WheelStore'
-  import busyStore from '$lib/stores/BusyStore'
+  import busyStore from '$lib/stores/BusyStore.svelte'
   import Wheel, { type OnStoppedData } from '$lib/utils/Wheel'
   import WheelPainter from '$lib/utils/WheelPainter'
   import Ticker from '$lib/utils/Ticker'
@@ -15,7 +15,7 @@
   let context: CanvasRenderingContext2D = $state(null!)
 
   const onStarted = () => {
-    busyStore.setSpinning(true)
+    busyStore.spinning = true
     if (wheel.config.duringSpinSound === 'tick') {
       wheel.onPointerIndexChanged = () => {
         playTick(wheel.config.duringSpinSoundVolume)
@@ -30,15 +30,15 @@
     }
   }
   const onStopped = (data: OnStoppedData) => {
-    busyStore.setSpinning(false)
+    busyStore.spinning = false
     cancelLoopingSounds()
     if (wheel.config.afterSpinSound) {
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
     }
     dispatch('stop', data)
-    wheelStore.setWinners([...wheelStore.value.winners, data.winner])
+    wheelStore.winners = [...wheelStore.winners, data.winner]
   }
-  const wheel = new Wheel({ ...wheelStore.value, onStarted, onStopped })
+  const wheel = new Wheel({ ...wheelStore, onStarted, onStopped })
   const painter = new WheelPainter()
   const ticker = new Ticker()
 
@@ -62,11 +62,11 @@
   })
 
   $effect(() => {
-    wheel.setConfig(wheelStore.value.config)
+    wheel.setConfig(wheelStore.config)
     refreshPainter()
   })
   $effect(() => {
-    wheel.setEntries(wheelStore.value.entries)
+    wheel.setEntries(wheelStore.entries)
     refreshPainter()
   })
 

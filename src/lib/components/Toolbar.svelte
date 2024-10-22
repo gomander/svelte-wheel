@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte'
   import { popup } from '@skeletonlabs/skeleton'
   import fullscreenStore from '$lib/stores/FullscreenStore'
-  import busyStore from '$lib/stores/BusyStore'
+  import busyStore from '$lib/stores/BusyStore.svelte'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
   import MoreMenu from '$lib/components/MoreMenu.svelte'
 
@@ -62,7 +62,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         onclick={() => dispatch('new')}
-        disabled={$busyStore.spinning}
+        disabled={busyStore.spinning}
         role="menuitem"
         aria-label="New"
         title="New"
@@ -73,7 +73,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         onclick={() => dispatch('open')}
-        disabled={$busyStore.spinning}
+        disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Open"
         title="Open"
@@ -84,7 +84,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         onclick={() => dispatch('save')}
-        disabled={$busyStore.spinning}
+        disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Save"
         title="Save"
@@ -95,7 +95,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         onclick={() => dispatch('customize')}
-        disabled={$busyStore.spinning}
+        disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Customize"
         title="Customize"
@@ -106,7 +106,7 @@
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         onclick={() => dispatch('share')}
-        disabled={$busyStore.spinning}
+        disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Share"
         title="Share"

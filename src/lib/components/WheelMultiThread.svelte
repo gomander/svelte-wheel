@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte'
   import wheelStore from '$lib/stores/WheelStore'
-  import busyStore from '$lib/stores/BusyStore'
+  import busyStore from '$lib/stores/BusyStore.svelte'
   import Wheel, { type OnStoppedData } from '$lib/utils/Wheel'
   import Ticker from '$lib/utils/Ticker'
   import {
@@ -11,7 +11,7 @@
   const dispatch = createEventDispatcher<{ stop: OnStoppedData }>()
 
   const onStarted = () => {
-    busyStore.setSpinning(true)
+    busyStore.spinning = true
     if (wheel.config.duringSpinSound === 'tick') {
       wheel.onPointerIndexChanged = () => {
         playTick(wheel.config.duringSpinSoundVolume)
@@ -26,19 +26,19 @@
     }
   }
   const onStopped = (data: OnStoppedData) => {
-    busyStore.setSpinning(false)
+    busyStore.spinning = false
     cancelLoopingSounds()
     if (wheel.config.afterSpinSound) {
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
     }
     dispatch('stop', data)
-    wheelStore.setWinners([...wheelStore.value.winners, data.winner])
+    wheelStore.winners = [...wheelStore.winners, data.winner]
   }
 
   let canvas: HTMLCanvasElement = $state(null!)
   let offscreen: OffscreenCanvas
   let painter: Worker = $state(null!)
-  const wheel = new Wheel({ ...wheelStore.value, onStarted, onStopped })
+  const wheel = new Wheel({ ...wheelStore, onStarted, onStopped })
   const ticker = new Ticker()
   let animationFrameId = 0
 
@@ -47,7 +47,7 @@
     painter = new WheelPainterWorker.default()
     offscreen = canvas.transferControlToOffscreen()
     painter.postMessage({ canvas: offscreen }, [offscreen])
-    painter.postMessage({ wheel: $state.snapshot(wheelStore.value) })
+    painter.postMessage({ wheel: $state.snapshot(wheelStore) })
     refreshWheelOnFontLoad()
     tick(0)
   }
@@ -61,12 +61,12 @@
   onMount(loadWheelPainterWorker)
 
   $effect(() => {
-    wheel.setConfig(wheelStore.value.config)
+    wheel.setConfig(wheelStore.config)
     painter?.postMessage({ config: $state.snapshot(wheel.config) })
     painter?.postMessage({ refresh: true })
   })
   $effect(() => {
-    wheel.setEntries(wheelStore.value.entries)
+    wheel.setEntries(wheelStore.entries)
     painter?.postMessage({ entries: $state.snapshot(wheel.entries) })
     painter?.postMessage({ refresh: true })
   })

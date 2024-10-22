@@ -6,9 +6,7 @@
   const modalStore = getModalStore()
 
   const remove = () => {
-    wheelStore.setEntries(
-      wheelStore.value.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
-    )
+    wheelStore.entries = wheelStore.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
     modalStore.close()
   }
 </script>

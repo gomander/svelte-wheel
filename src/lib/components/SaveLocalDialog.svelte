@@ -7,7 +7,7 @@
   const modalStore = getModalStore()
   const toastStore = getToastStore()
 
-  let fileName = $state(wheelStore.value.config.title)
+  let fileName = $state(wheelStore.config.title)
   let loading = false
 
   const save = async (e: Event) => {
@@ -18,9 +18,9 @@
       await fileSave(
         new Blob(
           [JSON.stringify({
-            config: wheelStore.value.config,
-            entries: wheelStore.value.entries,
-            winners: wheelStore.value.winners
+            config: wheelStore.config,
+            entries: wheelStore.entries,
+            winners: wheelStore.winners
           })],
           { type: 'application/json' }
         ),

@@ -1,5 +1,5 @@
-const createDebugStore = (state: boolean) => {
-  let active = $state(state)
+const createDebugStore = (initialState: boolean) => {
+  let active = $state(initialState)
 
   const toggle = () => {
     active = !active

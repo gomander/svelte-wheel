@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { LightSwitch } from '@skeletonlabs/skeleton'
-  import busyStore from '$lib/stores/BusyStore'
+  import busyStore from '$lib/stores/BusyStore.svelte'
   import debugStore from '$lib/stores/DebugStore.svelte'
 
   const dispatch = createEventDispatcher<{
@@ -14,7 +14,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('account')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
   >
     <i class="fas fa-user w-6"></i>
     <span class="flex-grow text-left">Account</span>
@@ -45,7 +45,7 @@
   <button
     class="btn text-xl hover:variant-soft-primary"
     onclick={() => dispatch('debug')}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
   >
     <i class="fas {debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>
     <span class="flex-grow text-left">Debug</span>

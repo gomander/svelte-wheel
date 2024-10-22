@@ -8,12 +8,12 @@
 
   const modalStore = getModalStore()
 
-  const config = $state($state.snapshot(wheelStore.value.config))
+  const config = $state($state.snapshot(wheelStore.config))
   let openTab = $state('basic')
 
   const save = () => {
     if (config.type === 'image' && !config.image) config.type = 'color'
-    wheelStore.setConfig($state.snapshot(config))
+    wheelStore.config = config
     modalStore.close()
   }
 </script>

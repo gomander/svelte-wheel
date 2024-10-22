@@ -1,21 +1,21 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
-  import busyStore from '$lib/stores/BusyStore'
+  import busyStore from '$lib/stores/BusyStore.svelte'
 
   const sortEntries = () => {
-    const entries = [...wheelStore.value.entries]
+    const entries = [...wheelStore.entries]
     entries.sort((a, b) => a.text.localeCompare(b.text))
-    wheelStore.setEntries(entries)
+    wheelStore.entries = entries
   }
 
   const shuffleEntries = () => {
-    const array = [...wheelStore.value.entries]
+    const array = [...wheelStore.entries]
     let j: number
     for (let i = array.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]]
     }
-    wheelStore.setEntries(array)
+    wheelStore.entries = array
   }
 </script>
 
@@ -23,7 +23,7 @@
   <button
     class="btn variant-filled flex-1"
     onclick={sortEntries}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     aria-label="Sort"
   >
     <i class="fas fa-arrow-down-a-z"></i>
@@ -33,7 +33,7 @@
   <button
     class="btn variant-filled flex-1"
     onclick={shuffleEntries}
-    disabled={$busyStore.spinning}
+    disabled={busyStore.spinning}
     aria-label="Shuffle"
   >
     <i class="fas fa-shuffle"></i>

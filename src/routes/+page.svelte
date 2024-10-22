@@ -7,7 +7,7 @@
   import WheelMultiThread from '$lib/components/WheelMultiThread.svelte'
   import EditorColumn from '$lib/components/EditorColumn.svelte'
   import wheelStore from '$lib/stores/WheelStore'
-  import fullscreenStore from '$lib/stores/FullscreenStore'
+  import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
   import debugStore from '$lib/stores/DebugStore.svelte'
   import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { OnStoppedData } from '$lib/utils/Wheel'
@@ -78,7 +78,7 @@
 
   <main class="flex-grow flex flex-col xl:grid grid-cols-4">
     <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col justify-between">
-      {#if !$fullscreenStore.active}
+      {#if !fullscreenStore.active}
         <div>
           <h2 class="text-3xl" aria-label="Wheel title">
             {wheelStore.config.title}
@@ -119,14 +119,14 @@
     </div>
 
     <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">
-      {#if !$fullscreenStore.active}
+      {#if !fullscreenStore.active}
         <EditorColumn />
       {/if}
     </div>
   </main>
 </div>
 
-{#if !$fullscreenStore.active}
+{#if !fullscreenStore.active}
   <hr>
 
   <aside class="p-4 flex justify-center">

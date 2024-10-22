@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { popup } from '@skeletonlabs/skeleton'
-  import fullscreenStore from '$lib/stores/FullscreenStore'
+  import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
   import MoreMenu from '$lib/components/MoreMenu.svelte'
@@ -58,7 +58,7 @@
     role="menubar"
     aria-label="Toolbar"
   >
-    {#if !$fullscreenStore.active}
+    {#if !fullscreenStore.active}
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         onclick={() => dispatch('new')}
@@ -115,7 +115,7 @@
       </button>
     {/if}
 
-    {#if $fullscreenStore.supported}
+    {#if fullscreenStore.supported}
       <button
         class="btn btn-icon-sm text-lg hover:variant-soft-primary"
         onclick={() => fullscreenStore.toggleFullscreen()}
@@ -123,7 +123,7 @@
         aria-label="Toggle fullscreen"
         title="Toggle fullscreen"
       >
-        <i class="fas fa-{$fullscreenStore.active ? 'compress' : 'expand'}"></i>
+        <i class="fas fa-{fullscreenStore.active ? 'compress' : 'expand'}"></i>
       </button>
     {/if}
 

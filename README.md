@@ -1,5 +1,8 @@
 # Svelte Wheel
 
+This is an exploratory Svelte/Kit rewrite of https://wheelofnames.com.  
+The master branch is Svelte 5. The original Svelte 4 version is in the svelte-4 branch.
+
 ## Developing
 
 Install dependencies: `pnpm i`  

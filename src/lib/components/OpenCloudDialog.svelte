@@ -114,7 +114,7 @@
   // TODO: Use tabs to separate private and public wheels. Allow users to change
   // a wheel's visibility.
   let wheelsPerPage = $derived(Math.floor(innerHeight / 200))
-  let sortedWheels = $derived(apiWheels.sort((a, b) => {
+  let sortedWheels = $derived(apiWheels.toSorted((a, b) => {
     switch (sort) {
       case 'updated-desc':
         return (b.updated || b.created) - (a.updated || a.created)

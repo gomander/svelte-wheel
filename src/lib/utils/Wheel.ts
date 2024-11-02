@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid'
 import WheelConfig from '$lib/utils/WheelConfig'
 import {
   initialWheelState, click, tick, type WheelState
@@ -105,7 +104,7 @@ export const addIdsToEntries = (entries: Omit<Entry, 'id'>[]) => {
   return entries.map(entry => ({ ...entry, id: getNewEntryId() }))
 }
 
-export const getNewEntryId = () => uuid().split('-')[0]
+export const getNewEntryId = () => crypto.randomUUID().split('-')[0]
 
 export const defaultEntries: Entry[] = [
   'Ali', 'Beatriz', 'Charles', 'Diya', 'Eric', 'Fatima', 'Gabriel', 'Hanna'

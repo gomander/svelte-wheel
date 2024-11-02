@@ -12,37 +12,9 @@ interface WheelStoreData {
 const createWheelStore = (state: WheelStoreData) => {
   const store = persistedState('wheel', state)
 
-  const setConfig = (config: WheelConfig) => {
-    store.update(state => {
-      state.config = config
-      return state
-    })
-  }
-
-  const setEntries = (entries: Entry[]) => {
-    store.update(state => {
-      state.entries = entries
-      return state
-    })
-  }
-
   const setNewEntries = (entries: Omit<Entry, 'id'>[]) => {
     store.update(state => {
       state.entries = entries.map(entry => ({ ...entry, id: getNewEntryId() }))
-      return state
-    })
-  }
-
-  const setWinners = (winners: Entry[]) => {
-    store.update(state => {
-      state.winners = winners
-      return state
-    })
-  }
-
-  const setPath = (path: string | null) => {
-    store.update(state => {
-      state.path = path
       return state
     })
   }

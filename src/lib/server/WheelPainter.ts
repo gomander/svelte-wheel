@@ -1,5 +1,5 @@
 import {
-  createCanvas, Image, type Canvas, type SKRSContext2D as Context
+  createCanvas, loadImage, type Canvas, type SKRSContext2D as Context
 } from '@napi-rs/canvas'
 import FontPicker, { truncateText, getTextColor } from '$lib/utils/FontPicker'
 import { hubSizes } from '$lib/utils/WheelConfig'
@@ -274,11 +274,5 @@ const createInMemoryImage = (context: Context) => {
 }
 
 const createImageFromDataUri = (dataUri: string) => {
-  const image = new Image()
-  return new Promise<Image>(resolve => {
-    image.onload = () => {
-      resolve(image)
-    }
-    image.src = Buffer.from(dataUri)
-  })
+  return loadImage(dataUri)
 }

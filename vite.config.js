@@ -87,6 +87,5 @@ export default defineConfig({
         ]
       }
     })
-  ],
-  test: { dir: 'tests/unit' }
+  ]
 })

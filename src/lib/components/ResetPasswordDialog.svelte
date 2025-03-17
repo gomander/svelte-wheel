@@ -5,16 +5,20 @@
   import { sendPasswordResetEmail } from '$lib/utils/Firebase'
   import { emailValidator } from '$lib/utils/Schemas'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    dialog.open()
+  }
 
   const toast: ToastContext = getContext('toast')
 
   let email = $state('')
   let loading = $state(false)
   let errors: Record<string, string[] | undefined> = $state({ })
+  let dialog: AppDialog = $state(null!)
 
-  const resetPassword = async (e: Event) => {
+  async function resetPassword(e: SubmitEvent) {
     e.preventDefault()
     if (loading) return
     loading = true
@@ -42,11 +46,11 @@
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-key"></i>
@@ -98,4 +102,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>

@@ -1,23 +1,22 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import debugStore from '$lib/stores/DebugStore.svelte'
 
-  const dispatch = createEventDispatcher<{
-    new: null,
-    open: null,
-    customize: null,
-    share: null,
-    account: null,
-    save: null,
-    debug: null
-  }>()
+  let { onNew, onOpen, onCustomize, onShare, onAccount, onSave, onDebug }: {
+    onNew: () => void
+    onOpen: () => void
+    onCustomize: () => void
+    onShare: () => void
+    onAccount: () => void
+    onSave: () => void
+    onDebug: () => void
+  } = $props()
 </script>
 
 <div class="card flex flex-col w-fit shadow-xl p-2">
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('new')}
+    onclick={onNew}
     disabled={busyStore.spinning}
     role="menuitem"
   >
@@ -27,7 +26,7 @@
 
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('open')}
+    onclick={onOpen}
     disabled={busyStore.spinning}
     role="menuitem"
   >
@@ -37,7 +36,7 @@
 
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('save')}
+    onclick={onSave}
     disabled={busyStore.spinning}
     role="menuitem"
   >
@@ -47,7 +46,7 @@
 
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('customize')}
+    onclick={onCustomize}
     disabled={busyStore.spinning}
     role="menuitem"
   >
@@ -57,7 +56,7 @@
 
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('share')}
+    onclick={onShare}
     disabled={busyStore.spinning}
     role="menuitem"
   >
@@ -67,7 +66,7 @@
 
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('account')}
+    onclick={onAccount}
     disabled={busyStore.spinning}
     role="menuitem"
   >
@@ -98,7 +97,7 @@
 
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('debug')}
+    onclick={onDebug}
     disabled={busyStore.spinning}
     role="menuitem"
   >

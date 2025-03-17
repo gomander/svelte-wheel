@@ -3,16 +3,21 @@
   import type { ToastContext } from '@skeletonlabs/skeleton-svelte'
   import { fileSave } from 'browser-fs-access'
   import wheelStore from '$lib/stores/WheelStore'
+  import { getStringFromError } from '$lib/utils/General'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    dialog.open()
+  }
 
   const toast: ToastContext = getContext('toast')
 
   let fileName = $state(wheelStore.config.title)
+  let dialog: AppDialog = $state(null!)
   let loading = false
 
-  const save = async (e: Event) => {
+  async function save(e: Event) {
     e.preventDefault()
     if (loading) return
     loading = true
@@ -34,24 +39,22 @@
         description: 'Wheel saved'
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toast.create({
-          ...toastDefaults,
-          description: error.message,
-          type: 'error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
@@ -94,4 +97,4 @@
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

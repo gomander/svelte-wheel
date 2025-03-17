@@ -3,45 +3,48 @@
   import type { ToastContext } from '@skeletonlabs/skeleton-svelte'
   import { registerUser, signIn } from '$lib/utils/Firebase'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
   import EmailPasswordForm from '$lib/components/EmailPasswordForm.svelte'
 
-  // TODO: Implement modal
+  export function open(nextDialog?: string) {
+    if (nextDialog) next = nextDialog
+    dialog.open()
+  }
+
+  let { onLogin, nextDialog }: {
+    onLogin: () => void
+    nextDialog: (dialogName: string) => void
+  } = $props()
 
   const toast: ToastContext = getContext('toast')
 
   let formError: string | null = $state(null)
+  let dialog: AppDialog = $state(null!)
 
-  const onSubmit = async (user: { email: string, password: string }) => {
+  let next: string | null = null
+
+  async function onSubmit(user: { email: string, password: string }) {
     await registerUser(user.email, user.password)
     await signIn(user.email, user.password)
-    // if ($modalStore[0].meta?.next) {
-    //   modalStore.trigger({
-    //     type: 'component',
-    //     component: $modalStore[0].meta.next
-    //   })
-    // }
     close()
+    if (next) nextDialog(next)
     toast.create({
       ...toastDefaults,
       description: 'Account created'
     })
   }
 
-  const login = () => {
-    // modalStore.trigger({
-    //   type: 'component',
-    //   component: 'loginDialog',
-    //   meta: { next: $modalStore[0].meta?.next }
-    // })
+  function login() {
     close()
+    onLogin()
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-user"></i>
@@ -72,4 +75,4 @@
       {/snippet}
     </EmailPasswordForm>
   </article>
-{/if}
+</AppDialog>

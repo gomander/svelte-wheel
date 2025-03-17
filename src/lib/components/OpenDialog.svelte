@@ -4,14 +4,21 @@
   import { fileOpen } from 'browser-fs-access'
   import wheelStore from '$lib/stores/WheelStore'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    dialog.open()
+  }
+
+  let { onOpenCloud }: { onOpenCloud: () => void } = $props()
 
   const toast: ToastContext = getContext('toast')
 
-  const openOpenCloudDialog = () => {
+  let dialog: AppDialog = $state(null!)
+
+  function openOpenCloudDialog() {
     close()
-    // modalStore.trigger({ type: 'component', component: 'openCloudDialog' })
+    onOpenCloud()
   }
 
   const openLocalFile = async () => {
@@ -41,11 +48,11 @@
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-folder-open"></i>
@@ -79,4 +86,4 @@
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

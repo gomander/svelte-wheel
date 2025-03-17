@@ -1,22 +1,33 @@
 <script lang="ts">
-  // TODO: Implement modal
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const openSaveCloudDialog = () => {
-    close()
-    // modalStore.trigger({ type: 'component', component: 'saveCloudDialog' })
+  export function open() {
+    dialog.open()
   }
 
-  const openSaveLocalDialog = () => {
+  let { onSaveCloud, onSaveLocal }: {
+    onSaveCloud: () => void
+    onSaveLocal: () => void
+  } = $props()
+
+  let dialog: AppDialog = $state(null!)
+
+  function openSaveCloudDialog() {
     close()
-    // modalStore.trigger({ type: 'component', component: 'saveLocalDialog' })
+    onSaveCloud()
+  }
+
+  function openSaveLocalDialog() {
+    close()
+    onSaveLocal()
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
@@ -50,4 +61,4 @@
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

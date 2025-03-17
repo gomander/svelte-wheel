@@ -1,35 +1,50 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
   import { getTextColor } from '$lib/utils/FontPicker'
+  import type { Entry } from '$lib/utils/Wheel'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open(
+    winner: Entry,
+    message = 'We have a winner!',
+    color: string | null = null
+  ) {
+    entry = winner
+    title = message
+    headerColor = color
+    dialog.open()
+  }
 
-  const remove = () => {
-    // wheelStore.entries = wheelStore.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
+  let dialog: AppDialog = $state(null!)
+  let entry: Entry = $state({ id: '', text: '' })
+  let title = $state('')
+  let headerColor: string | null = $state(null)
+
+  function remove() {
+    wheelStore.entries = wheelStore.entries.filter(e => e.id !== entry.id)
     close()
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
-  <article class="card w-modal shadow-xl overflow-hidden">
+<AppDialog bind:this={dialog}>
+  <article>
     <header
       class="p-4 text-2xl font-semibold"
-      style:color={getTextColor('#000000')}
-      style:background-color={'#000000'}
+      style:color={headerColor ? getTextColor(headerColor) : 'inherit'}
+      style:background-color={headerColor ? headerColor : 'inherit'}
     >
-      <!-- {$modalStore[0].title} -->
-      We have a winner!
+      {title}
     </header>
 
     <div
       class="p-4 h1"
       aria-label="Winner"
     >
-      <!-- {$modalStore[0].body} -->
+      {entry.text}
     </div>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
@@ -41,4 +56,4 @@
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

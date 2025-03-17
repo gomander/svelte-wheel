@@ -1,59 +1,55 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte'
+  import { getContext } from 'svelte'
   import { ProgressRing, type ToastContext } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
-  import { getCurrentUser } from '$lib/utils/Firebase'
   import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
+  import { getCurrentUser } from '$lib/utils/Firebase'
+  import { getStringFromError } from '$lib/utils/General'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    const user = getCurrentUser()
+    if (!user) {
+      onNotLoggedIn()
+      return
+    }
+    if (wheelStore.path) {
+      loading = true
+      getWheel(wheelStore.path, user.uid).then((response) => {
+        if (!response.success) throw new Error(response.error.message)
+        saveMode = 'overwrite'
+      }).catch((error) => {
+        toast.create({
+          ...toastDefaults,
+          description: getStringFromError(error),
+          type: 'error'
+        })
+        wheelStore.path = null
+      }).finally(() => {
+        loading = false
+      })
+    }
+    dialog.open()
+  }
+
+  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props()
 
   const toast: ToastContext = getContext('toast')
 
   let title = $state(wheelStore.config.title)
   let loading = $state(false)
   let saveMode: 'overwrite' | 'new' = $state('new')
+  let dialog: AppDialog = $state(null!)
 
-  onMount(async () => {
-    const user = getCurrentUser()
-    if (!user) {
-      close()
-      // modalStore.trigger({
-      //   type: 'component',
-      //   component: 'loginDialog',
-      //   meta: { next: 'saveCloudDialog' }
-      // })
-      return
-    }
-    if (wheelStore.path) {
-      loading = true
-      try {
-        const response = await getWheel(wheelStore.path, user.uid)
-        if (!response.success) {
-          wheelStore.path = null
-          return
-        }
-        saveMode = 'overwrite'
-      } catch (error) {
-        wheelStore.path = null
-      } finally {
-        loading = false
-      }
-    }
-  })
-
-  const save = async (e: Event) => {
+  async function save(e: Event) {
     e.preventDefault()
     if (loading) return
     loading = true
     try {
-      if (!title) {
-        throw new Error('Title is required')
-      }
+      if (!title) throw new Error('Title is required')
       const user = getCurrentUser()
-      if (!user) {
-        throw new Error('User is not logged in')
-      }
+      if (!user) throw new Error('User is not logged in')
       if (saveMode === 'new') {
         const response = await createWheel({
           wheel: {
@@ -63,9 +59,7 @@
           visibility: 'private',
           uid: user.uid
         }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+        if (!response.success) throw new Error(response.error.message)
       }
       if (saveMode === 'overwrite' && wheelStore.path) {
         const response = await updateWheel(wheelStore.path, {
@@ -75,30 +69,27 @@
           },
           uid: user.uid
         }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+        if (!response.success) throw new Error(response.error.message)
       }
       close()
       toast.create({
         ...toastDefaults,
-        description: 'Wheel saved'
+        description: 'Wheel saved',
+        type: 'success'
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toast.create({
-          ...toastDefaults,
-          description: error.message,
-          type: 'error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 
   // TODO: When wheelStore has a path, the user should be shown as much metadata
@@ -107,8 +98,8 @@
   // one that would be shown in the open cloud dialog.
 </script>
 
-{#if false}
-  <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
+<AppDialog bind:this={dialog}>
+  <article class="p-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
       <h1>Save a wheel</h1>
@@ -180,4 +171,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>

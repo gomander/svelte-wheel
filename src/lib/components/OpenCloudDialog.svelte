@@ -1,19 +1,50 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte'
-  import {
-    Avatar, ProgressRing, Segment, type ToastContext
-  } from '@skeletonlabs/skeleton-svelte'
+  import { getContext } from 'svelte'
+  import { Avatar, ProgressRing, Segment, type ToastContext } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { getWheel, getWheels, type ApiWheelMeta } from '$lib/utils/Api'
+  import { getStringFromError } from '$lib/utils/General'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    loading = true
+    const user = getCurrentUser()
+    if (!user) {
+      onNotLoggedIn()
+      return
+    }
+    getWheels(user.uid).then((response) => {
+      if (!response.success) {
+        throw new Error(response.error.message)
+      }
+      apiWheels = response.data.wheels
+      if (!apiWheels.length) {
+        throw new Error('No saved wheels')
+      }
+    }).catch((error) => {
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
+      close()
+    }).finally(() => {
+      loading = false
+    })
+    dialog.open()
+  }
+
+  let { onDelete, onNotLoggedIn }: {
+    onDelete: (path: string, title: string) => void
+    onNotLoggedIn: () => void
+  } = $props()
 
   const toast: ToastContext = getContext('toast')
 
+  let dialog: AppDialog = $state(null!)
   let innerHeight = $state(0)
-
   let form: HTMLFormElement = $state(null!)
   let loading = $state(false)
   let apiWheels: ApiWheelMeta[] = $state([])
@@ -22,75 +53,28 @@
   let sort: 'updated-desc' | 'updated-asc' | 'title-asc' | 'title-desc' = $state('updated-desc')
   let page = $state(0)
 
-
   const wheelImages: Record<string, string> = $state({})
 
-  const settingsPopup = { event: 'click', placement: 'left' } as const
-
-  const deleteWheel = (path: string) => {
+  function deleteWheel(path: string) {
     close()
-    // modalStore.trigger({
-    //   type: 'component',
-    //   component: 'deleteWheelDialog',
-    //   meta: { path, title: apiWheels.find(wheel => wheel.path === path)?.title }
-    // })
+    onDelete(path, apiWheels.find(wheel => wheel.path === path)!.title)
   }
 
-  onMount(async () => {
-    loading = true
-    const user = getCurrentUser()
-    try {
-      if (!user) {
-        // modalStore.trigger({
-        //   type: 'component',
-        //   component: 'loginDialog',
-        //   meta: { next: 'openCloudDialog' }
-        // })
-        throw new Error('User is not logged in')
-      }
-      const response = await getWheels(user.uid)
-      if (!response.success) {
-        throw new Error(response.error.message)
-      }
-      apiWheels = response.data.wheels
-      if (!apiWheels.length) {
-        throw new Error('No saved wheels')
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.create({
-          ...toastDefaults,
-          description: error.message,
-          type: 'error'
-        })
-      }
-      close()
-    } finally {
-      loading = false
-    }
-  })
-
-  const open = async (e: Event) => {
+  async function openWheel(e: Event) {
     e.preventDefault()
     if (!selectedWheel) return
     if (loading) return
     loading = true
-    const formData = new FormData(form)
-    const path = String(formData.get('wheel'))
     try {
       const user = getCurrentUser()
-      if (!user) {
-        throw new Error('User is not logged in')
-      }
-      const response = await getWheel(path, user.uid)
-      if (!response.success) {
-        throw new Error(response.error.message)
-      }
+      if (!user) throw new Error('User is not logged in')
+      const response = await getWheel(selectedWheel, user.uid)
+      if (!response.success) throw new Error(response.error.message)
       const { config, entries } = response.data.wheel
       wheelStore.config = config
       wheelStore.setNewEntries(entries)
-      wheelStore.winners =[]
-      wheelStore.path = path
+      wheelStore.winners = []
+      wheelStore.path = selectedWheel
       close()
       toast.create({
         ...toastDefaults,
@@ -98,13 +82,11 @@
         duration: 1000
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toast.create({
-          ...toastDefaults,
-          description: error.message,
-          type: 'error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
@@ -143,7 +125,7 @@
   $effect(() => {
     if (pageWheels.length) {
       Promise.all(
-        pageWheels.map(async wheel => {
+        pageWheels.map(async (wheel) => {
           if (wheel.path in wheelImages) return true
           wheelImages[wheel.path] = ''
           const response = await fetch(
@@ -164,14 +146,14 @@
   })
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
 <svelte:window bind:innerHeight />
 
-{#if false}
-  <article class="card w-modal p-4 shadow-xl overflow-hidden flex flex-col gap-4">
+<AppDialog bind:this={dialog}>
+  <article class="p-4 flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
       <h1>Open a wheel</h1>
@@ -179,7 +161,7 @@
 
     <form
       bind:this={form}
-      onsubmit={open}
+      onsubmit={openWheel}
       class="flex flex-col gap-2"
     >
       {#if apiWheels.length}
@@ -207,6 +189,7 @@
           </select>
         {/if}
 
+        <!-- TODO: Fix list being in a row rather than a column -->
         <Segment
           rounded="rounded-container"
           flexDirection="flex-col"
@@ -339,4 +322,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>

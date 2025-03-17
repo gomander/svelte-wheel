@@ -1,54 +1,55 @@
 <script lang="ts">
   import { Segment } from '@skeletonlabs/skeleton-svelte'
-  import Toolbar from '$lib/components/Toolbar.svelte'
-  import Wheel from '$lib/components/Wheel.svelte'
-  import EditorColumn from '$lib/components/EditorColumn.svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
   import debugStore from '$lib/stores/DebugStore.svelte'
   import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { OnStoppedData } from '$lib/utils/Wheel'
   import AboutCards from '$lib/components/AboutCards.svelte'
+  import AccountDialog from '$lib/components/AccountDialog.svelte'
+  import CustomizeDialog from '$lib/components/CustomizeDialog.svelte'
+  import DeleteWheelDialog from '$lib/components/DeleteWheelDialog.svelte'
+  import EditorColumn from '$lib/components/EditorColumn.svelte'
+  import LoginDialog from '$lib/components/LoginDialog.svelte'
+  import OpenCloudDialog from '$lib/components/OpenCloudDialog.svelte'
+  import OpenDialog from '$lib/components/OpenDialog.svelte'
+  import ResetPasswordDialog from '$lib/components/ResetPasswordDialog.svelte'
+  import SaveCloudDialog from '$lib/components/SaveCloudDialog.svelte'
+  import SaveDialog from '$lib/components/SaveDialog.svelte'
+  import SaveLocalDialog from '$lib/components/SaveLocalDialog.svelte'
+  import ShareDialog from '$lib/components/ShareDialog.svelte'
+  import SharedLinkDialog from '$lib/components/SharedLinkDialog.svelte'
+  import SignUpDialog from '$lib/components/SignUpDialog.svelte'
+  import Toolbar from '$lib/components/Toolbar.svelte'
+  import WinnerDialog from '$lib/components/WinnerDialog.svelte'
+  import Wheel from '$lib/components/Wheel.svelte'
 
   // TODO: Implement modals
 
-  // const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
-  //   type: 'component',
-  //   component: 'winnerDialog',
-  //   title: wheelStore.config.winnerMessage || 'We have a winner!',
-  //   body: data.winner.text,
-  //   meta: data
-  // })
-
   let wheelComponent = $state('single')
 
-  const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
+  let accountDialog: AccountDialog = $state(null!)
+  let customizeDialog: CustomizeDialog = $state(null!)
+  let deleteWheelDialog: DeleteWheelDialog = $state(null!)
+  let loginDialog: LoginDialog = $state(null!)
+  let openCloudDialog: OpenCloudDialog = $state(null!)
+  let openDialog: OpenDialog = $state(null!)
+  let resetPasswordDialog: ResetPasswordDialog = $state(null!)
+  let saveCloudDialog: SaveCloudDialog = $state(null!)
+  let saveDialog: SaveDialog = $state(null!)
+  let saveLocalDialog: SaveLocalDialog = $state(null!)
+  let shareDialog: ShareDialog = $state(null!)
+  let sharedLinkDialog: SharedLinkDialog = $state(null!)
+  let signUpDialog: SignUpDialog = $state(null!)
+  let winnerDialog: WinnerDialog = $state(null!)
+
+  function onStop(data: OnStoppedData) {
     launchConfetti(
       wheelStore.config.confetti,
       $state.snapshot(wheelStore.config.colors)
     )
     if (!wheelStore.config.displayWinnerDialog) return
-    // modalStore.trigger(createWinnerModal(e.detail))
-  }
-
-  function openOpenDialog() {
-    // modalStore.trigger({ type: 'component', component: 'openDialog' })
-  }
-
-  function openSaveDialog() {
-    // modalStore.trigger({ type: 'component', component: 'saveDialog' })
-  }
-
-  function openCustomizeDialog() {
-    // modalStore.trigger({ type: 'component', component: 'customizeDialog' })
-  }
-
-  function openShareDialog() {
-    // modalStore.trigger({ type: 'component', component: 'shareDialog' })
-  }
-
-  function openAccountDialog() {
-    // modalStore.trigger({ type: 'component', component: 'accountDialog' })
+    winnerDialog.open(data.winner, wheelStore.config.winnerMessage, data.color)
   }
 </script>
 
@@ -67,13 +68,13 @@
 
 <div class="min-h-screen flex flex-col">
   <Toolbar
-    on:new={wheelStore.reset}
-    on:open={openOpenDialog}
-    on:save={openSaveDialog}
-    on:customize={openCustomizeDialog}
-    on:share={openShareDialog}
-    on:account={openAccountDialog}
-    on:debug={debugStore.toggle}
+    onNew={wheelStore.reset}
+    onOpen={openDialog.open}
+    onSave={saveDialog.open}
+    onCustomize={customizeDialog.open}
+    onShare={shareDialog.open}
+    onAccount={accountDialog.open}
+    onDebug={debugStore.toggle}
   />
 
   <main class="grow flex flex-col xl:grid grid-cols-4">
@@ -105,10 +106,10 @@
 
     <div class="col-span-2 flex-1 flex flex-col justify-center items-center">
       {#if wheelComponent === 'single'}
-        <Wheel on:stop={openWinnerModal} />
+        <Wheel {onStop} />
       {:else}
         {#await import('$lib/components/WheelMultiThread.svelte') then { default: WheelMultiThread }}
-          <WheelMultiThread on:stop={openWinnerModal} />
+          <WheelMultiThread {onStop} />
         {/await}
       {/if}
     </div>
@@ -128,3 +129,71 @@
     <AboutCards />
   </aside>
 {/if}
+
+<AccountDialog
+  bind:this={accountDialog}
+  onNotLoggedIn={() => loginDialog.open('account')}
+/>
+
+<CustomizeDialog bind:this={customizeDialog} />
+
+<DeleteWheelDialog bind:this={deleteWheelDialog} />
+
+<LoginDialog
+  bind:this={loginDialog}
+  onResetPassword={resetPasswordDialog.open}
+  onSignUp={signUpDialog.open}
+  nextDialog={(next) => {
+    if (next === 'account') accountDialog.open()
+    if (next === 'openCloud') openCloudDialog.open()
+    if (next === 'saveCloud') saveCloudDialog.open()
+    if (next === 'share') shareDialog.open()
+  }}
+/>
+
+<OpenCloudDialog
+  bind:this={openCloudDialog}
+  onDelete={deleteWheelDialog.open}
+  onNotLoggedIn={() => loginDialog.open('openCloud')}
+/>
+
+<OpenDialog
+  bind:this={openDialog}
+  onOpenCloud={openCloudDialog.open}
+/>
+
+<ResetPasswordDialog bind:this={resetPasswordDialog} />
+
+<SaveCloudDialog
+  bind:this={saveCloudDialog}
+  onNotLoggedIn={() => loginDialog.open('saveCloud')}
+/>
+
+<SaveDialog
+  bind:this={saveDialog}
+  onSaveCloud={saveCloudDialog.open}
+  onSaveLocal={saveLocalDialog.open}
+/>
+
+<SaveLocalDialog bind:this={saveLocalDialog} />
+
+<ShareDialog
+  bind:this={shareDialog}
+  onNotLoggedIn={() => loginDialog.open('share')}
+  onShare={(path) => sharedLinkDialog.open(path)}
+/>
+
+<SharedLinkDialog bind:this={sharedLinkDialog} />
+
+<SignUpDialog
+  bind:this={signUpDialog}
+  onLogin={loginDialog.open}
+  nextDialog={(next) => {
+    if (next === 'account') accountDialog.open()
+    if (next === 'openCloud') openCloudDialog.open()
+    if (next === 'saveCloud') saveCloudDialog.open()
+    if (next === 'share') shareDialog.open()
+  }}
+/>
+
+<WinnerDialog bind:this={winnerDialog} />

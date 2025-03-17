@@ -1,59 +1,62 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte'
+  import { getContext } from 'svelte'
   import { ProgressRing, type ToastContext } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
+  import { getStringFromError } from '$lib/utils/General'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    const user = getCurrentUser()
+    if (!user) {
+      close()
+      onNotLoggedIn()
+      return
+    }
+    if (wheelStore.path) {
+      loading = true
+      getWheel(wheelStore.path, user.uid).then((response) => {
+        if (!response.success) {
+          wheelStore.path = null
+          return
+        }
+        shareMode = 'overwrite'
+      }).catch((error) => {
+        wheelStore.path = null
+        toast.create({
+          ...toastDefaults,
+          description: getStringFromError(error),
+          type: 'error'
+        })
+      }).finally(() => {
+        loading = false
+      })
+    }
+    dialog.open()
+  }
+
+  let { onNotLoggedIn, onShare }: {
+    onNotLoggedIn: () => void
+    onShare: (path: string) => void
+  } = $props()
 
   const toast: ToastContext = getContext('toast')
 
   let title = $state(wheelStore.config.title)
   let loading = $state(false)
   let shareMode: 'overwrite' | 'new' = $state('new')
+  let dialog: AppDialog = $state(null!)
 
-  onMount(async () => {
-    const user = getCurrentUser()
-    if (!user) {
-      close()
-      // modalStore.trigger({
-      //   type: 'component',
-      //   component: 'loginDialog',
-      //   meta: { next: 'shareDialog' }
-      // })
-      return
-    }
-    if (wheelStore.path) {
-      loading = true
-      try {
-        const response = await getWheel(wheelStore.path, user.uid)
-        if (!response.success) {
-          wheelStore.path = null
-          return
-        }
-        shareMode = 'overwrite'
-      } catch (error) {
-        wheelStore.path = null
-      } finally {
-        loading = false
-      }
-    }
-  })
-
-  const share = async (e: Event) => {
+  async function share(e: Event) {
     e.preventDefault()
     if (loading) return
     loading = true
     try {
-      if (!title) {
-        throw new Error('Title is required')
-      }
+      if (!title) throw new Error('Title is required')
       const user = getCurrentUser()
-      if (!user) {
-        throw new Error('User is not logged in')
-      }
+      if (!user) throw new Error('User is not logged in')
       let path: string | null = null
       if (shareMode === 'new') {
         const response = await createWheel({
@@ -64,9 +67,7 @@
           visibility: 'public',
           uid: user.uid
         }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+        if (!response.success) throw new Error(response.error.message)
         path = response.data.path
       }
       if (shareMode === 'overwrite' && wheelStore.path) {
@@ -78,39 +79,29 @@
           uid: user.uid,
           visibility: 'public'
         }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+        if (!response.success) throw new Error(response.error.message)
         path = response.data.path
       }
-      if (!path) {
-        throw new Error('Could not share wheel')
-      }
+      if (!path) throw new Error('Could not share wheel')
       close()
-      // modalStore.trigger({
-      //   type: 'component',
-      //   component: 'sharedLinkDialog',
-      //   meta: { path }
-      // })
+      onShare(path)
     } catch (error) {
-      if (error instanceof Error) {
-        toast.create({
-          ...toastDefaults,
-          description: error.message,
-          type: 'error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-share-nodes"></i>
@@ -198,4 +189,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>

@@ -1,18 +1,17 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import debugStore from '$lib/stores/DebugStore.svelte'
 
-  const dispatch = createEventDispatcher<{
-    account: null,
-    debug: null
-  }>()
+  let { onAccount, onDebug }: {
+    onAccount: () => void
+    onDebug: () => void
+  } = $props()
 </script>
 
 <div class="card flex flex-col w-fit shadow-xl p-2">
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('account')}
+    onclick={onAccount}
     disabled={busyStore.spinning}
   >
     <i class="fas fa-user w-6"></i>
@@ -40,7 +39,7 @@
 
   <button
     class="btn text-xl hover:preset-tonal-primary"
-    onclick={() => dispatch('debug')}
+    onclick={onDebug}
     disabled={busyStore.spinning}
   >
     <i class="fas {debugStore.active ? 'fa-bug-slash' : 'fa-bug'} w-6"></i>

@@ -1,22 +1,21 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte'
   import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
   import MoreMenu from '$lib/components/MoreMenu.svelte'
 
-  const dispatch = createEventDispatcher<{
-    new: null,
-    open: null,
-    save: null,
-    customize: null,
-    share: null,
-    account: null,
-    debug: null
-  }>()
+  let { onNew, onOpen, onSave, onCustomize, onShare, onAccount, onDebug }: {
+    onNew: () => void
+    onOpen: () => void
+    onSave: () => void
+    onCustomize: () => void
+    onShare: () => void
+    onAccount: () => void
+    onDebug: () => void
+  } = $props()
 </script>
 
-<header class="px-4 py-2 bg-surface-200-800 shadow-2xl flex justify-between items-center">
+<header class="px-4 py-2 preset-filled-surface-100-900 shadow-2xl flex justify-between items-center">
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
   </a>
@@ -41,13 +40,13 @@
       data-popup="mobileMenu"
     >
       <MobileMenu
-        on:new={() => dispatch('new')}
-        on:open={() => dispatch('open')}
-        on:save={() => dispatch('save')}
-        on:customize={() => dispatch('customize')}
-        on:share={() => dispatch('share')}
-        on:account={() => dispatch('account')}
-        on:debug={() => dispatch('debug')}
+        {onNew}
+        {onOpen}
+        {onSave}
+        {onCustomize}
+        {onShare}
+        {onAccount}
+        {onDebug}
       />
     </div>
   </div>
@@ -60,7 +59,7 @@
     {#if !fullscreenStore.active}
       <button
         class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
-        onclick={() => dispatch('new')}
+        onclick={onNew}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="New"
@@ -71,7 +70,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
-        onclick={() => dispatch('open')}
+        onclick={onOpen}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Open"
@@ -82,7 +81,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
-        onclick={() => dispatch('save')}
+        onclick={onSave}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Save"
@@ -93,7 +92,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
-        onclick={() => dispatch('customize')}
+        onclick={onCustomize}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Customize"
@@ -104,7 +103,7 @@
 
       <button
         class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
-        onclick={() => dispatch('share')}
+        onclick={onShare}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Share"
@@ -147,8 +146,8 @@
         data-popup="moreMenu"
       >
         <MoreMenu
-          on:account={() => dispatch('account')}
-          on:debug={() => dispatch('debug')}
+          {onAccount}
+          {onDebug}
         />
       </div>
     </div>

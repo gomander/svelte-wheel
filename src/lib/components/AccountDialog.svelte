@@ -1,60 +1,64 @@
 <script lang="ts">
   import { getContext } from 'svelte'
   import type { ToastContext } from '@skeletonlabs/skeleton-svelte'
-  import {
-    getCurrentUser, sendEmailVerificationEmail, signOut
-  } from '$lib/utils/Firebase'
+  import { getCurrentUser, sendEmailVerificationEmail, signOut } from '$lib/utils/Firebase'
+  import { getStringFromError } from '$lib/utils/General'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    user = getCurrentUser()
+    if (!user) {
+      onNotLoggedIn()
+      return
+    }
+    dialog.open()
+  }
+
+  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props()
 
   const toast: ToastContext = getContext('toast')
 
+  let user: ReturnType<typeof getCurrentUser> = $state(null)
+  let dialog: AppDialog = $state(null!)
+
   let loading = false
 
-  const authUser = getCurrentUser()
-  if (!authUser) {
-    // modalStore.close()
-    // modalStore.trigger({ type: 'component', component: 'loginDialog' })
-  }
-
-  const logOut = async () => {
+  async function logOut() {
     if (loading) return
     loading = true
     try {
       await signOut()
-      // modalStore.close()
+      close()
       toast.create({
         ...toastDefaults,
         description: 'Logged out',
         duration: 1500
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toast.create({
-          ...toastDefaults,
-          description: error.message,
-          type: 'error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-user"></i>
       <h1>Account</h1>
     </header>
 
-    {#if !authUser?.emailVerified}
+    {#if !user?.emailVerified}
       <aside class="alert preset-tonal-warning">
         <i class="fas fa-exclamation-triangle"></i>
 
@@ -70,20 +74,20 @@
     {/if}
 
     <section class="flex flex-col gap-2">
-      {#if authUser?.displayName}
+      {#if user?.displayName}
         <div>
-          {authUser?.displayName}
+          {user?.displayName}
         </div>
       {/if}
 
-      {#if authUser?.email}
+      {#if user?.email}
         <div>
-          Email: <pre>{authUser?.email}</pre>
+          Email: <pre>{user?.email}</pre>
         </div>
       {/if}
 
       <div>
-        User ID: <pre>{authUser?.uid}</pre>
+        User ID: <pre>{user?.uid}</pre>
       </div>
 
       <div>
@@ -104,4 +108,4 @@
         Close
       </button>
   </article>
-{/if}
+</AppDialog>

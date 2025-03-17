@@ -3,36 +3,38 @@
   import { ProgressRing, type ToastContext } from '@skeletonlabs/skeleton-svelte'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { deleteWheel as apiDeleteWheel } from '$lib/utils/Api'
+  import { getStringFromError } from '$lib/utils/General'
   import { toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  // TODO: Implement modal
+  export function open(wheelPath: string, wheelTitle: string) {
+    path = wheelPath
+    title = wheelTitle
+    dialog.open()
+  }
 
   const toast: ToastContext = getContext('toast')
 
-  const path = 'abc-123'
-  const title = 'default wheel'
-
+  let dialog: AppDialog = $state(null!)
+  let path = $state('')
+  let title = $state('')
   let loading = $state(false)
 
-  const deleteWheel = async () => {
+  async function deleteWheel() {
     if (loading) return
     loading = true
     const user = getCurrentUser()
     try {
-      if (!user) {
-        throw new Error('User not logged in')
-      }
+      if (!user) throw new Error('User not logged in')
       await apiDeleteWheel(path, user.uid)
       toast.create({ ...toastDefaults, description: 'Wheel deleted' })
     } catch (error) {
-      if (error instanceof Error) {
-        toast.create({
-          ...toastDefaults,
-          duration: 5000,
-          description: error.message,
-          type: 'error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        duration: 5000,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
       close()
@@ -40,11 +42,11 @@
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-trash"></i>
@@ -80,4 +82,4 @@
         {/if}
       </button>
   </article>
-{/if}
+</AppDialog>

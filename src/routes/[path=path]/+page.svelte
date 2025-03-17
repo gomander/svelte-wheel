@@ -1,26 +1,22 @@
 <script lang="ts">
   import wheelStore from '$lib/stores/WheelStore'
-  import Wheel from '$lib/components/Wheel.svelte'
   import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { OnStoppedData } from '$lib/utils/Wheel'
-
-  // TODO: Implement modals
+  import WinnerDialog from '$lib/components/WinnerDialog.svelte'
+  import Wheel from '$lib/components/Wheel.svelte'
 
   let { data } = $props()
   const { wheel } = data
 
-  // const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
-  //   type: 'component',
-  //   component: 'winnerDialog',
-  //   title: wheelStore.config.winnerMessage || 'We have a winner!',
-  //   body: data.winner.text,
-  //   meta: data
-  // })
+  let winnerDialog: WinnerDialog = $state(null!)
 
-  const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
-    launchConfetti(wheelStore.config.confetti, $state.snapshot(wheelStore.config.colors))
+  function onStop(data: OnStoppedData) {
+    launchConfetti(
+      wheelStore.config.confetti,
+      $state.snapshot(wheelStore.config.colors)
+    )
     if (!wheelStore.config.displayWinnerDialog) return
-    // modalStore.trigger(createWinnerModal(e.detail))
+    winnerDialog.open(data.winner, wheelStore.config.winnerMessage, data.color)
   }
 
   wheelStore.config = wheel.config
@@ -61,9 +57,11 @@
     </div>
 
     <div class="col-span-4 flex-1 flex flex-col justify-center items-center">
-      <Wheel on:stop={openWinnerModal} />
+      <Wheel {onStop} />
     </div>
 
     <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0"></div>
   </main>
 </div>
+
+<WinnerDialog bind:this={winnerDialog} />

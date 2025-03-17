@@ -1,28 +1,34 @@
 <script lang="ts">
   import { Tabs } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
+  import type WheelConfig from '$lib/utils/WheelConfig'
+  import AppDialog from '$lib/components/AppDialog.svelte'
   import CustomizeDialogBasic from '$lib/components/CustomizeDialogBasic.svelte'
   import CustomizeDialogAppearance from '$lib/components/CustomizeDialogAppearance.svelte'
   import CustomizeDialogDuringSpin from '$lib/components/CustomizeDialogDuringSpin.svelte'
   import CustomizeDialogAfterSpin from '$lib/components/CustomizeDialogAfterSpin.svelte'
 
-  // TODO: Implement modal
+  export function open() {
+    config = $state.snapshot(wheelStore.config)
+    dialog.open()
+  }
 
-  const config = $state($state.snapshot(wheelStore.config))
+  let dialog: AppDialog = $state(null!)
+  let config: WheelConfig = $state($state.snapshot(wheelStore.config))
   let openTab = $state('basic')
 
-  const save = () => {
+  function save() {
     if (config.type === 'image' && !config.image) config.type = 'color'
     wheelStore.config = config
-    // modalStore.close()
+    close()
   }
 
   function close() {
-    // modalStore.close()
+    dialog.close()
   }
 </script>
 
-{#if false}
+<AppDialog bind:this={dialog}>
   <article class="p-4 card w-modal flex flex-col gap-4 shadow-xl">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-palette"></i>
@@ -79,4 +85,4 @@
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

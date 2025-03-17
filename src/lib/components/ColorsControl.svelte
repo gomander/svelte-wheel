@@ -64,7 +64,7 @@
   </div>
 
   <button
-    class="btn btn-icon-sm preset-filled"
+    class="btn-icon btn-icon-sm preset-filled"
     onclick={addColor}
     title="Add color"
     aria-label="Add color"

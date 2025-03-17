@@ -42,7 +42,6 @@
         <Tabs.Control value="duringSpin">During spin</Tabs.Control>
         <Tabs.Control value="afterSpin">After spin</Tabs.Control>
       {/snippet}
-
       {#snippet content()}
         <Tabs.Panel value="basic">
           <CustomizeDialogBasic

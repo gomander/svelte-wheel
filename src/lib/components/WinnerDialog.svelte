@@ -6,11 +6,11 @@
 
   export function open(
     winner: Entry,
-    message = 'We have a winner!',
+    message: string | null = null,
     color: string | null = null
   ) {
     entry = winner
-    title = message
+    title = message || 'We have a winner!'
     headerColor = color
     dialog.open()
   }

@@ -48,7 +48,7 @@
 </script>
 
 <textarea
-  class="textarea w-full h-72 grow resize-none"
+  class="textarea w-full h-72 grow resize-none backdrop-blur-xl"
   spellcheck="false"
   autocomplete="off"
   maxlength="1000"
@@ -61,3 +61,9 @@
 {#if debugStore.active}
   <pre>{wheelStore.entries.map(e => `${e.text} - ${e.id}`).join('\n')}</pre>
 {/if}
+
+<style>
+  textarea {
+    background-color: color-mix(in oklab, var(--color-surface-50-950), transparent);
+  }
+</style>

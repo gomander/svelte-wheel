@@ -33,6 +33,22 @@
   src: url('/Quicksand.ttf');
 }
 
+[data-theme='legacy'] {
+  --heading-font-family: 'Quicksand', sans-serif;
+  --base-font-family: 'Quicksand', sans-serif;
+
+  & body {
+    background-image:
+      radial-gradient(at 0% 0%, color-mix(in oklab, var(--color-secondary-500) 33%, transparent) 0px, transparent 50%),
+      radial-gradient(at 98% 1%, color-mix(in oklab, var(--color-error-500) 33%, transparent) 0px, transparent 50%);
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    backdrop-filter: blur(16px);
+  }
+}
+
 .modal .input-group :focus {
   outline-style: none !important;
 }

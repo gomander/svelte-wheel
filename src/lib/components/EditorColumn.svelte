@@ -9,7 +9,12 @@
   let openTab = $state('editor')
 </script>
 
-<Tabs value={openTab} onValueChange={(e) => (openTab = e.value)}>
+<Tabs
+  value={openTab}
+  onValueChange={(e) => (openTab = e.value)}
+  classes="grow flex flex-col"
+  contentClasses="grow flex flex-col"
+>
   {#snippet list()}
     <Tabs.Control value="editor">
       <div class="flex items-center gap-2">
@@ -29,11 +34,11 @@
     </Tabs.Control>
   {/snippet}
   {#snippet content()}
-    <Tabs.Panel value="editor">
+    <Tabs.Panel value="editor" classes="grow flex flex-col gap-4">
       <EditorButtons />
       <EntriesTextbox />
     </Tabs.Panel>
-    <Tabs.Panel value="results">
+    <Tabs.Panel value="results" classes="grow flex flex-col gap-4">
       <ResultsButtons />
       <ResultsTextbox />
     </Tabs.Panel>

@@ -33,16 +33,11 @@
   src: url('/Quicksand.ttf');
 }
 
-:root [data-theme="skeleton"] {
-  --theme-font-family-base: 'Quicksand', sans-serif;
-  --theme-font-family-heading: 'Quicksand', sans-serif;
-}
-
 .modal .input-group :focus {
   outline-style: none !important;
 }
 
 .required::after {
   content: ' *';
-  color: var(--color-red-500);
+  color: var(--color-error-500);
 }

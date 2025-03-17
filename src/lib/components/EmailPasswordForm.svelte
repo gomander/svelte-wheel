@@ -85,6 +85,7 @@
         maxlength="64"
         required
         bind:this={passwordInput}
+        class="input"
       >
 
       <button

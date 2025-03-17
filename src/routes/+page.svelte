@@ -82,34 +82,26 @@
     onDebug={debugStore.toggle}
   />
 
-  <main class="grow flex flex-col xl:grid grid-cols-4">
-    <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col justify-between">
-      {#if !fullscreenStore.active}
-        <div>
-          <h2 class="text-3xl" aria-label="Wheel title">
-            {wheelStore.config.title}
-          </h2>
-          <p class="text-lg" aria-label="Wheel description">
-            {wheelStore.config.description}
-          </p>
-          {#if debugStore.active}
-            <Segment
-              value={wheelComponent}
-              onValueChange={(e) => (wheelComponent = e.value!)}
-            >
-              <Segment.Item value="single">Single-thread</Segment.Item>
-              <Segment.Item value="multi">Multi-thread</Segment.Item>
-            </Segment>
-          {/if}
-        </div>
+  <main class="grow flex flex-col xl:grid grid-cols-6">
+    {#if fullscreenStore.active}
+      <div class="col-span-1"></div>
+    {/if}
 
-        <p class="hidden xl:block sticky bottom-4 text-sm" aria-hidden="true">
-          Scroll down to read about this project!
-        </p>
-      {/if}
-    </div>
-
-    <div class="col-span-2 flex-1 flex flex-col justify-center items-center">
+    <div class="col-span-4 flex-1 flex flex-col justify-center items-center">
+      <div class="pt-4 px-4 -mb-10">
+        <h2 class="text-3xl" aria-label="Wheel title">
+          {wheelStore.config.title}
+        </h2>
+        {#if debugStore.active && !fullscreenStore.active}
+          <Segment
+            value={wheelComponent}
+            onValueChange={(e) => (wheelComponent = e.value!)}
+          >
+            <Segment.Item value="single">Single-thread</Segment.Item>
+            <Segment.Item value="multi">Multi-thread</Segment.Item>
+          </Segment>
+        {/if}
+      </div>
       {#if wheelComponent === 'single'}
         <Wheel {onStop} />
       {:else}
@@ -117,13 +109,20 @@
           <WheelMultiThread {onStop} />
         {/await}
       {/if}
-    </div>
-
-    <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">
       {#if !fullscreenStore.active}
-        <EditorColumn />
+        <p class="text-lg px-4 pb-4 -mt-10 max-w-4xl" aria-label="Wheel description">
+          {wheelStore.config.description}
+        </p>
       {/if}
     </div>
+
+    {#if fullscreenStore.active}
+      <div class="col-span-1"></div>
+    {:else}
+      <div class="col-span-2 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">
+          <EditorColumn />
+      </div>
+    {/if}
   </main>
 </div>
 

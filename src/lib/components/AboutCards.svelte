@@ -5,7 +5,11 @@
     <div class="flex flex-col gap-2">
       <p>
         This project is a complete ground-up rewrite of the popular website
-        <a href="https://wheelofnames.com" target="_blank">wheelofnames.com</a>
+        <a
+          href="https://wheelofnames.com"
+          target="_blank"
+          class="anchor"
+        >wheelofnames.com</a>
         using a vastly different technology stack.
       </p>
 
@@ -45,7 +49,7 @@
           <td>Svelte + SvelteKit</td>
         </tr>
         <tr>
-          <th scope="row">Compiler</th>
+          <th scope="row">Build tools</th>
           <td>Webpack + Quasar</td>
           <td>Vite + Svelte</td>
         </tr>
@@ -57,7 +61,7 @@
         <tr>
           <th scope="row">Styling</th>
           <td>Quasar + CSS</td>
-          <td>TailwindCSS + PostCSS</td>
+          <td>TailwindCSS</td>
         </tr>
         <tr>
           <th scope="row">Backend</th>

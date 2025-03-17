@@ -90,7 +90,7 @@
   }
 </script>
 
-<div class="flex-1 aspect-square max-w-full">
+<div class="grow aspect-square max-w-full flex items-center">
   <canvas
     width="700"
     height="700"

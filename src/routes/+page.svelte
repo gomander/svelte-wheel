@@ -24,8 +24,6 @@
   import WinnerDialog from '$lib/components/WinnerDialog.svelte'
   import Wheel from '$lib/components/Wheel.svelte'
 
-  // TODO: Implement modals
-
   let wheelComponent = $state('single')
 
   let accountDialog: AccountDialog = $state(null!)
@@ -50,6 +48,13 @@
     )
     if (!wheelStore.config.displayWinnerDialog) return
     winnerDialog.open(data.winner, wheelStore.config.winnerMessage, data.color)
+  }
+
+  function nextDialog(next: string) {
+    if (next === 'account') accountDialog.open()
+    if (next === 'openCloud') openCloudDialog.open()
+    if (next === 'saveCloud') saveCloudDialog.open()
+    if (next === 'share') shareDialog.open()
   }
 </script>
 
@@ -143,12 +148,7 @@
   bind:this={loginDialog}
   onResetPassword={resetPasswordDialog.open}
   onSignUp={signUpDialog.open}
-  nextDialog={(next) => {
-    if (next === 'account') accountDialog.open()
-    if (next === 'openCloud') openCloudDialog.open()
-    if (next === 'saveCloud') saveCloudDialog.open()
-    if (next === 'share') shareDialog.open()
-  }}
+  {nextDialog}
 />
 
 <OpenCloudDialog
@@ -188,12 +188,7 @@
 <SignUpDialog
   bind:this={signUpDialog}
   onLogin={loginDialog.open}
-  nextDialog={(next) => {
-    if (next === 'account') accountDialog.open()
-    if (next === 'openCloud') openCloudDialog.open()
-    if (next === 'saveCloud') saveCloudDialog.open()
-    if (next === 'share') shareDialog.open()
-  }}
+  {nextDialog}
 />
 
 <WinnerDialog bind:this={winnerDialog} />

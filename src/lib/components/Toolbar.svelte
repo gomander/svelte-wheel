@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Popover } from '@skeletonlabs/skeleton-svelte'
   import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
@@ -13,32 +14,28 @@
     onAccount: () => void
     onDebug: () => void
   } = $props()
+
+  let mobileMenuOpen = $state(false)
+  let moreMenuOpen = $state(false)
 </script>
 
-<header class="px-4 py-2 preset-filled-surface-100-900 shadow-2xl flex justify-between items-center">
+<header class="relative px-4 py-2 preset-filled-surface-100-900 shadow-2xl flex justify-between items-center">
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
   </a>
 
-  <div class="block lg:hidden">
-    <button
-      class="btn btn-icon-sm text-xl hover:preset-tonal-primary"
-      aria-haspopup="menu"
-      aria-controls="mobileMenu"
-      aria-label="Toggle menu"
-      title="Menu"
-    >
-      <!-- TODO: Open popup when clicked -->
+  <Popover
+    open={mobileMenuOpen}
+    onOpenChange={(e) => (mobileMenuOpen = e.open)}
+    positioning={{ placement: 'bottom-end' }}
+    triggerBase="block md:hidden btn-icon btn-icon-base hover:preset-tonal-primary"
+    triggerAriaLabel="Toggle menu"
+    contentBase="preset-filled-surface-50-950"
+  >
+    {#snippet trigger()}
       <i class="fas fa-bars"></i>
-    </button>
-
-    <div
-      id="mobileMenu"
-      role="menu"
-      aria-label="Menu"
-      class="z-50"
-      data-popup="mobileMenu"
-    >
+    {/snippet}
+    {#snippet content()}
       <MobileMenu
         {onNew}
         {onOpen}
@@ -48,17 +45,17 @@
         {onAccount}
         {onDebug}
       />
-    </div>
-  </div>
+    {/snippet}
+  </Popover>
 
   <div
-    class="hidden lg:flex items-center"
+    class="hidden md:flex items-center"
     role="menubar"
     aria-label="Toolbar"
   >
     {#if !fullscreenStore.active}
       <button
-        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
         onclick={onNew}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -66,10 +63,11 @@
         title="New"
       >
         <i class="fas fa-file"></i>
+        <span class="hidden lg:inline">New</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
         onclick={onOpen}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -77,10 +75,11 @@
         title="Open"
       >
         <i class="fas fa-folder-open"></i>
+        <span class="hidden lg:inline">Open</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
         onclick={onSave}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -88,10 +87,11 @@
         title="Save"
       >
         <i class="fas fa-floppy-disk"></i>
+        <span class="hidden lg:inline">Save</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
         onclick={onCustomize}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -99,10 +99,11 @@
         title="Customize"
       >
         <i class="fas fa-palette"></i>
+        <span class="hidden lg:inline">Customize</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
         onclick={onShare}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -110,12 +111,13 @@
         title="Share"
       >
         <i class="fas fa-share-nodes"></i>
+        <span class="hidden lg:inline">Share</span>
       </button>
     {/if}
 
     {#if fullscreenStore.supported}
       <button
-        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
+        class="btn-icon btn-icon-base hover:preset-tonal-primary"
         onclick={() => fullscreenStore.toggleFullscreen()}
         role="menuitem"
         aria-label="Toggle fullscreen"
@@ -125,31 +127,23 @@
       </button>
     {/if}
 
-    <div>
-      <button
-        class="btn btn-icon-sm text-xl hover:preset-tonal-primary"
-        role="menuitem"
-        aria-haspopup="menu"
-        aria-controls="moreMenu"
-        aria-label="Toggle more menu"
-        title="More"
-      >
-        <!-- TODO: Open popup when clicked -->
+    <Popover
+      open={moreMenuOpen}
+      onOpenChange={(e) => (moreMenuOpen = e.open)}
+      positioning={{ placement: 'bottom-end' }}
+      triggerBase="btn-icon btn-icon-base hover:preset-tonal-primary"
+      triggerAriaLabel="Toggle more menu"
+      contentBase="preset-filled-surface-50-950"
+    >
+      {#snippet trigger()}
         <i class="fas fa-bars"></i>
-      </button>
-
-      <div
-        id="moreMenu"
-        role="menu"
-        aria-label="More options"
-        class="z-50"
-        data-popup="moreMenu"
-      >
+      {/snippet}
+      {#snippet content()}
         <MoreMenu
           {onAccount}
           {onDebug}
         />
-      </div>
-    </div>
+      {/snippet}
+    </Popover>
   </div>
 </header>

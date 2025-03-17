@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { RangeSlider } from '@skeletonlabs/skeleton'
+  import { Slider } from '@skeletonlabs/skeleton-svelte'
 
   let {
     title = $bindable(),
@@ -38,20 +38,19 @@
     ></textarea>
   </label>
 
-  <RangeSlider
+  <div class="flex justify-between items-center">
+    <span>Spin time</span>
+
+    <span class="text-sm">
+      {spinTime.toLocaleString('en', secondsFormat)}
+    </span>
+  </div>
+
+  <Slider
     name="spinTime"
-    label="Spin time"
     min={1}
     max={60}
-    ticked
-    bind:value={spinTime}
-  >
-    <div class="flex justify-between items-center">
-      <span>Spin time</span>
-
-      <span class="text-sm">
-        {spinTime.toLocaleString('en', secondsFormat)}
-      </span>
-    </div>
-  </RangeSlider>
+    value={[spinTime]}
+    onValueChange={(e) => (spinTime = e.value.at(0) ?? 1)}
+  />
 </div>

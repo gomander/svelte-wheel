@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Avatar, RadioGroup, RadioItem } from '@skeletonlabs/skeleton'
+  import { Avatar, Segment } from '@skeletonlabs/skeleton-svelte'
   import { hubSizes, type WheelType, type HubSize } from '$lib/utils/WheelConfig'
   import { compressImage } from '$lib/utils/WheelPainter'
   import ColorsControl from '$lib/components/ColorsControl.svelte'
@@ -27,22 +27,16 @@
 
 <div>
   <span>Wheel background</span>
-
   <div>
-    <RadioGroup>
-      <RadioItem bind:group={type} name="color" value="color">
-        Color
-      </RadioItem>
-      <RadioItem  bind:group={type} name="image" value="image">
-        Image
-      </RadioItem>
-    </RadioGroup>
+    <Segment value={type} onValueChange={(e) => (type = e.value as WheelType)}>
+      <Segment.Item value="color">Color</Segment.Item>
+      <Segment.Item value="image">Image</Segment.Item>
+    </Segment>
   </div>
 </div>
 
 <div class="label">
   <span>Colors</span>
-
   <ColorsControl bind:colors={colors} />
 </div>
 
@@ -50,7 +44,6 @@
   <span>
     {type === 'color' ? 'Center image' : 'Background image'}
   </span>
-
   <div class="flex flex-wrap gap-2">
     <div>
       <input
@@ -64,13 +57,14 @@
     {#if image}
       <div class="flex gap-2">
         <Avatar
+          name="Wheel image"
           rounded="rounded-full"
           src={image}
-          width="w-20"
+          size="w-20"
         />
 
         <button
-          class="btn btn-icon variant-soft"
+          class="btn btn-icon preset-tonal"
           onclick={() => (image = '')}
           title="Remove image"
           aria-label="Remove image"

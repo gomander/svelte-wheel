@@ -1,10 +1,7 @@
 <script lang="ts">
-  import {
-    RadioGroup, RadioItem, getModalStore, type ModalSettings
-  } from '@skeletonlabs/skeleton'
+  import { Segment } from '@skeletonlabs/skeleton-svelte'
   import Toolbar from '$lib/components/Toolbar.svelte'
   import Wheel from '$lib/components/Wheel.svelte'
-  import WheelMultiThread from '$lib/components/WheelMultiThread.svelte'
   import EditorColumn from '$lib/components/EditorColumn.svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
@@ -13,43 +10,46 @@
   import type { OnStoppedData } from '$lib/utils/Wheel'
   import AboutCards from '$lib/components/AboutCards.svelte'
 
-  const modalStore = getModalStore()
+  // TODO: Implement modals
 
-  const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
-    type: 'component',
-    component: 'winnerDialog',
-    title: wheelStore.config.winnerMessage || 'We have a winner!',
-    body: data.winner.text,
-    meta: data
-  })
+  // const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
+  //   type: 'component',
+  //   component: 'winnerDialog',
+  //   title: wheelStore.config.winnerMessage || 'We have a winner!',
+  //   body: data.winner.text,
+  //   meta: data
+  // })
+
+  let wheelComponent = $state('single')
 
   const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
-    launchConfetti(wheelStore.config.confetti, $state.snapshot(wheelStore.config.colors))
+    launchConfetti(
+      wheelStore.config.confetti,
+      $state.snapshot(wheelStore.config.colors)
+    )
     if (!wheelStore.config.displayWinnerDialog) return
-    modalStore.trigger(createWinnerModal(e.detail))
+    // modalStore.trigger(createWinnerModal(e.detail))
   }
 
-  const openOpenDialog = () => modalStore.trigger({
-    type: 'component', component: 'openDialog'
-  })
+  function openOpenDialog() {
+    // modalStore.trigger({ type: 'component', component: 'openDialog' })
+  }
 
-  const openSaveDialog = () => modalStore.trigger({
-    type: 'component', component: 'saveDialog'
-  })
+  function openSaveDialog() {
+    // modalStore.trigger({ type: 'component', component: 'saveDialog' })
+  }
 
-  const openCustomizeDialog = () => modalStore.trigger({
-    type: 'component', component: 'customizeDialog'
-  })
+  function openCustomizeDialog() {
+    // modalStore.trigger({ type: 'component', component: 'customizeDialog' })
+  }
 
-  const openShareDialog = () => modalStore.trigger({
-    type: 'component', component: 'shareDialog'
-  })
+  function openShareDialog() {
+    // modalStore.trigger({ type: 'component', component: 'shareDialog' })
+  }
 
-  const openAccountDialog = async () => modalStore.trigger({
-    type: 'component', component: 'accountDialog'
-  })
-
-  let WheelComponent = $state(Wheel)
+  function openAccountDialog() {
+    // modalStore.trigger({ type: 'component', component: 'accountDialog' })
+  }
 </script>
 
 <svelte:head>
@@ -76,7 +76,7 @@
     on:debug={debugStore.toggle}
   />
 
-  <main class="flex-grow flex flex-col xl:grid grid-cols-4">
+  <main class="grow flex flex-col xl:grid grid-cols-4">
     <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col justify-between">
       {#if !fullscreenStore.active}
         <div>
@@ -87,22 +87,13 @@
             {wheelStore.config.description}
           </p>
           {#if debugStore.active}
-            <RadioGroup>
-              <RadioItem
-                name="wheel"
-                value={Wheel}
-                bind:group={WheelComponent}
-              >
-                Single Thread
-              </RadioItem>
-              <RadioItem
-                name="wheel"
-                value={WheelMultiThread}
-                bind:group={WheelComponent}
-              >
-                Multi Thread
-              </RadioItem>
-            </RadioGroup>
+            <Segment
+              value={wheelComponent}
+              onValueChange={(e) => (wheelComponent = e.value!)}
+            >
+              <Segment.Item value="single">Single-thread</Segment.Item>
+              <Segment.Item value="multi">Multi-thread</Segment.Item>
+            </Segment>
           {/if}
         </div>
 
@@ -113,9 +104,13 @@
     </div>
 
     <div class="col-span-2 flex-1 flex flex-col justify-center items-center">
-      <WheelComponent
-        on:stop={openWinnerModal}
-      />
+      {#if wheelComponent === 'single'}
+        <Wheel on:stop={openWinnerModal} />
+      {:else}
+        {#await import('$lib/components/WheelMultiThread.svelte') then { default: WheelMultiThread }}
+          <WheelMultiThread on:stop={openWinnerModal} />
+        {/await}
+      {/if}
     </div>
 
     <div class="col-span-1 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">

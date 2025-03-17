@@ -48,7 +48,7 @@
 </script>
 
 <textarea
-  class="textarea w-full h-72 flex-grow resize-none"
+  class="textarea w-full h-72 grow resize-none"
   spellcheck="false"
   autocomplete="off"
   maxlength="1000"

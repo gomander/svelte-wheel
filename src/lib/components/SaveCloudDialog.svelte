@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import {
-    ProgressRadial, getModalStore, getToastStore
-  } from '@skeletonlabs/skeleton'
+  import { getContext, onMount } from 'svelte'
+  import { ProgressRing, type ToastContext } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
   import { toastDefaults } from '$lib/utils/Toast'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  // TODO: Implement modal
+
+  const toast: ToastContext = getContext('toast')
 
   let title = $state(wheelStore.config.title)
   let loading = $state(false)
@@ -18,12 +17,12 @@
   onMount(async () => {
     const user = getCurrentUser()
     if (!user) {
-      modalStore.close()
-      modalStore.trigger({
-        type: 'component',
-        component: 'loginDialog',
-        meta: { next: 'saveCloudDialog' }
-      })
+      close()
+      // modalStore.trigger({
+      //   type: 'component',
+      //   component: 'loginDialog',
+      //   meta: { next: 'saveCloudDialog' }
+      // })
       return
     }
     if (wheelStore.path) {
@@ -80,23 +79,26 @@
           throw new Error(response.error.message)
         }
       }
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Wheel saved',
-        background: 'variant-filled-primary'
+        description: 'Wheel saved'
       })
     } catch (error) {
       if (error instanceof Error) {
-        toastStore.trigger({
+        toast.create({
           ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
+          description: error.message,
+          type: 'error'
         })
       }
     } finally {
       loading = false
     }
+  }
+
+  function close() {
+    // modalStore.close()
   }
 
   // TODO: When wheelStore has a path, the user should be shown as much metadata
@@ -105,7 +107,7 @@
   // one that would be shown in the open cloud dialog.
 </script>
 
-{#if $modalStore[0]}
+{#if false}
   <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
@@ -159,18 +161,18 @@
       <footer class="flex justify-end gap-2">
         <button
           type="button"
-          class="btn variant-soft"
-          onclick={modalStore.close}
+          class="btn preset-tonal"
+          onclick={close}
         >
           Cancel
         </button>
 
         <button
-          class="btn variant-filled-primary"
+          class="btn preset-filled-primary-500"
           aria-busy={loading}
         >
           {#if loading}
-            <ProgressRadial width="w-6" />
+            <ProgressRing size="w-6" />
           {:else}
             Save
           {/if}

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import {
-    getModalStore, getToastStore, ProgressRadial
-  } from '@skeletonlabs/skeleton'
+  import { getContext } from 'svelte'
+  import { ProgressRing, type ToastContext } from '@skeletonlabs/skeleton-svelte'
   import { z } from 'zod'
   import { sendPasswordResetEmail } from '$lib/utils/Firebase'
   import { emailValidator } from '$lib/utils/Schemas'
   import { toastDefaults } from '$lib/utils/Toast'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  // TODO: Implement modal
+
+  const toast: ToastContext = getContext('toast')
 
   let email = $state('')
   let loading = $state(false)
@@ -21,29 +21,32 @@
     try {
       emailValidator.parse(email)
       await sendPasswordResetEmail(email)
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Password reset email sent',
-        background: 'variant-filled-primary'
+        description: 'Password reset email sent'
       })
     } catch (error) {
       if (error instanceof z.ZodError) {
         errors = error.flatten().fieldErrors
         return
       }
-      toastStore.trigger({
+      toast.create({
         ...toastDefaults,
-        message: 'Something went wrong, please try again later',
-        background: 'variant-filled-error'
+        description: 'Something went wrong, please try again later',
+        type: 'error'
       })
     } finally {
       loading = false
     }
   }
+
+  function close() {
+    // modalStore.close()
+  }
 </script>
 
-{#if $modalStore[0]}
+{#if false}
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-key"></i>
@@ -67,7 +70,7 @@
         >
 
         {#if errors.email}
-          <span class="text-sm text-error-400-500-token">
+          <span class="text-sm text-error-500">
             {errors.email[0]}
           </span>
         {/if}
@@ -76,18 +79,18 @@
       <footer class="flex justify-end gap-2">
         <button
           type="button"
-          class="btn btn-sm variant-soft"
-          onclick={modalStore.close}
+          class="btn btn-sm preset-tonal"
+          onclick={close}
         >
           Close
         </button>
 
         <button
-          class="btn variant-filled-primary"
+          class="btn preset-filled-primary-500"
           aria-busy={loading}
         >
           {#if loading}
-            <ProgressRadial width="w-6" />
+            <ProgressRing size="w-6" />
           {:else}
             Send password reset email
           {/if}

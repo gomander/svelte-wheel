@@ -1,53 +1,41 @@
 <script lang="ts">
-  import { TabGroup, Tab } from '@skeletonlabs/skeleton'
+  import { Tabs } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import EditorButtons from '$lib/components/EditorButtons.svelte'
   import EntriesTextbox from '$lib/components/EntriesTextbox.svelte'
   import ResultsButtons from '$lib/components/ResultsButtons.svelte'
   import ResultsTextbox from '$lib/components/ResultsTextbox.svelte'
 
-  let openTab = $state(0)
+  let openTab = $state('editor')
 </script>
 
-<TabGroup
-  class="flex-1 flex flex-col"
-  regionPanel="flex-1 flex flex-col gap-4"
->
-  <Tab
-    bind:group={openTab}
-    name="editor"
-    value={0}
-  >
-    <div class="flex items-center gap-2">
-      <span id="entries-label">Entries</span>
-      <div>
-        <span class="badge variant-filled">{wheelStore.entries.length}</span>
+<Tabs value={openTab} onValueChange={(e) => (openTab = e.value)}>
+  {#snippet list()}
+    <Tabs.Control value="editor">
+      <div class="flex items-center gap-2">
+        <span id="entries-label">Entries</span>
+        <div>
+          <span class="badge preset-filled">{wheelStore.entries.length}</span>
+        </div>
       </div>
-    </div>
-  </Tab>
-
-  <Tab
-    bind:group={openTab}
-    name="results"
-    value={1}
-  >
-    <div class="flex items-center gap-2">
-      <span id="results-label">Results</span>
-      <div>
-        <span class="badge variant-filled">{wheelStore.winners.length}</span>
+    </Tabs.Control>
+    <Tabs.Control value="results">
+      <div class="flex items-center gap-2">
+        <span id="results-label">Results</span>
+        <div>
+          <span class="badge preset-filled">{wheelStore.winners.length}</span>
+        </div>
       </div>
-    </div>
-  </Tab>
-
-  {#snippet panel()}
-    {#if openTab === 0}
-      <EditorButtons />
-
-      <EntriesTextbox />
-    {:else if openTab === 1}
-      <ResultsButtons />
-
-      <ResultsTextbox />
-    {/if}
+    </Tabs.Control>
   {/snippet}
-</TabGroup>
+  {#snippet content()}
+    <Tabs.Panel value="editor">
+      <EditorButtons />
+      <EntriesTextbox />
+    </Tabs.Panel>
+    <Tabs.Panel value="results">
+      <ResultsButtons />
+      <ResultsTextbox />
+    </Tabs.Panel>
+  {/snippet}
+</Tabs>

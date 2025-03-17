@@ -1,27 +1,26 @@
 <script lang="ts">
-  import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import Wheel from '$lib/components/Wheel.svelte'
   import { launchConfetti } from '$lib/utils/ConfettiLauncher'
   import type { OnStoppedData } from '$lib/utils/Wheel'
 
+  // TODO: Implement modals
+
   let { data } = $props()
   const { wheel } = data
 
-  const modalStore = getModalStore()
-
-  const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
-    type: 'component',
-    component: 'winnerDialog',
-    title: wheelStore.config.winnerMessage || 'We have a winner!',
-    body: data.winner.text,
-    meta: data
-  })
+  // const createWinnerModal = (data: OnStoppedData): ModalSettings => ({
+  //   type: 'component',
+  //   component: 'winnerDialog',
+  //   title: wheelStore.config.winnerMessage || 'We have a winner!',
+  //   body: data.winner.text,
+  //   meta: data
+  // })
 
   const openWinnerModal = async (e: CustomEvent<OnStoppedData>) => {
     launchConfetti(wheelStore.config.confetti, $state.snapshot(wheelStore.config.colors))
     if (!wheelStore.config.displayWinnerDialog) return
-    modalStore.trigger(createWinnerModal(e.detail))
+    // modalStore.trigger(createWinnerModal(e.detail))
   }
 
   wheelStore.config = wheel.config
@@ -55,7 +54,7 @@
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
-  <main class="flex-grow flex flex-col xl:grid grid-cols-6">
+  <main class="grow flex flex-col xl:grid grid-cols-6">
     <div class="col-span-1 pb-0 p-4 xl:pb-4 xl:pr-0 flex flex-col">
       <h2 class="text-3xl">{wheel.config.title}</h2>
       <p class="text-lg">{wheel.config.description}</p>

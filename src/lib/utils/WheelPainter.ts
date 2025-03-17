@@ -9,10 +9,10 @@ export default class WheelPainter {
   fontPicker = new FontPicker()
 
   refresh() {
-    const shadowImage = this.imageCache.get('shadow')
+    const shadowImage = this.imageCache.get('shadow-sm')
     const pointerImage = this.imageCache.get('pointer')
     this.imageCache.clear()
-    if (shadowImage) this.imageCache.set('shadow', shadowImage)
+    if (shadowImage) this.imageCache.set('shadow-sm', shadowImage)
     if (pointerImage) this.imageCache.set('pointer', pointerImage)
     this.fontPicker.clearFontCache()
   }
@@ -27,10 +27,10 @@ export default class WheelPainter {
   }
 
   drawShadow(context: Context) {
-    if (!this.imageCache.has('shadow')) {
+    if (!this.imageCache.has('shadow-sm')) {
       this.drawShadowNoCache(createInMemoryImage(context))
     }
-    context.drawImage(this.imageCache.get('shadow')!, 0, 0)
+    context.drawImage(this.imageCache.get('shadow-sm')!, 0, 0)
   }
 
   drawShadowNoCache(context: Context) {
@@ -46,7 +46,7 @@ export default class WheelPainter {
     gradient.addColorStop(1, 'transparent')
     context.fillStyle = gradient
     context.fillRect(0, 0, width, height)
-    this.imageCache.set('shadow', context.canvas)
+    this.imageCache.set('shadow-sm', context.canvas)
   }
 
   drawBackground(context: Context, wheel: Wheel) {

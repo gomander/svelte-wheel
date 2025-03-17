@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { popup } from '@skeletonlabs/skeleton'
   import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
@@ -17,20 +16,20 @@
   }>()
 </script>
 
-<header class="px-4 py-2 bg-surface-200-700-token shadow-2xl flex justify-between items-center">
+<header class="px-4 py-2 bg-surface-200-800 shadow-2xl flex justify-between items-center">
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
   </a>
 
   <div class="block lg:hidden">
     <button
-      class="btn btn-icon-sm text-xl hover:variant-soft-primary"
-      use:popup={{ event: 'click', target: 'mobileMenu' }}
+      class="btn btn-icon-sm text-xl hover:preset-tonal-primary"
       aria-haspopup="menu"
       aria-controls="mobileMenu"
       aria-label="Toggle menu"
       title="Menu"
     >
+      <!-- TODO: Open popup when clicked -->
       <i class="fas fa-bars"></i>
     </button>
 
@@ -60,7 +59,7 @@
   >
     {#if !fullscreenStore.active}
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
         onclick={() => dispatch('new')}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -71,7 +70,7 @@
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
         onclick={() => dispatch('open')}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -82,7 +81,7 @@
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
         onclick={() => dispatch('save')}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -93,7 +92,7 @@
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
         onclick={() => dispatch('customize')}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -104,7 +103,7 @@
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
         onclick={() => dispatch('share')}
         disabled={busyStore.spinning}
         role="menuitem"
@@ -117,7 +116,7 @@
 
     {#if fullscreenStore.supported}
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        class="btn btn-icon-sm text-lg hover:preset-tonal-primary"
         onclick={() => fullscreenStore.toggleFullscreen()}
         role="menuitem"
         aria-label="Toggle fullscreen"
@@ -129,14 +128,14 @@
 
     <div>
       <button
-        class="btn btn-icon-sm text-xl hover:variant-soft-primary"
-        use:popup={{ event: 'click', target: 'moreMenu' }}
+        class="btn btn-icon-sm text-xl hover:preset-tonal-primary"
         role="menuitem"
         aria-haspopup="menu"
         aria-controls="moreMenu"
         aria-label="Toggle more menu"
         title="More"
       >
+        <!-- TODO: Open popup when clicked -->
         <i class="fas fa-bars"></i>
       </button>
 

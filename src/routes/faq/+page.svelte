@@ -14,7 +14,7 @@
   <meta name="theme-color" content="#022a4f">
 </svelte:head>
 
-<header class="px-4 py-2 bg-surface-200-700-token shadow-2xl">
+<header class="px-4 py-2 bg-surface-200-800 shadow-2xl">
   <a href="/" class="text-2xl flex gap-2 items-center">
     <i class="fas fa-arrow-left"></i>
     <h1>SvelteWheel</h1>

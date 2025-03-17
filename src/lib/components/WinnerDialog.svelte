@@ -1,42 +1,42 @@
 <script lang="ts">
-  import { getModalStore } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getTextColor } from '$lib/utils/FontPicker'
 
-  const modalStore = getModalStore()
+  // TODO: Implement modal
 
   const remove = () => {
-    wheelStore.entries = wheelStore.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
-    modalStore.close()
+    // wheelStore.entries = wheelStore.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
+    close()
+  }
+
+  function close() {
+    // modalStore.close()
   }
 </script>
 
-{#if $modalStore[0]}
+{#if false}
   <article class="card w-modal shadow-xl overflow-hidden">
     <header
       class="p-4 text-2xl font-semibold"
-      style={
-        $modalStore[0].meta.color ? `
-          background-color: ${$modalStore[0].meta.color};
-          color: ${getTextColor($modalStore[0].meta.color)}
-        ` : ''
-      }
+      style:color={getTextColor('#000000')}
+      style:background-color={'#000000'}
     >
-      {$modalStore[0].title}
+      <!-- {$modalStore[0].title} -->
+      We have a winner!
     </header>
 
     <div
       class="p-4 h1"
       aria-label="Winner"
     >
-      {$modalStore[0].body}
+      <!-- {$modalStore[0].body} -->
     </div>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
-      <button class="btn variant-soft" onclick={modalStore.close}>
+      <button class="btn preset-tonal" onclick={close}>
         Close
       </button>
-      <button class="btn variant-soft-warning" onclick={remove}>
+      <button class="btn preset-tonal-warning" onclick={remove}>
         Remove
       </button>
     </footer>

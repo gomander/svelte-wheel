@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
+  import { getContext } from 'svelte'
+  import type { ToastContext } from '@skeletonlabs/skeleton-svelte'
   import { fileSave } from 'browser-fs-access'
   import wheelStore from '$lib/stores/WheelStore'
   import { toastDefaults } from '$lib/utils/Toast'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  // TODO: Implement modal
+
+  const toast: ToastContext = getContext('toast')
 
   let fileName = $state(wheelStore.config.title)
   let loading = false
@@ -26,27 +28,30 @@
         ),
         { fileName: `${fileName || 'Untitled'}.wheel`, extensions: ['.wheel'] }
       )
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Wheel saved',
-        background: 'variant-filled-primary'
+        description: 'Wheel saved'
       })
     } catch (error) {
       if (error instanceof Error) {
-        toastStore.trigger({
+        toast.create({
           ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
+          description: error.message,
+          type: 'error'
         })
       }
     } finally {
       loading = false
     }
   }
+
+  function close() {
+    // modalStore.close()
+  }
 </script>
 
-{#if $modalStore[0]}
+{#if false}
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
@@ -75,14 +80,14 @@
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
       <button
-        class="btn variant-soft"
-        onclick={modalStore.close}
+        class="btn preset-tonal"
+        onclick={close}
       >
         Cancel
       </button>
 
       <button
-        class="btn variant-filled-primary"
+        class="btn preset-filled-primary-500"
         onclick={save}
       >
         Save

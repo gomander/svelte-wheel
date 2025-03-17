@@ -21,10 +21,10 @@ export default class WheelPainter {
   }
 
   drawShadow(context: Context) {
-    if (!this.imageCache.has('shadow')) {
+    if (!this.imageCache.has('shadow-sm')) {
       this.drawShadowNoCache(createInMemoryImage(context))
     }
-    context.drawImage(this.imageCache.get('shadow')!, 0, 0)
+    context.drawImage(this.imageCache.get('shadow-sm')!, 0, 0)
   }
 
   drawShadowNoCache(context: Context) {
@@ -40,7 +40,7 @@ export default class WheelPainter {
     gradient.addColorStop(1, 'transparent')
     context.fillStyle = gradient
     context.fillRect(0, 0, width, height)
-    this.imageCache.set('shadow', context.canvas)
+    this.imageCache.set('shadow-sm', context.canvas)
   }
 
   async drawBackground(context: Context, wheel: Wheel) {

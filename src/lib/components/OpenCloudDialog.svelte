@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { getContext, onMount } from 'svelte'
   import {
-    Avatar, ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore,
-    popup
-  } from '@skeletonlabs/skeleton'
+    Avatar, ProgressRing, Segment, type ToastContext
+  } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { getWheel, getWheels, type ApiWheelMeta } from '$lib/utils/Api'
   import { toastDefaults } from '$lib/utils/Toast'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  // TODO: Implement modal
+
+  const toast: ToastContext = getContext('toast')
 
   let innerHeight = $state(0)
 
@@ -28,12 +28,12 @@
   const settingsPopup = { event: 'click', placement: 'left' } as const
 
   const deleteWheel = (path: string) => {
-    modalStore.close()
-    modalStore.trigger({
-      type: 'component',
-      component: 'deleteWheelDialog',
-      meta: { path, title: apiWheels.find(wheel => wheel.path === path)?.title }
-    })
+    close()
+    // modalStore.trigger({
+    //   type: 'component',
+    //   component: 'deleteWheelDialog',
+    //   meta: { path, title: apiWheels.find(wheel => wheel.path === path)?.title }
+    // })
   }
 
   onMount(async () => {
@@ -41,11 +41,11 @@
     const user = getCurrentUser()
     try {
       if (!user) {
-        modalStore.trigger({
-          type: 'component',
-          component: 'loginDialog',
-          meta: { next: 'openCloudDialog' }
-        })
+        // modalStore.trigger({
+        //   type: 'component',
+        //   component: 'loginDialog',
+        //   meta: { next: 'openCloudDialog' }
+        // })
         throw new Error('User is not logged in')
       }
       const response = await getWheels(user.uid)
@@ -58,13 +58,13 @@
       }
     } catch (error) {
       if (error instanceof Error) {
-        toastStore.trigger({
+        toast.create({
           ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
+          description: error.message,
+          type: 'error'
         })
       }
-      modalStore.close()
+      close()
     } finally {
       loading = false
     }
@@ -91,19 +91,18 @@
       wheelStore.setNewEntries(entries)
       wheelStore.winners =[]
       wheelStore.path = path
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Wheel opened',
-        background: 'variant-filled-primary',
-        timeout: 1000
+        description: 'Wheel opened',
+        duration: 1000
       })
     } catch (error) {
       if (error instanceof Error) {
-        toastStore.trigger({
+        toast.create({
           ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
+          description: error.message,
+          type: 'error'
         })
       }
     } finally {
@@ -163,11 +162,15 @@
       )
     }
   })
+
+  function close() {
+    // modalStore.close()
+  }
 </script>
 
 <svelte:window bind:innerHeight />
 
-{#if $modalStore[0]}
+{#if false}
   <article class="card w-modal p-4 shadow-xl overflow-hidden flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
@@ -204,25 +207,23 @@
           </select>
         {/if}
 
-        <RadioGroup
-          rounded="rounded-container-token"
+        <Segment
+          rounded="rounded-container"
           flexDirection="flex-col"
           padding="p-1"
+          value={selectedWheel}
+          onValueChange={(e) => (selectedWheel = e.value!)}
         >
           {#each pageWheels as wheel, i (wheel.path)}
             {#if i !== 0}
               <hr>
             {/if}
-            <RadioItem
-              bind:group={selectedWheel}
-              name="wheel"
-              value={wheel.path}
-            >
+            <Segment.Item value={wheel.path}>
               <div class="flex items-center gap-2">
                 <Avatar
+                  name="?"
                   src={wheelImages[wheel.path]}
-                  width="w-14"
-                  initials="?"
+                  size="w-14"
                 />
                 <div class="min-h-14 flex-1 flex flex-col justify-center">
                   <div class="flex gap-2 justify-center items-center">
@@ -243,8 +244,8 @@
                     type="button"
                     class="btn-icon btn-icon-sm"
                     aria-label="Settings"
-                    use:popup={{ ...settingsPopup, target: `popup(${wheel.path})` }}
                   >
+                    <!-- TODO: Open popup when clicked -->
                     <i class="fas fa-ellipsis-v"></i>
                   </button>
 
@@ -252,14 +253,14 @@
                     <div class=" flex flex-col gap-2">
                       <button
                         type="button"
-                        class="btn btn-sm variant-filled-error flex items-center gap-2"
+                        class="btn btn-sm preset-filled-error-500 flex items-center gap-2"
                         onclick={() => deleteWheel(wheel.path)}
                       >
                         <i class="fas fa-trash"></i> Delete wheel
                       </button>
                       <button
                         type="button"
-                        class="btn btn-sm variant-filled-warning flex items-center gap-2"
+                        class="btn btn-sm preset-filled-warning-500 flex items-center gap-2"
                       >
                         {#if wheel.visibility === 'private'}
                           <i class="fas fa-lock-open"></i> Make public
@@ -271,7 +272,7 @@
                   </div>
                 </div>
               </div>
-            </RadioItem>
+            </Segment.Item>
           {/each}
           {#if !pageWheels.length}
             <div class="flex justify-center items-center min-h-14">
@@ -280,10 +281,10 @@
           {:else if filteredWheels.length > wheelsPerPage}
             <div style="height: {4 * (wheelsPerPage - pageWheels.length)}rem"></div>
           {/if}
-        </RadioGroup>
+        </Segment>
       {:else if loading}
         <div class="flex justify-center">
-          <ProgressRadial width="w-12" />
+          <ProgressRing size="w-12" />
         </div>
       {:else}
         <p class="text-center">No wheels found</p>
@@ -293,7 +294,7 @@
         <div class="flex justify-evenly items-center">
           <button
             type="button"
-            class="btn variant-soft"
+            class="btn preset-tonal"
             disabled={page === 0}
             onclick={() => page--}
             aria-label="Previous page"
@@ -306,7 +307,7 @@
           </span>
           <button
             type="button"
-            class="btn variant-soft"
+            class="btn preset-tonal"
             disabled={page >= Math.ceil(filteredWheels.length / wheelsPerPage) - 1}
             onclick={() => page++}
             aria-label="Next page"
@@ -320,17 +321,17 @@
       <footer class="flex justify-end gap-2">
         <button
           type="button"
-          class="btn variant-soft"
-          onclick={modalStore.close}
+          class="btn preset-tonal"
+          onclick={close}
         >
           Cancel
         </button>
         <button
-          class="btn variant-filled-primary"
+          class="btn preset-filled-primary-500"
           disabled={!selectedWheel}
         >
           {#if loading}
-            <ProgressRadial width="w-6" />
+            <ProgressRing size="w-6" />
           {:else}
             Open
           {/if}

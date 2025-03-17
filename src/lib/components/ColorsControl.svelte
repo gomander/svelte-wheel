@@ -27,7 +27,7 @@
     use:dndzone={{ items: colorsArray, flipDurationMs: 100 }}
     onconsider={handleSortColors}
     onfinalize={handleSortColors}
-    class="p-2 flex flex-wrap gap-2 w-fit rounded-3xl variant-soft"
+    class="p-2 flex flex-wrap gap-2 w-fit rounded-3xl preset-tonal"
   >
     {#each colorsArray as item (item.id)}
       <div
@@ -36,10 +36,10 @@
         aria-label="Use enter and the arrow keys to reorder this color"
       >
         <div
-          class="h-6 flex justify-center items-center bg-surface-50-900-token rounded-t-full"
+          class="h-6 flex justify-center items-center bg-surface-50-950 rounded-t-full"
           title="Drag to reorder"
         >
-          <i class="fas fa-grip text-surface-300-600-token"></i>
+          <i class="fas fa-grip text-surface-300-700"></i>
         </div>
 
         <input
@@ -53,18 +53,18 @@
 
         <button
           onclick={() => deleteColor(item.id)}
-          class="h-6 bg-surface-50-900-token rounded-b-full"
+          class="h-6 bg-surface-50-950 rounded-b-full"
           title="Delete color"
           aria-label="Delete color"
         >
-          <i class="fas fa-times text-surface-400-500-token"></i>
+          <i class="fas fa-times text-surface-500"></i>
         </button>
       </div>
     {/each}
   </div>
 
   <button
-    class="btn btn-icon-sm variant-filled"
+    class="btn btn-icon-sm preset-filled"
     onclick={addColor}
     title="Add color"
     aria-label="Add color"

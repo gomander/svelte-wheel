@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
-  import { ProgressRadial } from '@skeletonlabs/skeleton'
+  import { ProgressRing } from '@skeletonlabs/skeleton-svelte'
   import { z } from 'zod'
   import { FirebaseError } from 'firebase/app'
   import { userSchema } from '$lib/utils/Schemas'
@@ -51,7 +51,7 @@
 </script>
 
 {#if formError}
-  <div class="alert variant-soft-error">{formError}</div>
+  <div class="alert preset-tonal-error">{formError}</div>
 {/if}
 
 <form
@@ -71,7 +71,7 @@
     >
 
     {#if errors.email}
-      <span class="text-sm text-error-400-500-token">{errors.email[0]}</span>
+      <span class="text-sm text-error-500">{errors.email[0]}</span>
     {/if}
   </label>
 
@@ -89,7 +89,7 @@
 
       <button
         type="button"
-        class="btn variant-soft rounded-none"
+        class="btn preset-tonal rounded-none"
         onclick={() => showPassword = !showPassword}
         title={showPassword ? 'Hide password' : 'Show password'}
         aria-label={showPassword ? 'Hide password' : 'Show password'}
@@ -99,7 +99,7 @@
     </div>
 
     {#if errors.password}
-      <span class="text-sm text-error-400-500-token">{errors.password[0]}</span>
+      <span class="text-sm text-error-500">{errors.password[0]}</span>
     {/if}
   </label>
 
@@ -109,11 +109,11 @@
     {@render footerButtons()}
 
     <button
-      class="btn variant-filled-primary"
+      class="btn preset-filled-primary-500"
       aria-busy={loading}
     >
       {#if loading}
-        <ProgressRadial width="w-6" />
+        <ProgressRing size="w-6" />
       {:else}
         Submit
       {/if}

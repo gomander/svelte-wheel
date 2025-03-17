@@ -2,7 +2,7 @@ name: Deploy to Firebase Hosting on merge
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   build_and_deploy:
     env:
@@ -24,11 +24,11 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 22
       - name: Install pnpm and dependencies
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
           run_install: true
       - name: Run unit tests
         run: pnpm test:unit

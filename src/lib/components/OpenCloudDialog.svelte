@@ -179,10 +179,10 @@
       {#if apiWheels.length}
         {#if apiWheels.length > wheelsPerPage}
           <label class="input-group grid-cols-[auto_1fr]">
-            <div><i class="fas fa-search"></i></div>
+            <div class="ig-cell"><i class="fas fa-search"></i></div>
             <input
               type="search"
-              class="input"
+              class="ig-input"
               placeholder="Search..."
               bind:value={filter}
               aria-label="Search"
@@ -201,76 +201,82 @@
           </select>
         {/if}
 
-        <!-- TODO: Fix list being in a row rather than a column -->
         <SegmentedControl
           class="rounded-container flex-col p-1"
+          orientation="vertical"
           value={selectedWheel}
           onValueChange={(e) => (selectedWheel = e.value!)}
         >
-          {#each pageWheels as wheel, i (wheel.path)}
-            {#if i !== 0}
-              <hr />
-            {/if}
-            <SegmentedControl.Item value={wheel.path}>
-              <div class="flex items-center gap-2">
-                <Avatar class="w-14">
-                  <Avatar.Image src={wheelImages[wheel.path]} />
-                  <Avatar.Fallback>?</Avatar.Fallback>
-                </Avatar>
-                <div class="min-h-14 flex-1 flex flex-col justify-center">
-                  <div class="flex gap-2 justify-center items-center">
-                    <span class="text-lg font-semibold">{wheel.title}</span>
-                    {#if wheel.visibility === "private"}
-                      <i class="fas fa-lock text-xs" title="Private"></i>
+          <SegmentedControl.Control>
+            <SegmentedControl.Indicator />
+            {#each pageWheels as wheel, i (wheel.path)}
+              {#if i !== 0}
+                <hr />
+              {/if}
+              <SegmentedControl.Item value={wheel.path}>
+                <SegmentedControl.ItemText
+                  class="w-full flex justify-evenly items-center gap-2"
+                >
+                  <Avatar class="w-14 h-14">
+                    <Avatar.Image src={wheelImages[wheel.path]} />
+                    <Avatar.Fallback>?</Avatar.Fallback>
+                  </Avatar>
+                  <div class="min-h-14 flex-1 flex flex-col justify-center">
+                    <div class="flex gap-2 justify-center items-center">
+                      <span class="text-lg font-semibold">{wheel.title}</span>
+                      {#if wheel.visibility === "private"}
+                        <i class="fas fa-lock text-xs" title="Private"></i>
+                      {/if}
+                    </div>
+                    {#if wheel.visibility === "public"}
+                      <div
+                        class="text-sm mt-1 flex gap-2 justify-center items-center"
+                      >
+                        <i class="fas fa-globe" title="Public"></i>
+                        <span>{wheel.path}</span>
+                      </div>
                     {/if}
                   </div>
-                  {#if wheel.visibility === "public"}
-                    <div
-                      class="text-sm mt-1 flex gap-2 justify-center items-center"
+                  <div>
+                    <button
+                      type="button"
+                      class="btn-icon btn-icon-sm"
+                      aria-label="Settings"
                     >
-                      <i class="fas fa-globe" title="Public"></i>
-                      <span>{wheel.path}</span>
-                    </div>
-                  {/if}
-                </div>
-                <div>
-                  <button
-                    type="button"
-                    class="btn-icon btn-icon-sm"
-                    aria-label="Settings"
-                  >
-                    <!-- TODO: Open popup when clicked -->
-                    <i class="fas fa-ellipsis-v"></i>
-                  </button>
+                      <!-- TODO: Open popup when clicked -->
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
 
-                  <div
-                    class="card p-2 rounded-xl"
-                    data-popup="popup({wheel.path})"
-                  >
-                    <div class=" flex flex-col gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-sm preset-filled-error-500 flex items-center gap-2"
-                        onclick={() => deleteWheel(wheel.path)}
-                      >
-                        <i class="fas fa-trash"></i> Delete wheel
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-sm preset-filled-warning-500 flex items-center gap-2"
-                      >
-                        {#if wheel.visibility === "private"}
-                          <i class="fas fa-lock-open"></i> Make public
-                        {:else}
-                          <i class="fas fa-lock"></i> Make private
-                        {/if}
-                      </button>
+                    <div
+                      class="card p-2 rounded-xl"
+                      data-popup="popup({wheel.path})"
+                    >
+                      <div class=" flex flex-col gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm preset-filled-error-500 flex items-center gap-2"
+                          onclick={() => deleteWheel(wheel.path)}
+                        >
+                          <i class="fas fa-trash"></i> Delete wheel
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-sm preset-filled-warning-500 flex items-center gap-2"
+                        >
+                          {#if wheel.visibility === "private"}
+                            <i class="fas fa-lock-open"></i> Make public
+                          {:else}
+                            <i class="fas fa-lock"></i> Make private
+                          {/if}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </SegmentedControl.Item>
-          {/each}
+                </SegmentedControl.ItemText>
+                <SegmentedControl.ItemHiddenInput />
+              </SegmentedControl.Item>
+            {/each}
+          </SegmentedControl.Control>
           {#if !pageWheels.length}
             <div class="flex justify-center items-center min-h-14">
               No wheels found

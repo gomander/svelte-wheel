@@ -1,31 +1,27 @@
 <script lang="ts">
-  import { getContext } from 'svelte'
-  import type { ToastContext } from '@skeletonlabs/skeleton-svelte'
-  import { toastDefaults } from '$lib/utils/Toast'
-  import AppDialog from '$lib/components/AppDialog.svelte'
+  import { toast, toastDefaults } from "$lib/utils/Toast";
+  import AppDialog from "$lib/components/AppDialog.svelte";
 
   export function open(wheelPath: string) {
-    path = wheelPath
-    dialog.open()
+    path = wheelPath;
+    dialog.open();
   }
 
-  const toast: ToastContext = getContext('toast')
-
-  let path = $state('')
-  let link = $derived(`${window.location.origin}/${path}`)
-  let dialog: AppDialog = $state(null!)
+  let path = $state("");
+  let link = $derived(`${window.location.origin}/${path}`);
+  let dialog: AppDialog = $state(null!);
 
   function copyLink() {
-    navigator.clipboard.writeText(link)
+    navigator.clipboard.writeText(link);
     toast.create({
       ...toastDefaults,
-      description: 'Link copied to clipboard',
-      type: 'success'
-    })
+      description: "Link copied to clipboard",
+      type: "success",
+    });
   }
 
   function close() {
-    dialog.close()
+    dialog.close();
   }
 </script>
 
@@ -38,10 +34,12 @@
 
     <section class="flex flex-col gap-2">
       <p>
-        Your wheel has been shared. It can be viewed and spun by anyone using the
-        link below.
+        Your wheel has been shared. It can be viewed and spun by anyone using
+        the link below.
       </p>
-      <div class="flex justify-between items-center bg-surface-50-950 rounded-xl px-4 py-3">
+      <div
+        class="flex justify-between items-center bg-surface-50-950 rounded-xl px-4 py-3"
+      >
         <a href="/{path}">{link}</a>
         <button
           class="btn-icon preset-filled-primary-500"
@@ -55,11 +53,7 @@
     </section>
 
     <footer class="flex justify-end gap-2">
-      <button
-        type="button"
-        class="btn preset-tonal"
-        onclick={close}
-      >
+      <button type="button" class="btn preset-tonal" onclick={close}>
         Close
       </button>
     </footer>

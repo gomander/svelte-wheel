@@ -1,54 +1,50 @@
 <script lang="ts">
-  import { getContext } from 'svelte'
-  import type { ToastContext } from '@skeletonlabs/skeleton-svelte'
-  import { fileOpen } from 'browser-fs-access'
-  import wheelStore from '$lib/stores/WheelStore'
-  import { toastDefaults } from '$lib/utils/Toast'
-  import AppDialog from '$lib/components/AppDialog.svelte'
+  import { fileOpen } from "browser-fs-access";
+  import wheelStore from "$lib/stores/WheelStore";
+  import { toast, toastDefaults } from "$lib/utils/Toast";
+  import AppDialog from "$lib/components/AppDialog.svelte";
 
   export function open() {
-    dialog.open()
+    dialog.open();
   }
 
-  let { onOpenCloud }: { onOpenCloud: () => void } = $props()
+  let { onOpenCloud }: { onOpenCloud: () => void } = $props();
 
-  const toast: ToastContext = getContext('toast')
-
-  let dialog: AppDialog = $state(null!)
+  let dialog: AppDialog = $state(null!);
 
   function openOpenCloudDialog() {
-    close()
-    onOpenCloud()
+    close();
+    onOpenCloud();
   }
 
   const openLocalFile = async () => {
     try {
       const file = await fileOpen({
-        mimeTypes: ['application/json'],
-        extensions: ['.wheel']
-      })
-      const fileContent = await file.text()
-      const { config, entries, winners } = JSON.parse(fileContent)
-      wheelStore.config = config
-      wheelStore.entries = entries
-      wheelStore.winners = winners
-      close()
+        mimeTypes: ["application/json"],
+        extensions: [".wheel"],
+      });
+      const fileContent = await file.text();
+      const { config, entries, winners } = JSON.parse(fileContent);
+      wheelStore.config = config;
+      wheelStore.entries = entries;
+      wheelStore.winners = winners;
+      close();
       toast.create({
         ...toastDefaults,
-        description: 'Wheel loaded successfully!'
-      })
+        description: "Wheel loaded successfully!",
+      });
     } catch (e) {
-      console.error(e)
+      console.error(e);
       toast.create({
         ...toastDefaults,
-        description: 'Error loading wheel',
-        type: 'error'
-      })
+        description: "Error loading wheel",
+        type: "error",
+      });
     }
-  }
+  };
 
   function close() {
-    dialog.close()
+    dialog.close();
   }
 </script>
 
@@ -68,22 +64,14 @@
         <span>Open from the cloud</span>
       </button>
 
-      <button
-        class="btn preset-filled"
-        onclick={openLocalFile}
-      >
+      <button class="btn preset-filled" onclick={openLocalFile}>
         <i class="fas fa-hard-drive text-4xl"></i>
         <span>Open a local file</span>
       </button>
     </div>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
-      <button
-        class="btn preset-tonal"
-        onclick={close}
-      >
-        Cancel
-      </button>
+      <button class="btn preset-tonal" onclick={close}> Cancel </button>
     </footer>
   </article>
 </AppDialog>

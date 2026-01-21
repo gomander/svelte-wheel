@@ -1,25 +1,35 @@
 <script lang="ts">
-  import { Popover } from '@skeletonlabs/skeleton-svelte'
-  import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
-  import busyStore from '$lib/stores/BusyStore.svelte'
-  import MobileMenu from '$lib/components/MobileMenu.svelte'
-  import MoreMenu from '$lib/components/MoreMenu.svelte'
+  import { Popover, Portal } from "@skeletonlabs/skeleton-svelte";
+  import fullscreenStore from "$lib/stores/FullscreenStore.svelte";
+  import busyStore from "$lib/stores/BusyStore.svelte";
+  import MobileMenu from "$lib/components/MobileMenu.svelte";
+  import MoreMenu from "$lib/components/MoreMenu.svelte";
 
-  let { onNew, onOpen, onSave, onCustomize, onShare, onAccount, onDebug }: {
-    onNew: () => void
-    onOpen: () => void
-    onSave: () => void
-    onCustomize: () => void
-    onShare: () => void
-    onAccount: () => void
-    onDebug: () => void
-  } = $props()
+  let {
+    onNew,
+    onOpen,
+    onSave,
+    onCustomize,
+    onShare,
+    onAccount,
+    onDebug,
+  }: {
+    onNew: () => void;
+    onOpen: () => void;
+    onSave: () => void;
+    onCustomize: () => void;
+    onShare: () => void;
+    onAccount: () => void;
+    onDebug: () => void;
+  } = $props();
 
-  let mobileMenuOpen = $state(false)
-  let moreMenuOpen = $state(false)
+  let mobileMenuOpen = $state(false);
+  let moreMenuOpen = $state(false);
 </script>
 
-<header class="relative px-4 py-2 preset-filled-surface-100-900 shadow-2xl flex justify-between items-center">
+<header
+  class="relative px-4 py-2 preset-filled-surface-100-900 shadow-2xl flex justify-between items-center"
+>
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
   </a>
@@ -27,32 +37,32 @@
   <Popover
     open={mobileMenuOpen}
     onOpenChange={(e) => (mobileMenuOpen = e.open)}
-    positioning={{ placement: 'bottom-end' }}
-    triggerBase="block md:hidden btn-icon btn-icon-base hover:preset-tonal-primary"
-    triggerAriaLabel="Toggle menu"
-    contentBase="preset-filled-surface-50-950"
+    positioning={{ placement: "bottom-end" }}
   >
-    {#snippet trigger()}
+    <Popover.Trigger
+      class="block md:hidden btn-icon btn-icon-base hover:preset-tonal-primary"
+      aria-label="Toggle menu"
+    >
       <i class="fas fa-bars"></i>
-    {/snippet}
-    {#snippet content()}
-      <MobileMenu
-        {onNew}
-        {onOpen}
-        {onSave}
-        {onCustomize}
-        {onShare}
-        {onAccount}
-        {onDebug}
-      />
-    {/snippet}
+    </Popover.Trigger>
+    <Portal>
+      <Popover.Positioner>
+        <Popover.Content class="preset-filled-surface-50-950">
+          <MobileMenu
+            {onNew}
+            {onOpen}
+            {onSave}
+            {onCustomize}
+            {onShare}
+            {onAccount}
+            {onDebug}
+          />
+        </Popover.Content>
+      </Popover.Positioner>
+    </Portal>
   </Popover>
 
-  <div
-    class="hidden md:flex items-center"
-    role="menubar"
-    aria-label="Toolbar"
-  >
+  <div class="hidden md:flex items-center" role="menubar" aria-label="Toolbar">
     {#if !fullscreenStore.active}
       <button
         class="btn max-lg:btn-icon hover:preset-tonal-primary"
@@ -130,20 +140,21 @@
     <Popover
       open={moreMenuOpen}
       onOpenChange={(e) => (moreMenuOpen = e.open)}
-      positioning={{ placement: 'bottom-end' }}
-      triggerBase="btn-icon btn-icon-base hover:preset-tonal-primary"
-      triggerAriaLabel="Toggle more menu"
-      contentBase="preset-filled-surface-50-950"
+      positioning={{ placement: "bottom-end" }}
     >
-      {#snippet trigger()}
+      <Popover.Trigger
+        class="block md:hidden btn-icon btn-icon-base hover:preset-tonal-primary"
+        aria-label="Toggle more menu"
+      >
         <i class="fas fa-bars"></i>
-      {/snippet}
-      {#snippet content()}
-        <MoreMenu
-          {onAccount}
-          {onDebug}
-        />
-      {/snippet}
+      </Popover.Trigger>
+      <Portal>
+        <Popover.Positioner>
+          <Popover.Content class="preset-filled-surface-50-950">
+            <MoreMenu {onAccount} {onDebug} />
+          </Popover.Content>
+        </Popover.Positioner>
+      </Portal>
     </Popover>
   </div>
 </header>

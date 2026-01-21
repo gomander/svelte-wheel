@@ -1,8 +1,7 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @import "@skeletonlabs/skeleton";
-@import "@skeletonlabs/skeleton/optional/presets";
+@import "@skeletonlabs/skeleton-svelte";
 @import "@skeletonlabs/skeleton/themes/legacy";
-@source "../node_modules/@skeletonlabs/skeleton-svelte/dist";
 
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
@@ -29,18 +28,26 @@
 }
 
 @font-face {
-  font-family: 'Quicksand';
-  src: url('/Quicksand.ttf');
+  font-family: "Quicksand";
+  src: url("/Quicksand.ttf");
 }
 
-[data-theme='legacy'] {
-  --heading-font-family: 'Quicksand', sans-serif;
-  --base-font-family: 'Quicksand', sans-serif;
+[data-theme="legacy"] {
+  --heading-font-family: "Quicksand", sans-serif;
+  --base-font-family: "Quicksand", sans-serif;
 
   & body {
     background-image:
-      radial-gradient(at 0% 0%, color-mix(in oklab, var(--color-secondary-500) 33%, transparent) 0px, transparent 50%),
-      radial-gradient(at 98% 1%, color-mix(in oklab, var(--color-error-500) 33%, transparent) 0px, transparent 50%);
+      radial-gradient(
+        at 0% 0%,
+        color-mix(in oklab, var(--color-secondary-500) 33%, transparent) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 98% 1%,
+        color-mix(in oklab, var(--color-error-500) 33%, transparent) 0px,
+        transparent 50%
+      );
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -54,6 +61,6 @@
 }
 
 .required::after {
-  content: ' *';
+  content: " *";
   color: var(--color-error-500);
 }

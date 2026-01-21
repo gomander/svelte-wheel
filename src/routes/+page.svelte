@@ -1,60 +1,60 @@
 <script lang="ts">
-  import { Segment } from '@skeletonlabs/skeleton-svelte'
-  import wheelStore from '$lib/stores/WheelStore'
-  import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
-  import debugStore from '$lib/stores/DebugStore.svelte'
-  import { launchConfetti } from '$lib/utils/ConfettiLauncher'
-  import type { OnStoppedData } from '$lib/utils/Wheel'
-  import AboutCards from '$lib/components/AboutCards.svelte'
-  import AccountDialog from '$lib/components/AccountDialog.svelte'
-  import CustomizeDialog from '$lib/components/CustomizeDialog.svelte'
-  import DeleteWheelDialog from '$lib/components/DeleteWheelDialog.svelte'
-  import EditorColumn from '$lib/components/EditorColumn.svelte'
-  import LoginDialog from '$lib/components/LoginDialog.svelte'
-  import OpenCloudDialog from '$lib/components/OpenCloudDialog.svelte'
-  import OpenDialog from '$lib/components/OpenDialog.svelte'
-  import ResetPasswordDialog from '$lib/components/ResetPasswordDialog.svelte'
-  import SaveCloudDialog from '$lib/components/SaveCloudDialog.svelte'
-  import SaveDialog from '$lib/components/SaveDialog.svelte'
-  import SaveLocalDialog from '$lib/components/SaveLocalDialog.svelte'
-  import ShareDialog from '$lib/components/ShareDialog.svelte'
-  import SharedLinkDialog from '$lib/components/SharedLinkDialog.svelte'
-  import SignUpDialog from '$lib/components/SignUpDialog.svelte'
-  import Toolbar from '$lib/components/Toolbar.svelte'
-  import WinnerDialog from '$lib/components/WinnerDialog.svelte'
-  import Wheel from '$lib/components/Wheel.svelte'
+  import { SegmentedControl } from "@skeletonlabs/skeleton-svelte";
+  import wheelStore from "$lib/stores/WheelStore";
+  import fullscreenStore from "$lib/stores/FullscreenStore.svelte";
+  import debugStore from "$lib/stores/DebugStore.svelte";
+  import { launchConfetti } from "$lib/utils/ConfettiLauncher";
+  import type { OnStoppedData } from "$lib/utils/Wheel";
+  import AboutCards from "$lib/components/AboutCards.svelte";
+  import AccountDialog from "$lib/components/AccountDialog.svelte";
+  import CustomizeDialog from "$lib/components/CustomizeDialog.svelte";
+  import DeleteWheelDialog from "$lib/components/DeleteWheelDialog.svelte";
+  import EditorColumn from "$lib/components/EditorColumn.svelte";
+  import LoginDialog from "$lib/components/LoginDialog.svelte";
+  import OpenCloudDialog from "$lib/components/OpenCloudDialog.svelte";
+  import OpenDialog from "$lib/components/OpenDialog.svelte";
+  import ResetPasswordDialog from "$lib/components/ResetPasswordDialog.svelte";
+  import SaveCloudDialog from "$lib/components/SaveCloudDialog.svelte";
+  import SaveDialog from "$lib/components/SaveDialog.svelte";
+  import SaveLocalDialog from "$lib/components/SaveLocalDialog.svelte";
+  import ShareDialog from "$lib/components/ShareDialog.svelte";
+  import SharedLinkDialog from "$lib/components/SharedLinkDialog.svelte";
+  import SignUpDialog from "$lib/components/SignUpDialog.svelte";
+  import Toolbar from "$lib/components/Toolbar.svelte";
+  import WinnerDialog from "$lib/components/WinnerDialog.svelte";
+  import Wheel from "$lib/components/Wheel.svelte";
 
-  let wheelComponent = $state('single')
+  let wheelComponent = $state("single");
 
-  let accountDialog: AccountDialog = $state(null!)
-  let customizeDialog: CustomizeDialog = $state(null!)
-  let deleteWheelDialog: DeleteWheelDialog = $state(null!)
-  let loginDialog: LoginDialog = $state(null!)
-  let openCloudDialog: OpenCloudDialog = $state(null!)
-  let openDialog: OpenDialog = $state(null!)
-  let resetPasswordDialog: ResetPasswordDialog = $state(null!)
-  let saveCloudDialog: SaveCloudDialog = $state(null!)
-  let saveDialog: SaveDialog = $state(null!)
-  let saveLocalDialog: SaveLocalDialog = $state(null!)
-  let shareDialog: ShareDialog = $state(null!)
-  let sharedLinkDialog: SharedLinkDialog = $state(null!)
-  let signUpDialog: SignUpDialog = $state(null!)
-  let winnerDialog: WinnerDialog = $state(null!)
+  let accountDialog: AccountDialog = $state(null!);
+  let customizeDialog: CustomizeDialog = $state(null!);
+  let deleteWheelDialog: DeleteWheelDialog = $state(null!);
+  let loginDialog: LoginDialog = $state(null!);
+  let openCloudDialog: OpenCloudDialog = $state(null!);
+  let openDialog: OpenDialog = $state(null!);
+  let resetPasswordDialog: ResetPasswordDialog = $state(null!);
+  let saveCloudDialog: SaveCloudDialog = $state(null!);
+  let saveDialog: SaveDialog = $state(null!);
+  let saveLocalDialog: SaveLocalDialog = $state(null!);
+  let shareDialog: ShareDialog = $state(null!);
+  let sharedLinkDialog: SharedLinkDialog = $state(null!);
+  let signUpDialog: SignUpDialog = $state(null!);
+  let winnerDialog: WinnerDialog = $state(null!);
 
   function onStop(data: OnStoppedData) {
     launchConfetti(
       wheelStore.config.confetti,
-      $state.snapshot(wheelStore.config.colors)
-    )
-    if (!wheelStore.config.displayWinnerDialog) return
-    winnerDialog.open(data.winner, wheelStore.config.winnerMessage, data.color)
+      $state.snapshot(wheelStore.config.colors),
+    );
+    if (!wheelStore.config.displayWinnerDialog) return;
+    winnerDialog.open(data.winner, wheelStore.config.winnerMessage, data.color);
   }
 
   function nextDialog(next: string) {
-    if (next === 'account') accountDialog.open()
-    if (next === 'openCloud') openCloudDialog.open()
-    if (next === 'saveCloud') saveCloudDialog.open()
-    if (next === 'share') shareDialog.open()
+    if (next === "account") accountDialog.open();
+    if (next === "openCloud") openCloudDialog.open();
+    if (next === "saveCloud") saveCloudDialog.open();
+    if (next === "share") shareDialog.open();
   }
 </script>
 
@@ -67,8 +67,8 @@
   <meta
     property="og:image"
     content="https://sveltewheel.com/images/sveltewheel.webp"
-  >
-  <meta name="theme-color" content="#022a4f">
+  />
+  <meta name="theme-color" content="#022a4f" />
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
@@ -93,24 +93,31 @@
           {wheelStore.config.title}
         </h2>
         {#if debugStore.active && !fullscreenStore.active}
-          <Segment
+          <SegmentedControl
             value={wheelComponent}
             onValueChange={(e) => (wheelComponent = e.value!)}
           >
-            <Segment.Item value="single">Single-thread</Segment.Item>
-            <Segment.Item value="multi">Multi-thread</Segment.Item>
-          </Segment>
+            <SegmentedControl.Item value="single"
+              >Single-thread</SegmentedControl.Item
+            >
+            <SegmentedControl.Item value="multi"
+              >Multi-thread</SegmentedControl.Item
+            >
+          </SegmentedControl>
         {/if}
       </div>
-      {#if wheelComponent === 'single'}
+      {#if wheelComponent === "single"}
         <Wheel {onStop} />
       {:else}
-        {#await import('$lib/components/WheelMultiThread.svelte') then { default: WheelMultiThread }}
+        {#await import("$lib/components/WheelMultiThread.svelte") then { default: WheelMultiThread }}
           <WheelMultiThread {onStop} />
         {/await}
       {/if}
       {#if !fullscreenStore.active}
-        <p class="text-lg px-4 pb-4 -mt-10 max-w-4xl" aria-label="Wheel description">
+        <p
+          class="text-lg px-4 pb-4 -mt-10 max-w-4xl"
+          aria-label="Wheel description"
+        >
           {wheelStore.config.description}
         </p>
       {/if}
@@ -120,14 +127,14 @@
       <div class="col-span-1"></div>
     {:else}
       <div class="col-span-2 pt-0 p-4 xl:pt-4 xl:pl-0 flex flex-col">
-          <EditorColumn />
+        <EditorColumn />
       </div>
     {/if}
   </main>
 </div>
 
 {#if !fullscreenStore.active}
-  <hr>
+  <hr />
 
   <aside class="p-4 flex justify-center">
     <AboutCards />
@@ -136,7 +143,7 @@
 
 <AccountDialog
   bind:this={accountDialog}
-  onNotLoggedIn={() => loginDialog.open('account')}
+  onNotLoggedIn={() => loginDialog.open("account")}
 />
 
 <CustomizeDialog bind:this={customizeDialog} />
@@ -153,19 +160,16 @@
 <OpenCloudDialog
   bind:this={openCloudDialog}
   onDelete={deleteWheelDialog.open}
-  onNotLoggedIn={() => loginDialog.open('openCloud')}
+  onNotLoggedIn={() => loginDialog.open("openCloud")}
 />
 
-<OpenDialog
-  bind:this={openDialog}
-  onOpenCloud={openCloudDialog.open}
-/>
+<OpenDialog bind:this={openDialog} onOpenCloud={openCloudDialog.open} />
 
 <ResetPasswordDialog bind:this={resetPasswordDialog} />
 
 <SaveCloudDialog
   bind:this={saveCloudDialog}
-  onNotLoggedIn={() => loginDialog.open('saveCloud')}
+  onNotLoggedIn={() => loginDialog.open("saveCloud")}
 />
 
 <SaveDialog
@@ -178,7 +182,7 @@
 
 <ShareDialog
   bind:this={shareDialog}
-  onNotLoggedIn={() => loginDialog.open('share')}
+  onNotLoggedIn={() => loginDialog.open("share")}
   onShare={(path) => sharedLinkDialog.open(path)}
 />
 

@@ -1,30 +1,22 @@
 <script lang="ts">
-  import { Popover, Portal } from "@skeletonlabs/skeleton-svelte";
-  import fullscreenStore from "$lib/stores/FullscreenStore.svelte";
-  import busyStore from "$lib/stores/BusyStore.svelte";
-  import MobileMenu from "$lib/components/MobileMenu.svelte";
-  import MoreMenu from "$lib/components/MoreMenu.svelte";
+  import { Popover, Portal } from '@skeletonlabs/skeleton-svelte'
+  import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
+  import busyStore from '$lib/stores/BusyStore.svelte'
+  import MobileMenu from '$lib/components/MobileMenu.svelte'
+  import MoreMenu from '$lib/components/MoreMenu.svelte'
 
-  let {
-    onNew,
-    onOpen,
-    onSave,
-    onCustomize,
-    onShare,
-    onAccount,
-    onDebug,
-  }: {
-    onNew: () => void;
-    onOpen: () => void;
-    onSave: () => void;
-    onCustomize: () => void;
-    onShare: () => void;
-    onAccount: () => void;
-    onDebug: () => void;
-  } = $props();
+  let { onNew, onOpen, onSave, onCustomize, onShare, onAccount, onDebug }: {
+    onNew: () => void
+    onOpen: () => void
+    onSave: () => void
+    onCustomize: () => void
+    onShare: () => void
+    onAccount: () => void
+    onDebug: () => void
+  } = $props()
 
-  let mobileMenuOpen = $state(false);
-  let moreMenuOpen = $state(false);
+  let mobileMenuOpen = $state(false)
+  let moreMenuOpen = $state(false)
 </script>
 
 <header
@@ -48,15 +40,7 @@
     <Portal>
       <Popover.Positioner>
         <Popover.Content class="preset-filled-surface-50-950">
-          <MobileMenu
-            {onNew}
-            {onOpen}
-            {onSave}
-            {onCustomize}
-            {onShare}
-            {onAccount}
-            {onDebug}
-          />
+          <MobileMenu {onNew} {onOpen} {onSave} {onCustomize} {onShare} {onAccount} {onDebug} />
         </Popover.Content>
       </Popover.Positioner>
     </Portal>

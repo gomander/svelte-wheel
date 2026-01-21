@@ -1,53 +1,49 @@
 <script lang="ts">
-  import {
-    getCurrentUser,
-    sendEmailVerificationEmail,
-    signOut,
-  } from "$lib/utils/Firebase";
-  import { getStringFromError } from "$lib/utils/General";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { getCurrentUser, sendEmailVerificationEmail, signOut } from '$lib/utils/Firebase'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open() {
-    user = getCurrentUser();
+    user = getCurrentUser()
     if (!user) {
-      onNotLoggedIn();
-      return;
+      onNotLoggedIn()
+      return
     }
-    dialog.open();
+    dialog.open()
   }
 
-  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props();
+  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props()
 
-  let user: ReturnType<typeof getCurrentUser> = $state(null);
-  let dialog: AppDialog = $state(null!);
+  let user: ReturnType<typeof getCurrentUser> = $state(null)
+  let dialog: AppDialog = $state(null!)
 
-  let loading = false;
+  let loading = false
 
   async function logOut() {
-    if (loading) return;
-    loading = true;
+    if (loading) return
+    loading = true
     try {
-      await signOut();
-      close();
+      await signOut()
+      close()
       toast.create({
         ...toastDefaults,
-        description: "Logged out",
-        duration: 1500,
-      });
+        description: 'Logged out',
+        duration: 1500
+      })
     } catch (error) {
       toast.create({
         ...toastDefaults,
         description: getStringFromError(error),
-        type: "error",
-      });
+        type: 'error'
+      })
     } finally {
-      loading = false;
+      loading = false
     }
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 

@@ -1,27 +1,27 @@
 <script lang="ts">
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open(wheelPath: string) {
-    path = wheelPath;
-    dialog.open();
+    path = wheelPath
+    dialog.open()
   }
 
-  let path = $state("");
-  let link = $derived(`${window.location.origin}/${path}`);
-  let dialog: AppDialog = $state(null!);
+  let path = $state('')
+  let link = $derived(`${window.location.origin}/${path}`)
+  let dialog: AppDialog = $state(null!)
 
   function copyLink() {
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(link)
     toast.create({
       ...toastDefaults,
-      description: "Link copied to clipboard",
-      type: "success",
-    });
+      description: 'Link copied to clipboard',
+      type: 'success'
+    })
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 

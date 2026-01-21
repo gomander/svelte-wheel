@@ -78,7 +78,7 @@
   </div>
 </div>
 
-<style lang="postcss">
+<style>
   th, td {
     padding: 0 0.5rem;
   }

@@ -1,56 +1,54 @@
 <script lang="ts">
-  import { Progress } from "@skeletonlabs/skeleton-svelte";
-  import { z } from "zod";
-  import { sendPasswordResetEmail } from "$lib/utils/Firebase";
-  import { emailValidator } from "$lib/utils/Schemas";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
+  import { z } from 'zod'
+  import { sendPasswordResetEmail } from '$lib/utils/Firebase'
+  import { emailValidator } from '$lib/utils/Schemas'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open() {
-    dialog.open();
+    dialog.open()
   }
 
-  let email = $state("");
-  let loading = $state(false);
-  let errors: Record<string, string[] | undefined> = $state({});
-  let dialog: AppDialog = $state(null!);
+  let email = $state('')
+  let loading = $state(false)
+  let errors: Record<string, string[] | undefined> = $state({})
+  let dialog: AppDialog = $state(null!)
 
   async function resetPassword(e: SubmitEvent) {
-    e.preventDefault();
-    if (loading) return;
-    loading = true;
+    e.preventDefault()
+    if (loading) return
+    loading = true
     try {
-      emailValidator.parse(email);
-      await sendPasswordResetEmail(email);
-      close();
+      emailValidator.parse(email)
+      await sendPasswordResetEmail(email)
+      close()
       toast.create({
         ...toastDefaults,
-        description: "Password reset email sent",
-      });
+        description: 'Password reset email sent'
+      })
     } catch (error) {
       if (error instanceof z.ZodError) {
-        errors = error.flatten().fieldErrors;
-        return;
+        errors = error.flatten().fieldErrors
+        return
       }
       toast.create({
         ...toastDefaults,
-        description: "Something went wrong, please try again later",
-        type: "error",
-      });
+        description: 'Something went wrong, please try again later',
+        type: 'error'
+      })
     } finally {
-      loading = false;
+      loading = false
     }
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 
 <AppDialog bind:this={dialog}>
-  <article
-    class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4"
-  >
+  <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-key"></i>
       <h1>Reset password</h1>
@@ -67,12 +65,10 @@
           required
           bind:value={email}
           class="input"
-        />
+        >
 
         {#if errors.email}
-          <span class="text-sm text-error-500">
-            {errors.email[0]}
-          </span>
+          <span class="text-sm text-error-500">{errors.email[0]}</span>
         {/if}
       </label>
 

@@ -1,45 +1,42 @@
 <script lang="ts">
-  import { registerUser, signIn } from "$lib/utils/Firebase";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
-  import EmailPasswordForm from "$lib/components/EmailPasswordForm.svelte";
+  import { registerUser, signIn } from '$lib/utils/Firebase'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
+  import EmailPasswordForm from '$lib/components/EmailPasswordForm.svelte'
 
   export function open(nextDialog?: string) {
-    if (nextDialog) next = nextDialog;
-    dialog.open();
+    if (nextDialog) next = nextDialog
+    dialog.open()
   }
 
-  let {
-    onLogin,
-    nextDialog,
-  }: {
-    onLogin: () => void;
-    nextDialog: (dialogName: string) => void;
-  } = $props();
+  let { onLogin, nextDialog }: {
+    onLogin: () => void
+    nextDialog: (dialogName: string) => void
+  } = $props()
 
-  let formError: string | null = $state(null);
-  let dialog: AppDialog = $state(null!);
+  let formError: string | null = $state(null)
+  let dialog: AppDialog = $state(null!)
 
-  let next: string | null = null;
+  let next: string | null = null
 
-  async function onSubmit(user: { email: string; password: string }) {
-    await registerUser(user.email, user.password);
-    await signIn(user.email, user.password);
-    close();
-    if (next) nextDialog(next);
+  async function onSubmit(user: { email: string, password: string }) {
+    await registerUser(user.email, user.password)
+    await signIn(user.email, user.password)
+    close()
+    if (next) nextDialog(next)
     toast.create({
       ...toastDefaults,
-      description: "Account created",
-    });
+      description: 'Account created'
+    })
   }
 
   function login() {
-    close();
-    onLogin();
+    close()
+    onLogin()
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 

@@ -1,113 +1,110 @@
 <script lang="ts">
-  import { Progress } from "@skeletonlabs/skeleton-svelte";
-  import wheelStore from "$lib/stores/WheelStore";
-  import { getCurrentUser } from "$lib/utils/Firebase";
-  import { createWheel, getWheel, updateWheel } from "$lib/utils/Api";
-  import { getStringFromError } from "$lib/utils/General";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
+  import wheelStore from '$lib/stores/WheelStore'
+  import { getCurrentUser } from '$lib/utils/Firebase'
+  import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open() {
-    const user = getCurrentUser();
+    const user = getCurrentUser()
     if (!user) {
-      close();
-      onNotLoggedIn();
-      return;
+      close()
+      onNotLoggedIn()
+      return
     }
     if (wheelStore.path) {
-      loading = true;
+      loading = true
       getWheel(wheelStore.path, user.uid)
         .then((response) => {
           if (!response.success) {
-            wheelStore.path = null;
-            return;
+            wheelStore.path = null
+            return
           }
-          shareMode = "overwrite";
+          shareMode = 'overwrite'
         })
         .catch((error) => {
-          wheelStore.path = null;
+          wheelStore.path = null
           toast.create({
             ...toastDefaults,
             description: getStringFromError(error),
-            type: "error",
-          });
+            type: 'error'
+          })
         })
         .finally(() => {
-          loading = false;
-        });
+          loading = false
+        })
     }
-    dialog.open();
+    dialog.open()
   }
 
-  let {
-    onNotLoggedIn,
-    onShare,
-  }: {
-    onNotLoggedIn: () => void;
-    onShare: (path: string) => void;
-  } = $props();
+  let { onNotLoggedIn, onShare }: {
+    onNotLoggedIn: () => void
+    onShare: (path: string) => void
+  } = $props()
 
-  let title = $state(wheelStore.config.title);
-  let loading = $state(false);
-  let shareMode: "overwrite" | "new" = $state("new");
-  let dialog: AppDialog = $state(null!);
+  let title = $state(wheelStore.config.title)
+  let loading = $state(false)
+  let shareMode: 'overwrite' | 'new' = $state('new')
+  let dialog: AppDialog = $state(null!)
 
   async function share(e: Event) {
-    e.preventDefault();
-    if (loading) return;
-    loading = true;
+    e.preventDefault()
+    if (loading) return
+    loading = true
     try {
-      if (!title) throw new Error("Title is required");
-      const user = getCurrentUser();
-      if (!user) throw new Error("User is not logged in");
-      let path: string | null = null;
-      if (shareMode === "new") {
+      if (!title) throw Error('Title is required')
+      const user = getCurrentUser()
+      if (!user) throw Error('User is not logged in')
+      let path: string | null = null
+      if (shareMode === 'new') {
         const response = await createWheel(
           {
             wheel: {
               config: { ...wheelStore.config, title },
-              entries: wheelStore.entries,
+              entries: wheelStore.entries
             },
-            visibility: "public",
-            uid: user.uid,
+            visibility: 'public',
+            uid: user.uid
           },
-          user.uid,
-        );
-        if (!response.success) throw new Error(response.error.message);
-        path = response.data.path;
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
+        path = response.data.path
       }
-      if (shareMode === "overwrite" && wheelStore.path) {
+      if (shareMode === 'overwrite' && wheelStore.path) {
         const response = await updateWheel(
           wheelStore.path,
           {
             wheel: {
               config: { ...wheelStore.config, title },
-              entries: wheelStore.entries,
+              entries: wheelStore.entries
             },
             uid: user.uid,
-            visibility: "public",
+            visibility: 'public'
           },
-          user.uid,
-        );
-        if (!response.success) throw new Error(response.error.message);
-        path = response.data.path;
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
+        path = response.data.path
       }
-      if (!path) throw new Error("Could not share wheel");
-      close();
-      onShare(path);
+      if (!path) throw Error('Could not share wheel')
+      close()
+      onShare(path)
     } catch (error) {
       toast.create({
         ...toastDefaults,
         description: getStringFromError(error),
-        type: "error",
-      });
+        type: 'error'
+      })
     } finally {
-      loading = false;
+      loading = false
     }
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 
@@ -145,7 +142,7 @@
               value="overwrite"
               bind:group={shareMode}
               class="radio"
-            />
+            >
             <span>
               Overwrite "{wheelStore.config.title}" ({wheelStore.path})
             </span>
@@ -158,7 +155,7 @@
               bind:group={shareMode}
               checked
               class="radio"
-            />
+            >
             <span>Share as a new wheel</span>
           </label>
         </div>
@@ -174,7 +171,7 @@
           bind:value={title}
           placeholder="Enter a title for your wheel"
           class="input"
-        />
+        >
       </label>
 
       <footer class="flex justify-end gap-2">

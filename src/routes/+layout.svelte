@@ -1,22 +1,22 @@
 <script lang="ts">
-  import "../app.css";
-  import { onMount } from "svelte";
-  import { pwaInfo } from "virtual:pwa-info";
-  import { Toast } from "@skeletonlabs/skeleton-svelte";
-  import fullscreenStore from "$lib/stores/FullscreenStore.svelte";
-  import { toast } from "$lib/utils/Toast";
-  import { PUBLIC_FIREBASE_MEASUREMENT_ID } from "$env/static/public";
+  import '../app.css'
+  import { onMount } from 'svelte'
+  import { pwaInfo } from 'virtual:pwa-info'
+  import { Toast } from '@skeletonlabs/skeleton-svelte'
+  import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
+  import { toast } from '$lib/utils/Toast'
+  import { PUBLIC_FIREBASE_MEASUREMENT_ID } from '$env/static/public'
 
-  let { children } = $props();
+  let { children } = $props()
 
-  onMount(fullscreenStore.initialize);
+  onMount(fullscreenStore.initialize)
 
-  let webManifestLink = $derived(pwaInfo?.webManifest.linkTag ?? "");
+  let webManifestLink = $derived(pwaInfo?.webManifest.linkTag ?? '')
 </script>
 
 <svelte:head>
   {@html webManifestLink}
-  {#if process.env.NODE_ENV !== "development"}
+  {#if process.env.NODE_ENV !== 'development'}
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id={PUBLIC_FIREBASE_MEASUREMENT_ID}"
@@ -48,6 +48,6 @@
   {/snippet}
 </Toast.Group>
 
-{#await import("$lib/components/ReloadPrompt.svelte") then { default: ReloadPrompt }}
+{#await import('$lib/components/ReloadPrompt.svelte') then { default: ReloadPrompt }}
   <ReloadPrompt />
 {/await}

@@ -1,50 +1,50 @@
 <script lang="ts">
-  import { fileOpen } from "browser-fs-access";
-  import wheelStore from "$lib/stores/WheelStore";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { fileOpen } from 'browser-fs-access'
+  import wheelStore from '$lib/stores/WheelStore'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open() {
-    dialog.open();
+    dialog.open()
   }
 
-  let { onOpenCloud }: { onOpenCloud: () => void } = $props();
+  let { onOpenCloud }: { onOpenCloud: () => void } = $props()
 
-  let dialog: AppDialog = $state(null!);
+  let dialog: AppDialog = $state(null!)
 
   function openOpenCloudDialog() {
-    close();
-    onOpenCloud();
+    close()
+    onOpenCloud()
   }
 
   const openLocalFile = async () => {
     try {
       const file = await fileOpen({
-        mimeTypes: ["application/json"],
-        extensions: [".wheel"],
-      });
-      const fileContent = await file.text();
-      const { config, entries, winners } = JSON.parse(fileContent);
-      wheelStore.config = config;
-      wheelStore.entries = entries;
-      wheelStore.winners = winners;
-      close();
+        mimeTypes: ['application/json'],
+        extensions: ['.wheel']
+      })
+      const fileContent = await file.text()
+      const { config, entries, winners } = JSON.parse(fileContent)
+      wheelStore.config = config
+      wheelStore.entries = entries
+      wheelStore.winners = winners
+      close()
       toast.create({
         ...toastDefaults,
-        description: "Wheel loaded successfully!",
-      });
+        description: 'Wheel loaded successfully!'
+      })
     } catch (e) {
-      console.error(e);
+      console.error(e)
       toast.create({
         ...toastDefaults,
-        description: "Error loading wheel",
-        type: "error",
-      });
+        description: 'Error loading wheel',
+        type: 'error'
+      })
     }
-  };
+  }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 

@@ -1,102 +1,102 @@
 <script lang="ts">
-  import { Progress } from "@skeletonlabs/skeleton-svelte";
-  import wheelStore from "$lib/stores/WheelStore";
-  import { createWheel, getWheel, updateWheel } from "$lib/utils/Api";
-  import { getCurrentUser } from "$lib/utils/Firebase";
-  import { getStringFromError } from "$lib/utils/General";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
+  import wheelStore from '$lib/stores/WheelStore'
+  import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
+  import { getCurrentUser } from '$lib/utils/Firebase'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open() {
-    const user = getCurrentUser();
+    const user = getCurrentUser()
     if (!user) {
-      onNotLoggedIn();
-      return;
+      onNotLoggedIn()
+      return
     }
     if (wheelStore.path) {
-      loading = true;
+      loading = true
       getWheel(wheelStore.path, user.uid)
         .then((response) => {
-          if (!response.success) throw new Error(response.error.message);
-          saveMode = "overwrite";
+          if (!response.success) throw Error(response.error.message)
+          saveMode = 'overwrite'
         })
         .catch((error) => {
           toast.create({
             ...toastDefaults,
             description: getStringFromError(error),
-            type: "error",
-          });
-          wheelStore.path = null;
+            type: 'error'
+          })
+          wheelStore.path = null
         })
         .finally(() => {
-          loading = false;
-        });
+          loading = false
+        })
     }
-    dialog.open();
+    dialog.open()
   }
 
-  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props();
+  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props()
 
-  let title = $state(wheelStore.config.title);
-  let loading = $state(false);
-  let saveMode: "overwrite" | "new" = $state("new");
-  let dialog: AppDialog = $state(null!);
+  let title = $state(wheelStore.config.title)
+  let loading = $state(false)
+  let saveMode: 'overwrite' | 'new' = $state('new')
+  let dialog: AppDialog = $state(null!)
 
   async function save(e: Event) {
-    e.preventDefault();
-    if (loading) return;
-    loading = true;
+    e.preventDefault()
+    if (loading) return
+    loading = true
     try {
-      if (!title) throw new Error("Title is required");
-      const user = getCurrentUser();
-      if (!user) throw new Error("User is not logged in");
-      if (saveMode === "new") {
+      if (!title) throw Error('Title is required')
+      const user = getCurrentUser()
+      if (!user) throw Error('User is not logged in')
+      if (saveMode === 'new') {
         const response = await createWheel(
           {
             wheel: {
               config: { ...wheelStore.config, title },
-              entries: wheelStore.entries,
+              entries: wheelStore.entries
             },
-            visibility: "private",
-            uid: user.uid,
+            visibility: 'private',
+            uid: user.uid
           },
-          user.uid,
-        );
-        if (!response.success) throw new Error(response.error.message);
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
       }
-      if (saveMode === "overwrite" && wheelStore.path) {
+      if (saveMode === 'overwrite' && wheelStore.path) {
         const response = await updateWheel(
           wheelStore.path,
           {
             wheel: {
               config: { ...wheelStore.config, title },
-              entries: wheelStore.entries,
+              entries: wheelStore.entries
             },
-            uid: user.uid,
+            uid: user.uid
           },
-          user.uid,
-        );
-        if (!response.success) throw new Error(response.error.message);
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
       }
-      close();
+      close()
       toast.create({
         ...toastDefaults,
-        description: "Wheel saved",
-        type: "success",
-      });
+        description: 'Wheel saved',
+        type: 'success'
+      })
     } catch (error) {
       toast.create({
         ...toastDefaults,
         description: getStringFromError(error),
-        type: "error",
-      });
+        type: 'error'
+      })
     } finally {
-      loading = false;
+      loading = false
     }
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 
   // TODO: When wheelStore has a path, the user should be shown as much metadata
@@ -122,7 +122,7 @@
               value="overwrite"
               bind:group={saveMode}
               class="radio"
-            />
+            >
             <span>
               Overwrite "{wheelStore.config.title}" ({wheelStore.path})
             </span>

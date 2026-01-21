@@ -1,58 +1,52 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
-  import { Progress } from "@skeletonlabs/skeleton-svelte";
-  import { z } from "zod";
-  import { FirebaseError } from "firebase/app";
-  import { userSchema } from "$lib/utils/Schemas";
+  import type { Snippet } from 'svelte'
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
+  import { z } from 'zod'
+  import { FirebaseError } from 'firebase/app'
+  import { userSchema } from '$lib/utils/Schemas'
 
-  let {
-    onSubmit,
-    formError,
-    body,
-    footerButtons,
-  }: {
-    onSubmit: (user: { email: string; password: string }) => Promise<void>;
-    formError: string | null;
-    body: Snippet;
-    footerButtons: Snippet;
-  } = $props();
+  let { onSubmit, formError, body, footerButtons }: {
+    onSubmit: (user: { email: string, password: string }) => Promise<void>
+    formError: string | null
+    body: Snippet
+    footerButtons: Snippet
+  } = $props()
 
-  let form: HTMLFormElement = $state(null!);
-  let loading = $state(false);
-  let errors: Record<string, string[] | undefined> = $state({});
+  let form: HTMLFormElement = $state(null!)
+  let loading = $state(false)
+  let errors: Record<string, string[] | undefined> = $state({})
 
-  let passwordInput: HTMLInputElement = $state(null!);
-  let showPassword = $state(false);
+  let showPassword = $state(false)
 
-  const submit = async (e: Event) => {
-    e.preventDefault();
-    if (loading) return;
-    loading = true;
-    formError = null;
-    const formData = new FormData(form);
+  async function submit(e: Event) {
+    e.preventDefault()
+    if (loading) return
+    loading = true
+    formError = null
+    const formData = new FormData(form)
     const user = {
-      email: String(formData.get("email")),
-      password: String(formData.get("password")),
-    };
+      email: String(formData.get('email')),
+      password: String(formData.get('password')),
+    }
     try {
-      userSchema.parse(user);
-      await onSubmit(user);
+      userSchema.parse(user)
+      await onSubmit(user)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        errors = error.flatten().fieldErrors;
+        errors = error.flatten().fieldErrors
       }
       if (error instanceof FirebaseError) {
-        if (error.code === "auth/email-already-in-use") {
-          formError = "Email already in use";
+        if (error.code === 'auth/email-already-in-use') {
+          formError = 'Email already in use'
         }
-        if (error.code === "auth/invalid-credential") {
-          formError = "Invalid email or password";
+        if (error.code === 'auth/invalid-credential') {
+          formError = 'Invalid email or password'
         }
       }
     } finally {
-      loading = false;
+      loading = false
     }
-  };
+  }
 </script>
 
 {#if formError}
@@ -69,7 +63,7 @@
       maxlength="64"
       required
       class="input"
-    />
+    >
 
     {#if errors.email}
       <span class="text-sm text-error-500">{errors.email[0]}</span>
@@ -85,9 +79,8 @@
         minlength="8"
         maxlength="64"
         required
-        bind:this={passwordInput}
         class="input"
-      />
+      >
 
       <button
         type="button"

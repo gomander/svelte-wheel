@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { Tabs } from "@skeletonlabs/skeleton-svelte";
-  import wheelStore from "$lib/stores/WheelStore";
-  import type WheelConfig from "$lib/utils/WheelConfig";
-  import AppDialog from "$lib/components/AppDialog.svelte";
-  import CustomizeDialogBasic from "$lib/components/CustomizeDialogBasic.svelte";
-  import CustomizeDialogAppearance from "$lib/components/CustomizeDialogAppearance.svelte";
-  import CustomizeDialogDuringSpin from "$lib/components/CustomizeDialogDuringSpin.svelte";
-  import CustomizeDialogAfterSpin from "$lib/components/CustomizeDialogAfterSpin.svelte";
+  import { Tabs } from '@skeletonlabs/skeleton-svelte'
+  import wheelStore from '$lib/stores/WheelStore'
+  import type WheelConfig from '$lib/utils/WheelConfig'
+  import AppDialog from '$lib/components/AppDialog.svelte'
+  import CustomizeDialogBasic from '$lib/components/CustomizeDialogBasic.svelte'
+  import CustomizeDialogAppearance from '$lib/components/CustomizeDialogAppearance.svelte'
+  import CustomizeDialogDuringSpin from '$lib/components/CustomizeDialogDuringSpin.svelte'
+  import CustomizeDialogAfterSpin from '$lib/components/CustomizeDialogAfterSpin.svelte'
 
   export function open() {
-    config = $state.snapshot(wheelStore.config);
-    dialog.open();
+    config = $state.snapshot(wheelStore.config)
+    dialog.open()
   }
 
-  let dialog: AppDialog = $state(null!);
-  let config: WheelConfig = $state($state.snapshot(wheelStore.config));
+  let dialog: AppDialog = $state(null!)
+  let config: WheelConfig = $state($state.snapshot(wheelStore.config))
 
   function save() {
-    if (config.type === "image" && !config.image) config.type = "color";
-    wheelStore.config = config;
-    close();
+    if (config.type === 'image' && !config.image) config.type = 'color'
+    wheelStore.config = config
+    close()
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 

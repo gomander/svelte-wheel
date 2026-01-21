@@ -1,45 +1,45 @@
 <script lang="ts">
-  import { Progress } from "@skeletonlabs/skeleton-svelte";
-  import { getCurrentUser } from "$lib/utils/Firebase";
-  import { deleteWheel as apiDeleteWheel } from "$lib/utils/Api";
-  import { getStringFromError } from "$lib/utils/General";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
+  import { getCurrentUser } from '$lib/utils/Firebase'
+  import { deleteWheel as apiDeleteWheel } from '$lib/utils/Api'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open(wheelPath: string, wheelTitle: string) {
-    path = wheelPath;
-    title = wheelTitle;
-    dialog.open();
+    path = wheelPath
+    title = wheelTitle
+    dialog.open()
   }
 
-  let dialog: AppDialog = $state(null!);
-  let path = $state("");
-  let title = $state("");
-  let loading = $state(false);
+  let dialog: AppDialog = $state(null!)
+  let path = $state('')
+  let title = $state('')
+  let loading = $state(false)
 
   async function deleteWheel() {
-    if (loading) return;
-    loading = true;
-    const user = getCurrentUser();
+    if (loading) return
+    loading = true
+    const user = getCurrentUser()
     try {
-      if (!user) throw new Error("User not logged in");
-      await apiDeleteWheel(path, user.uid);
-      toast.create({ ...toastDefaults, description: "Wheel deleted" });
+      if (!user) throw Error('User not logged in')
+      await apiDeleteWheel(path, user.uid)
+      toast.create({ ...toastDefaults, description: 'Wheel deleted' })
     } catch (error) {
       toast.create({
         ...toastDefaults,
         duration: 5000,
         description: getStringFromError(error),
-        type: "error",
-      });
+        type: 'error'
+      })
     } finally {
-      loading = false;
-      close();
+      loading = false
+      close()
     }
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 

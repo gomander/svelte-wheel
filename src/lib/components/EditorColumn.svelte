@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Tabs } from "@skeletonlabs/skeleton-svelte";
-  import wheelStore from "$lib/stores/WheelStore";
-  import EditorButtons from "$lib/components/EditorButtons.svelte";
-  import EntriesTextbox from "$lib/components/EntriesTextbox.svelte";
-  import ResultsButtons from "$lib/components/ResultsButtons.svelte";
-  import ResultsTextbox from "$lib/components/ResultsTextbox.svelte";
+  import { Tabs } from '@skeletonlabs/skeleton-svelte'
+  import wheelStore from '$lib/stores/WheelStore'
+  import EditorButtons from '$lib/components/EditorButtons.svelte'
+  import EntriesTextbox from '$lib/components/EntriesTextbox.svelte'
+  import ResultsButtons from '$lib/components/ResultsButtons.svelte'
+  import ResultsTextbox from '$lib/components/ResultsTextbox.svelte'
 </script>
 
 <Tabs defaultValue="editor" class="grow flex flex-col">

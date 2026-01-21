@@ -1,8 +1,8 @@
-import { createToaster } from "@skeletonlabs/skeleton-svelte";
+import { createToaster } from '@skeletonlabs/skeleton-svelte'
 
 export const toastDefaults = {
   duration: 3000,
   type: "info",
-} as const;
+} as const
 
-export const toast = createToaster();
+export const toast = createToaster()

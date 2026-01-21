@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { fileSave } from "browser-fs-access";
-  import wheelStore from "$lib/stores/WheelStore";
-  import { getStringFromError } from "$lib/utils/General";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
+  import { fileSave } from 'browser-fs-access'
+  import wheelStore from '$lib/stores/WheelStore'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
   export function open() {
-    dialog.open();
+    dialog.open()
   }
 
-  let fileName = $state(wheelStore.config.title);
-  let dialog: AppDialog = $state(null!);
-  let loading = false;
+  let fileName = $state(wheelStore.config.title)
+  let dialog: AppDialog = $state(null!)
+  let loading = false
 
   async function save(e: Event) {
-    e.preventDefault();
-    if (loading) return;
-    loading = true;
+    e.preventDefault()
+    if (loading) return
+    loading = true
     try {
       await fileSave(
         new Blob(
@@ -24,31 +24,31 @@
             JSON.stringify({
               config: wheelStore.config,
               entries: wheelStore.entries,
-              winners: wheelStore.winners,
-            }),
+              winners: wheelStore.winners
+            })
           ],
-          { type: "application/json" },
+          { type: 'application/json' }
         ),
-        { fileName: `${fileName || "Untitled"}.wheel`, extensions: [".wheel"] },
-      );
-      close();
+        { fileName: `${fileName || 'Untitled'}.wheel`, extensions: ['.wheel'] }
+      )
+      close()
       toast.create({
         ...toastDefaults,
-        description: "Wheel saved",
-      });
+        description: 'Wheel saved'
+      })
     } catch (error) {
       toast.create({
         ...toastDefaults,
         description: getStringFromError(error),
-        type: "error",
-      });
+        type: 'error'
+      })
     } finally {
-      loading = false;
+      loading = false
     }
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 
@@ -69,7 +69,7 @@
             maxlength="50"
             bind:value={fileName}
             placeholder="Untitled"
-          />
+          >
 
           <div>.wheel</div>
         </div>

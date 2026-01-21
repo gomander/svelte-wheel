@@ -1,52 +1,48 @@
 <script lang="ts">
-  import { signIn } from "$lib/utils/Firebase";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
-  import AppDialog from "$lib/components/AppDialog.svelte";
-  import EmailPasswordForm from "$lib/components/EmailPasswordForm.svelte";
+  import { signIn } from '$lib/utils/Firebase'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
+  import EmailPasswordForm from '$lib/components/EmailPasswordForm.svelte'
 
   export function open(nextDialog?: string) {
-    if (nextDialog) next = nextDialog;
-    dialog.open();
+    if (nextDialog) next = nextDialog
+    dialog.open()
   }
 
-  let {
-    onResetPassword,
-    onSignUp,
-    nextDialog,
-  }: {
-    onResetPassword: () => void;
-    onSignUp: () => void;
-    nextDialog: (dialogName: string) => void;
-  } = $props();
+  let { onResetPassword, onSignUp, nextDialog }: {
+    onResetPassword: () => void
+    onSignUp: () => void
+    nextDialog: (dialogName: string) => void
+  } = $props()
 
-  let dialog: AppDialog = $state(null!);
-  let formError: string | null = $state(null);
+  let dialog: AppDialog = $state(null!)
+  let formError: string | null = $state(null)
 
-  let next: string | null = null;
+  let next: string | null = null
 
-  const onSubmit = async (user: { email: string; password: string }) => {
-    await signIn(user.email, user.password);
-    close();
-    if (next) nextDialog(next);
+  const onSubmit = async (user: { email: string, password: string }) => {
+    await signIn(user.email, user.password)
+    close()
+    if (next) nextDialog(next)
     toast.create({
       ...toastDefaults,
-      description: "Logged in",
-      duration: 2000,
-    });
-  };
+      description: 'Logged in',
+      duration: 2000
+    })
+  }
 
   function resetPassword() {
-    close();
-    onResetPassword();
+    close()
+    onResetPassword()
   }
 
   function signUp() {
-    close();
-    onSignUp();
+    close()
+    onSignUp()
   }
 
   function close() {
-    dialog.close();
+    dialog.close()
   }
 </script>
 

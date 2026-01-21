@@ -1,32 +1,28 @@
 <script lang="ts">
-  import { Avatar, SegmentedControl } from "@skeletonlabs/skeleton-svelte";
-  import {
-    hubSizes,
-    type WheelType,
-    type HubSize,
-  } from "$lib/utils/WheelConfig";
-  import { compressImage } from "$lib/utils/WheelPainter";
-  import ColorsControl from "$lib/components/ColorsControl.svelte";
+  import { Avatar, SegmentedControl } from '@skeletonlabs/skeleton-svelte'
+  import { hubSizes, type WheelType, type HubSize } from '$lib/utils/WheelConfig'
+  import { compressImage } from '$lib/utils/WheelPainter'
+  import ColorsControl from '$lib/components/ColorsControl.svelte'
 
   let {
     type = $bindable(),
     image = $bindable(),
     colors = $bindable(),
-    hubSize = $bindable(),
+    hubSize = $bindable()
   }: {
-    type: WheelType;
-    image: string;
-    colors: string[];
-    hubSize: HubSize;
-  } = $props();
+    type: WheelType
+    image: string
+    colors: string[]
+    hubSize: HubSize
+  } = $props()
 
-  const updateWheelImage = async (
+  async function updateWheelImage(
     event: Event & { currentTarget: EventTarget & HTMLInputElement },
-  ) => {
-    const file = event.currentTarget.files?.[0];
-    image = "";
-    if (file) image = await compressImage(file);
-  };
+  ) {
+    const file = event.currentTarget.files?.[0]
+    image = ''
+    if (file) image = await compressImage(file)
+  }
 </script>
 
 <div>
@@ -36,8 +32,11 @@
       value={type}
       onValueChange={(e) => (type = e.value as WheelType)}
     >
-      <SegmentedControl.Item value="color">Color</SegmentedControl.Item>
-      <SegmentedControl.Item value="image">Image</SegmentedControl.Item>
+      <SegmentedControl.Control>
+        <SegmentedControl.Indicator />
+        <SegmentedControl.Item value="color">Color</SegmentedControl.Item>
+        <SegmentedControl.Item value="image">Image</SegmentedControl.Item>
+      </SegmentedControl.Control>
     </SegmentedControl>
   </div>
 </div>
@@ -58,7 +57,7 @@
         class="input"
         accept="image/*"
         oninput={updateWheelImage}
-      />
+      >
     </div>
 
     {#if image}

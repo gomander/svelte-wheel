@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { useRegisterSW } from "virtual:pwa-register/svelte";
-  import { toast, toastDefaults } from "$lib/utils/Toast";
+  import { useRegisterSW } from 'virtual:pwa-register/svelte'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
 
   const { needRefresh, updateServiceWorker } = useRegisterSW({
     onRegistered: (r) => r && setInterval(r.update, 4 * 60 * 60 * 1000),
-    onRegisterError: (error) => console.error("SW registration error", error),
-  });
+    onRegisterError: (error) => console.error('SW registration error', error)
+  })
 
   function showToast() {
     toast.create({
       ...toastDefaults,
       duration: 8000,
-      description: "Update available",
-    });
+      description: 'Update available'
+    })
   }
 
   $effect(() => {
-    if ($needRefresh) showToast();
-  });
+    if ($needRefresh) showToast()
+  })
 </script>

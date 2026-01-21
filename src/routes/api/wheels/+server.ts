@@ -55,7 +55,7 @@ export const POST = async ({ request }) => {
     const data = createWheelSchema.parse(body)
     const path = await saveWheel(data.wheel, data.uid, data.visibility)
     if (!path) {
-      throw new Error('Error saving wheel')
+      throw Error('Error saving wheel')
     }
     return new Response(
       JSON.stringify({

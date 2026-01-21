@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Avatar, RadioGroup, RadioItem } from '@skeletonlabs/skeleton'
+  import { Avatar, SegmentedControl } from '@skeletonlabs/skeleton-svelte'
   import { hubSizes, type WheelType, type HubSize } from '$lib/utils/WheelConfig'
   import { compressImage } from '$lib/utils/WheelPainter'
   import ColorsControl from '$lib/components/ColorsControl.svelte'
@@ -10,15 +10,15 @@
     colors = $bindable(),
     hubSize = $bindable()
   }: {
-    type: WheelType,
-    image: string,
-    colors: string[],
+    type: WheelType
+    image: string
+    colors: string[]
     hubSize: HubSize
   } = $props()
 
-  const updateWheelImage = async (
-    event: Event & { currentTarget: EventTarget & HTMLInputElement }
-  ) => {
+  async function updateWheelImage(
+    event: Event & { currentTarget: EventTarget & HTMLInputElement },
+  ) {
     const file = event.currentTarget.files?.[0]
     image = ''
     if (file) image = await compressImage(file)
@@ -27,30 +27,29 @@
 
 <div>
   <span>Wheel background</span>
-
   <div>
-    <RadioGroup>
-      <RadioItem bind:group={type} name="color" value="color">
-        Color
-      </RadioItem>
-      <RadioItem  bind:group={type} name="image" value="image">
-        Image
-      </RadioItem>
-    </RadioGroup>
+    <SegmentedControl
+      value={type}
+      onValueChange={(e) => (type = e.value as WheelType)}
+    >
+      <SegmentedControl.Control>
+        <SegmentedControl.Indicator />
+        <SegmentedControl.Item value="color">Color</SegmentedControl.Item>
+        <SegmentedControl.Item value="image">Image</SegmentedControl.Item>
+      </SegmentedControl.Control>
+    </SegmentedControl>
   </div>
 </div>
 
 <div class="label">
   <span>Colors</span>
-
-  <ColorsControl bind:colors={colors} />
+  <ColorsControl bind:colors />
 </div>
 
 <label class="label">
   <span>
-    {type === 'color' ? 'Center image' : 'Background image'}
+    {type === "color" ? "Center image" : "Background image"}
   </span>
-
   <div class="flex flex-wrap gap-2">
     <div>
       <input
@@ -63,15 +62,13 @@
 
     {#if image}
       <div class="flex gap-2">
-        <Avatar
-          rounded="rounded-full"
-          src={image}
-          width="w-20"
-        />
+        <Avatar class="rounded-full w-20">
+          <Avatar.Image src={image} alt="Wheel image" />
+        </Avatar>
 
         <button
-          class="btn btn-icon variant-soft"
-          onclick={() => (image = '')}
+          class="btn btn-icon preset-tonal"
+          onclick={() => (image = "")}
           title="Remove image"
           aria-label="Remove image"
         >
@@ -82,14 +79,11 @@
   </div>
 </label>
 
-{#if type === 'color'}
+{#if type === "color"}
   <label class="label">
     <span>Hub size</span>
 
-    <select
-      class="select"
-      bind:value={hubSize}
-    >
+    <select class="select" bind:value={hubSize}>
       {#each Object.keys(hubSizes) as item}
         <option value={item}>{item}</option>
       {/each}

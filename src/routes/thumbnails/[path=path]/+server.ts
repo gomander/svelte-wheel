@@ -41,7 +41,8 @@ export const GET = async ({ request, params, url, setHeaders }) => {
       size,
       background
     )
-    setHeaders({'Content-Type': 'image/webp', 'Content-Length': image.byteLength.toString()})
+    setHeaders({ 'Content-Type': 'image/webp', 'Content-Length': image.byteLength.toString() })
+    // @ts-expect-error For some reason TS thinks that binary image data isn't a valid response body
     return new Response(image, { status: 200 })
   } catch (error) {
     console.error(error)

@@ -1,123 +1,117 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte'
-  import { popup } from '@skeletonlabs/skeleton'
+  import { Popover, Portal } from '@skeletonlabs/skeleton-svelte'
   import fullscreenStore from '$lib/stores/FullscreenStore.svelte'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import MobileMenu from '$lib/components/MobileMenu.svelte'
   import MoreMenu from '$lib/components/MoreMenu.svelte'
 
-  const dispatch = createEventDispatcher<{
-    new: null,
-    open: null,
-    save: null,
-    customize: null,
-    share: null,
-    account: null,
-    debug: null
-  }>()
+  let { onNew, onOpen, onSave, onCustomize, onShare, onAccount, onDebug }: {
+    onNew: () => void
+    onOpen: () => void
+    onSave: () => void
+    onCustomize: () => void
+    onShare: () => void
+    onAccount: () => void
+    onDebug: () => void
+  } = $props()
+
+  let mobileMenuOpen = $state(false)
+  let moreMenuOpen = $state(false)
 </script>
 
-<header class="px-4 py-2 bg-surface-200-700-token shadow-2xl flex justify-between items-center">
+<header
+  class="relative px-4 py-2 preset-filled-surface-100-900 shadow-2xl flex justify-between items-center"
+>
   <a href="/">
     <h1 class="text-2xl">SvelteWheel</h1>
   </a>
 
-  <div class="block lg:hidden">
-    <button
-      class="btn btn-icon-sm text-xl hover:variant-soft-primary"
-      use:popup={{ event: 'click', target: 'mobileMenu' }}
-      aria-haspopup="menu"
-      aria-controls="mobileMenu"
+  <Popover
+    open={mobileMenuOpen}
+    onOpenChange={(e) => (mobileMenuOpen = e.open)}
+    positioning={{ placement: "bottom-end" }}
+  >
+    <Popover.Trigger
+      class="block md:hidden btn-icon btn-icon-base hover:preset-tonal-primary"
       aria-label="Toggle menu"
-      title="Menu"
     >
       <i class="fas fa-bars"></i>
-    </button>
+    </Popover.Trigger>
+    <Portal>
+      <Popover.Positioner>
+        <Popover.Content class="preset-filled-surface-50-950">
+          <MobileMenu {onNew} {onOpen} {onSave} {onCustomize} {onShare} {onAccount} {onDebug} />
+        </Popover.Content>
+      </Popover.Positioner>
+    </Portal>
+  </Popover>
 
-    <div
-      id="mobileMenu"
-      role="menu"
-      aria-label="Menu"
-      class="z-50"
-      data-popup="mobileMenu"
-    >
-      <MobileMenu
-        on:new={() => dispatch('new')}
-        on:open={() => dispatch('open')}
-        on:save={() => dispatch('save')}
-        on:customize={() => dispatch('customize')}
-        on:share={() => dispatch('share')}
-        on:account={() => dispatch('account')}
-        on:debug={() => dispatch('debug')}
-      />
-    </div>
-  </div>
-
-  <div
-    class="hidden lg:flex items-center"
-    role="menubar"
-    aria-label="Toolbar"
-  >
+  <div class="hidden md:flex items-center" role="menubar" aria-label="Toolbar">
     {#if !fullscreenStore.active}
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        onclick={() => dispatch('new')}
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
+        onclick={onNew}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="New"
         title="New"
       >
         <i class="fas fa-file"></i>
+        <span class="hidden lg:inline">New</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        onclick={() => dispatch('open')}
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
+        onclick={onOpen}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Open"
         title="Open"
       >
         <i class="fas fa-folder-open"></i>
+        <span class="hidden lg:inline">Open</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        onclick={() => dispatch('save')}
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
+        onclick={onSave}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Save"
         title="Save"
       >
         <i class="fas fa-floppy-disk"></i>
+        <span class="hidden lg:inline">Save</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        onclick={() => dispatch('customize')}
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
+        onclick={onCustomize}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Customize"
         title="Customize"
       >
         <i class="fas fa-palette"></i>
+        <span class="hidden lg:inline">Customize</span>
       </button>
 
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
-        onclick={() => dispatch('share')}
+        class="btn max-lg:btn-icon hover:preset-tonal-primary"
+        onclick={onShare}
         disabled={busyStore.spinning}
         role="menuitem"
         aria-label="Share"
         title="Share"
       >
         <i class="fas fa-share-nodes"></i>
+        <span class="hidden lg:inline">Share</span>
       </button>
     {/if}
 
     {#if fullscreenStore.supported}
       <button
-        class="btn btn-icon-sm text-lg hover:variant-soft-primary"
+        class="btn-icon btn-icon-base hover:preset-tonal-primary"
         onclick={() => fullscreenStore.toggleFullscreen()}
         role="menuitem"
         aria-label="Toggle fullscreen"
@@ -127,31 +121,24 @@
       </button>
     {/if}
 
-    <div>
-      <button
-        class="btn btn-icon-sm text-xl hover:variant-soft-primary"
-        use:popup={{ event: 'click', target: 'moreMenu' }}
-        role="menuitem"
-        aria-haspopup="menu"
-        aria-controls="moreMenu"
+    <Popover
+      open={moreMenuOpen}
+      onOpenChange={(e) => (moreMenuOpen = e.open)}
+      positioning={{ placement: "bottom-end" }}
+    >
+      <Popover.Trigger
+        class="block md:hidden btn-icon btn-icon-base hover:preset-tonal-primary"
         aria-label="Toggle more menu"
-        title="More"
       >
         <i class="fas fa-bars"></i>
-      </button>
-
-      <div
-        id="moreMenu"
-        role="menu"
-        aria-label="More options"
-        class="z-50"
-        data-popup="moreMenu"
-      >
-        <MoreMenu
-          on:account={() => dispatch('account')}
-          on:debug={() => dispatch('debug')}
-        />
-      </div>
-    </div>
+      </Popover.Trigger>
+      <Portal>
+        <Popover.Positioner>
+          <Popover.Content class="preset-filled-surface-50-950">
+            <MoreMenu {onAccount} {onDebug} />
+          </Popover.Content>
+        </Popover.Positioner>
+      </Portal>
+    </Popover>
   </div>
 </header>

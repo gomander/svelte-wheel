@@ -1,84 +1,83 @@
 <script lang="ts">
-  import { getModalStore, TabGroup, Tab } from '@skeletonlabs/skeleton'
+  import { Tabs } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
+  import type WheelConfig from '$lib/utils/WheelConfig'
+  import AppDialog from '$lib/components/AppDialog.svelte'
   import CustomizeDialogBasic from '$lib/components/CustomizeDialogBasic.svelte'
   import CustomizeDialogAppearance from '$lib/components/CustomizeDialogAppearance.svelte'
   import CustomizeDialogDuringSpin from '$lib/components/CustomizeDialogDuringSpin.svelte'
   import CustomizeDialogAfterSpin from '$lib/components/CustomizeDialogAfterSpin.svelte'
 
-  const modalStore = getModalStore()
+  export function open() {
+    config = $state.snapshot(wheelStore.config)
+    dialog.open()
+  }
 
-  const config = $state($state.snapshot(wheelStore.config))
-  let openTab = $state('basic')
+  let dialog: AppDialog = $state(null!)
+  let config: WheelConfig = $state($state.snapshot(wheelStore.config))
 
-  const save = () => {
+  function save() {
     if (config.type === 'image' && !config.image) config.type = 'color'
     wheelStore.config = config
-    modalStore.close()
+    close()
+  }
+
+  function close() {
+    dialog.close()
   }
 </script>
 
-{#if $modalStore[0]}
+<AppDialog bind:this={dialog}>
   <article class="p-4 card w-modal flex flex-col gap-4 shadow-xl">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-palette"></i>
       <h1>Customize</h1>
     </header>
 
-    <TabGroup
-      class="flex-1 flex flex-col"
-      regionPanel="flex-1 flex flex-col gap-4 min-h-48"
-    >
-      <Tab bind:group={openTab} name="basic" value="basic">
-        Basic
-      </Tab>
-      <Tab bind:group={openTab} name="appearance" value="appearance">
-        Appearance
-      </Tab>
-      <Tab bind:group={openTab} name="duringSpin" value="duringSpin">
-        During spin
-      </Tab>
-      <Tab bind:group={openTab} name="afterSpin" value="afterSpin">
-        After spin
-      </Tab>
-
-      {#snippet panel()}
-        {#if openTab === 'basic'}
-          <CustomizeDialogBasic
-            bind:title={config.title}
-            bind:description={config.description}
-            bind:spinTime={config.spinTime}
-          />
-        {:else if openTab === 'appearance'}
-          <CustomizeDialogAppearance
-            bind:type={config.type}
-            bind:colors={config.colors}
-            bind:image={config.image}
-            bind:hubSize={config.hubSize}
-          />
-        {:else if openTab === 'duringSpin'}
-          <CustomizeDialogDuringSpin
-            bind:duringSpinSound={config.duringSpinSound}
-            bind:indefiniteSpin={config.indefiniteSpin}
-          />
-        {:else if openTab === 'afterSpin'}
-          <CustomizeDialogAfterSpin
-            bind:afterSpinSound={config.afterSpinSound}
-            bind:displayWinnerDialog={config.displayWinnerDialog}
-            bind:winnerMessage={config.winnerMessage}
-            bind:confetti={config.confetti}
-          />
-        {/if}
-      {/snippet}
-    </TabGroup>
+    <Tabs defaultValue="basic">
+      <Tabs.List>
+        <Tabs.Trigger value="basic">Basic</Tabs.Trigger>
+        <Tabs.Trigger value="appearance">Appearance</Tabs.Trigger>
+        <Tabs.Trigger value="duringSpin">During spin</Tabs.Trigger>
+        <Tabs.Trigger value="afterSpin">After spin</Tabs.Trigger>
+        <Tabs.Indicator />
+      </Tabs.List>
+      <Tabs.Content value="basic">
+        <CustomizeDialogBasic
+          bind:title={config.title}
+          bind:description={config.description}
+          bind:spinTime={config.spinTime}
+        />
+      </Tabs.Content>
+      <Tabs.Content value="appearance">
+        <CustomizeDialogAppearance
+          bind:type={config.type}
+          bind:colors={config.colors}
+          bind:image={config.image}
+          bind:hubSize={config.hubSize}
+        />
+      </Tabs.Content>
+      <Tabs.Content value="duringSpin">
+        <CustomizeDialogDuringSpin
+          bind:duringSpinSound={config.duringSpinSound}
+          bind:indefiniteSpin={config.indefiniteSpin}
+        />
+      </Tabs.Content>
+      <Tabs.Content value="afterSpin">
+        <CustomizeDialogAfterSpin
+          bind:afterSpinSound={config.afterSpinSound}
+          bind:displayWinnerDialog={config.displayWinnerDialog}
+          bind:winnerMessage={config.winnerMessage}
+          bind:confetti={config.confetti}
+        />
+      </Tabs.Content>
+    </Tabs>
 
     <footer class="flex justify-end gap-2">
-      <button class="btn variant-soft" onclick={modalStore.close}>
-        Cancel
-      </button>
-      <button class="btn variant-filled-primary" onclick={save}>
+      <button class="btn preset-tonal" onclick={close}> Cancel </button>
+      <button class="btn preset-filled-primary-500" onclick={save}>
         Save
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

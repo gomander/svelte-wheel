@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { purgeCss } from 'vite-plugin-tailwind-purgecss'
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     sveltekit(),
-    purgeCss(),
     SvelteKitPWA({
       includeAssets: [
         'favicon.ico',

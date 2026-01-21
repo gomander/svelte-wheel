@@ -1,20 +1,33 @@
 <script lang="ts">
-  import { getModalStore } from '@skeletonlabs/skeleton'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-
-  const openSaveCloudDialog = () => {
-    modalStore.close()
-    modalStore.trigger({ type: 'component', component: 'saveCloudDialog' })
+  export function open() {
+    dialog.open()
   }
 
-  const openSaveLocalDialog = () => {
-    modalStore.close()
-    modalStore.trigger({ type: 'component', component: 'saveLocalDialog' })
+  let { onSaveCloud, onSaveLocal }: {
+    onSaveCloud: () => void
+    onSaveLocal: () => void
+  } = $props()
+
+  let dialog: AppDialog = $state(null!)
+
+  function openSaveCloudDialog() {
+    close()
+    onSaveCloud()
+  }
+
+  function openSaveLocalDialog() {
+    close()
+    onSaveLocal()
+  }
+
+  function close() {
+    dialog.close()
   }
 </script>
 
-{#if $modalStore[0]}
+<AppDialog bind:this={dialog}>
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
@@ -23,7 +36,7 @@
 
     <div class="px-4 flex flex-col gap-4">
       <button
-        class="btn variant-filled-primary flex flex-col gap-2"
+        class="btn preset-filled-primary-500 flex flex-col gap-2"
         onclick={openSaveCloudDialog}
       >
         <i class="fas fa-cloud text-4xl"></i>
@@ -31,7 +44,7 @@
       </button>
 
       <button
-        class="btn variant-filled"
+        class="btn preset-filled"
         onclick={openSaveLocalDialog}
       >
         <i class="fas fa-hard-drive text-4xl"></i>
@@ -41,11 +54,11 @@
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
       <button
-        class="btn variant-soft"
-        onclick={modalStore.close}
+        class="btn preset-tonal"
+        onclick={close}
       >
         Cancel
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

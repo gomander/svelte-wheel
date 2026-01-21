@@ -1,61 +1,69 @@
 <script lang="ts">
-  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
-  import {
-    getCurrentUser, sendEmailVerificationEmail, signOut
-  } from '$lib/utils/Firebase'
-  import { toastDefaults } from '$lib/utils/Toast'
+  import { getCurrentUser, sendEmailVerificationEmail, signOut } from '$lib/utils/Firebase'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  export function open() {
+    user = getCurrentUser()
+    if (!user) {
+      onNotLoggedIn()
+      return
+    }
+    dialog.open()
+  }
+
+  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props()
+
+  let user: ReturnType<typeof getCurrentUser> = $state(null)
+  let dialog: AppDialog = $state(null!)
 
   let loading = false
 
-  const authUser = getCurrentUser()
-  if (!authUser) {
-    modalStore.close()
-    modalStore.trigger({ type: 'component', component: 'loginDialog' })
-  }
-
-  const logOut = async () => {
+  async function logOut() {
     if (loading) return
     loading = true
     try {
       await signOut()
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Logged out',
-        timeout: 1500
+        description: 'Logged out',
+        duration: 1500
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toastStore.trigger({
-          ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
   }
+
+  function close() {
+    dialog.close()
+  }
 </script>
 
-{#if $modalStore[0]}
-  <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
+<AppDialog bind:this={dialog}>
+  <article
+    class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4"
+  >
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-user"></i>
       <h1>Account</h1>
     </header>
 
-    {#if !authUser?.emailVerified}
-      <aside class="alert variant-soft-warning">
+    {#if !user?.emailVerified}
+      <aside class="alert preset-tonal-warning">
         <i class="fas fa-exclamation-triangle"></i>
 
         <p class="alert-message">Your email address is not verified.</p>
 
         <button
-          class="btn btn-sm variant-filled"
+          class="btn btn-sm preset-filled"
           onclick={sendEmailVerificationEmail}
         >
           Send verification email
@@ -64,38 +72,31 @@
     {/if}
 
     <section class="flex flex-col gap-2">
-      {#if authUser?.displayName}
+      {#if user?.displayName}
         <div>
-          {authUser?.displayName}
+          {user?.displayName}
         </div>
       {/if}
 
-      {#if authUser?.email}
+      {#if user?.email}
         <div>
-          Email: <pre>{authUser?.email}</pre>
+          Email: <pre>{user?.email}</pre>
         </div>
       {/if}
 
       <div>
-        User ID: <pre>{authUser?.uid}</pre>
+        User ID: <pre>{user?.uid}</pre>
       </div>
 
       <div>
-        <button
-          class="btn variant-soft-warning"
-          onclick={logOut}
-        >
+        <button class="btn preset-tonal-warning" onclick={logOut}>
           Log out
         </button>
       </div>
     </section>
 
     <footer class="flex justify-end gap-2">
-      <button
-        class="btn variant-filled"
-        onclick={modalStore.close}
-      >
-        Close
-      </button>
+      <button class="btn preset-filled" onclick={close}> Close </button>
+    </footer>
   </article>
-{/if}
+</AppDialog>

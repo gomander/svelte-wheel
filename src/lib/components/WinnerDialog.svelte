@@ -1,44 +1,59 @@
 <script lang="ts">
-  import { getModalStore } from '@skeletonlabs/skeleton'
   import wheelStore from '$lib/stores/WheelStore'
   import { getTextColor } from '$lib/utils/FontPicker'
+  import type { Entry } from '$lib/utils/Wheel'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
+  export function open(
+    winner: Entry,
+    message: string | null = null,
+    color: string | null = null
+  ) {
+    entry = winner
+    title = message || 'We have a winner!'
+    headerColor = color
+    dialog.open()
+  }
 
-  const remove = () => {
-    wheelStore.entries = wheelStore.entries.filter(e => e.id !== $modalStore[0].meta.winner.id)
-    modalStore.close()
+  let dialog: AppDialog = $state(null!)
+  let entry: Entry = $state({ id: '', text: '' })
+  let title = $state('')
+  let headerColor: string | null = $state(null)
+
+  function remove() {
+    wheelStore.entries = wheelStore.entries.filter(e => e.id !== entry.id)
+    close()
+  }
+
+  function close() {
+    dialog.close()
   }
 </script>
 
-{#if $modalStore[0]}
-  <article class="card w-modal shadow-xl overflow-hidden">
+<AppDialog bind:this={dialog}>
+  <article>
     <header
       class="p-4 text-2xl font-semibold"
-      style={
-        $modalStore[0].meta.color ? `
-          background-color: ${$modalStore[0].meta.color};
-          color: ${getTextColor($modalStore[0].meta.color)}
-        ` : ''
-      }
+      style:color={headerColor ? getTextColor(headerColor) : 'inherit'}
+      style:background-color={headerColor ? headerColor : 'inherit'}
     >
-      {$modalStore[0].title}
+      {title}
     </header>
 
     <div
       class="p-4 h1"
       aria-label="Winner"
     >
-      {$modalStore[0].body}
+      {entry.text}
     </div>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
-      <button class="btn variant-soft" onclick={modalStore.close}>
+      <button class="btn preset-tonal" onclick={close}>
         Close
       </button>
-      <button class="btn variant-soft-warning" onclick={remove}>
+      <button class="btn preset-tonal-warning" onclick={remove}>
         Remove
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

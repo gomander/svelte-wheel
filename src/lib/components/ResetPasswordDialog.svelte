@@ -1,59 +1,60 @@
 <script lang="ts">
-  import {
-    getModalStore, getToastStore, ProgressRadial
-  } from '@skeletonlabs/skeleton'
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
   import { z } from 'zod'
   import { sendPasswordResetEmail } from '$lib/utils/Firebase'
   import { emailValidator } from '$lib/utils/Schemas'
-  import { toastDefaults } from '$lib/utils/Toast'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  export function open() {
+    dialog.open()
+  }
 
   let email = $state('')
   let loading = $state(false)
-  let errors: Record<string, string[] | undefined> = $state({ })
+  let errors: Record<string, string[] | undefined> = $state({})
+  let dialog: AppDialog = $state(null!)
 
-  const resetPassword = async (e: Event) => {
+  async function resetPassword(e: SubmitEvent) {
     e.preventDefault()
     if (loading) return
     loading = true
     try {
       emailValidator.parse(email)
       await sendPasswordResetEmail(email)
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Password reset email sent',
-        background: 'variant-filled-primary'
+        description: 'Password reset email sent'
       })
     } catch (error) {
       if (error instanceof z.ZodError) {
         errors = error.flatten().fieldErrors
         return
       }
-      toastStore.trigger({
+      toast.create({
         ...toastDefaults,
-        message: 'Something went wrong, please try again later',
-        background: 'variant-filled-error'
+        description: 'Something went wrong, please try again later',
+        type: 'error'
       })
     } finally {
       loading = false
     }
   }
+
+  function close() {
+    dialog.close()
+  }
 </script>
 
-{#if $modalStore[0]}
+<AppDialog bind:this={dialog}>
   <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-key"></i>
       <h1>Reset password</h1>
     </header>
 
-    <form
-      class="flex flex-col gap-4"
-      onsubmit={resetPassword}
-    >
+    <form class="flex flex-col gap-4" onsubmit={resetPassword}>
       <label class="label">
         <span class="required">Email</span>
         <input
@@ -67,27 +68,18 @@
         >
 
         {#if errors.email}
-          <span class="text-sm text-error-400-500-token">
-            {errors.email[0]}
-          </span>
+          <span class="text-sm text-error-500">{errors.email[0]}</span>
         {/if}
       </label>
 
       <footer class="flex justify-end gap-2">
-        <button
-          type="button"
-          class="btn btn-sm variant-soft"
-          onclick={modalStore.close}
-        >
+        <button type="button" class="btn btn-sm preset-tonal" onclick={close}>
           Close
         </button>
 
-        <button
-          class="btn variant-filled-primary"
-          aria-busy={loading}
-        >
+        <button class="btn preset-filled-primary-500" aria-busy={loading}>
           {#if loading}
-            <ProgressRadial width="w-6" />
+            <Progress class="w-6" />
           {:else}
             Send password reset email
           {/if}
@@ -95,4 +87,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>

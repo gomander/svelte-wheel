@@ -1,114 +1,117 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import {
-    ProgressRadial, getModalStore, getToastStore
-  } from '@skeletonlabs/skeleton'
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
-  import { toastDefaults } from '$lib/utils/Toast'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
-
-  let title = $state(wheelStore.config.title)
-  let loading = $state(false)
-  let shareMode: 'overwrite' | 'new' = $state('new')
-
-  onMount(async () => {
+  export function open() {
     const user = getCurrentUser()
     if (!user) {
-      modalStore.close()
-      modalStore.trigger({
-        type: 'component',
-        component: 'loginDialog',
-        meta: { next: 'shareDialog' }
-      })
+      close()
+      onNotLoggedIn()
       return
     }
     if (wheelStore.path) {
       loading = true
-      try {
-        const response = await getWheel(wheelStore.path, user.uid)
-        if (!response.success) {
+      getWheel(wheelStore.path, user.uid)
+        .then((response) => {
+          if (!response.success) {
+            wheelStore.path = null
+            return
+          }
+          shareMode = 'overwrite'
+        })
+        .catch((error) => {
           wheelStore.path = null
-          return
-        }
-        shareMode = 'overwrite'
-      } catch (error) {
-        wheelStore.path = null
-      } finally {
-        loading = false
-      }
+          toast.create({
+            ...toastDefaults,
+            description: getStringFromError(error),
+            type: 'error'
+          })
+        })
+        .finally(() => {
+          loading = false
+        })
     }
-  })
+    dialog.open()
+  }
 
-  const share = async (e: Event) => {
+  let { onNotLoggedIn, onShare }: {
+    onNotLoggedIn: () => void
+    onShare: (path: string) => void
+  } = $props()
+
+  let title = $state(wheelStore.config.title)
+  let loading = $state(false)
+  let shareMode: 'overwrite' | 'new' = $state('new')
+  let dialog: AppDialog = $state(null!)
+
+  async function share(e: Event) {
     e.preventDefault()
     if (loading) return
     loading = true
     try {
-      if (!title) {
-        throw new Error('Title is required')
-      }
+      if (!title) throw Error('Title is required')
       const user = getCurrentUser()
-      if (!user) {
-        throw new Error('User is not logged in')
-      }
+      if (!user) throw Error('User is not logged in')
       let path: string | null = null
       if (shareMode === 'new') {
-        const response = await createWheel({
-          wheel: {
-            config: { ...wheelStore.config, title },
-            entries: wheelStore.entries
+        const response = await createWheel(
+          {
+            wheel: {
+              config: { ...wheelStore.config, title },
+              entries: wheelStore.entries
+            },
+            visibility: 'public',
+            uid: user.uid
           },
-          visibility: 'public',
-          uid: user.uid
-        }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
         path = response.data.path
       }
       if (shareMode === 'overwrite' && wheelStore.path) {
-        const response = await updateWheel(wheelStore.path, {
-          wheel: {
-            config: { ...wheelStore.config, title },
-            entries: wheelStore.entries
+        const response = await updateWheel(
+          wheelStore.path,
+          {
+            wheel: {
+              config: { ...wheelStore.config, title },
+              entries: wheelStore.entries
+            },
+            uid: user.uid,
+            visibility: 'public'
           },
-          uid: user.uid,
-          visibility: 'public'
-        }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
         path = response.data.path
       }
-      if (!path) {
-        throw new Error('Could not share wheel')
-      }
-      modalStore.close()
-      modalStore.trigger({
-        type: 'component',
-        component: 'sharedLinkDialog',
-        meta: { path }
-      })
+      if (!path) throw Error('Could not share wheel')
+      close()
+      onShare(path)
     } catch (error) {
-      if (error instanceof Error) {
-        toastStore.trigger({
-          ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
   }
+
+  function close() {
+    dialog.close()
+  }
 </script>
 
-{#if $modalStore[0]}
-  <article class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4">
+<AppDialog bind:this={dialog}>
+  <article
+    class="card p-4 w-modal shadow-lg overflow-hidden flex flex-col gap-4"
+  >
     <header class="h3 flex items-center gap-2">
       <i class="fas fa-share-nodes"></i>
       <h1>Share wheel</h1>
@@ -129,10 +132,7 @@
       </p>
     </section>
 
-    <form
-      onsubmit={share}
-      class="flex flex-col gap-4"
-    >
+    <form onsubmit={share} class="flex flex-col gap-4">
       {#if wheelStore.path}
         <div class="flex flex-col gap-2">
           <label class="flex items-center gap-2">
@@ -175,19 +175,12 @@
       </label>
 
       <footer class="flex justify-end gap-2">
-        <button
-          type="button"
-          class="btn variant-soft"
-          onclick={modalStore.close}
-        >
+        <button type="button" class="btn preset-tonal" onclick={close}>
           Cancel
         </button>
-        <button
-          class="btn variant-filled-primary"
-          aria-busy={loading}
-        >
+        <button class="btn preset-filled-primary-500" aria-busy={loading}>
           {#if loading}
-            <ProgressRadial width="w-6" />
+            <Progress class="w-6" />
           {:else}
             Share
           {/if}
@@ -195,4 +188,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>

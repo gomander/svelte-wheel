@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from 'svelte'
+  import { onMount } from 'svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import busyStore from '$lib/stores/BusyStore.svelte'
   import Wheel, { type OnStoppedData } from '$lib/utils/Wheel'
@@ -8,7 +8,7 @@
     playTick, playSound, playLoopedSound, cancelLoopingSounds
   } from '$lib/utils/Audio'
 
-  const dispatch = createEventDispatcher<{ stop: OnStoppedData }>()
+  let { onStop }: { onStop: (data: OnStoppedData) => void } = $props()
 
   const onStarted = () => {
     busyStore.spinning = true
@@ -31,7 +31,7 @@
     if (wheel.config.afterSpinSound) {
       playSound(wheel.config.afterSpinSound, wheel.config.afterSpinSoundVolume)
     }
-    dispatch('stop', data)
+    onStop(data)
     wheelStore.winners = [...wheelStore.winners, data.winner]
   }
 

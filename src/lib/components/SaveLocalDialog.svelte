@@ -1,62 +1,65 @@
 <script lang="ts">
-  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton'
   import { fileSave } from 'browser-fs-access'
   import wheelStore from '$lib/stores/WheelStore'
-  import { toastDefaults } from '$lib/utils/Toast'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  export function open() {
+    dialog.open()
+  }
 
   let fileName = $state(wheelStore.config.title)
+  let dialog: AppDialog = $state(null!)
   let loading = false
 
-  const save = async (e: Event) => {
+  async function save(e: Event) {
     e.preventDefault()
     if (loading) return
     loading = true
     try {
       await fileSave(
         new Blob(
-          [JSON.stringify({
-            config: wheelStore.config,
-            entries: wheelStore.entries,
-            winners: wheelStore.winners
-          })],
+          [
+            JSON.stringify({
+              config: wheelStore.config,
+              entries: wheelStore.entries,
+              winners: wheelStore.winners
+            })
+          ],
           { type: 'application/json' }
         ),
         { fileName: `${fileName || 'Untitled'}.wheel`, extensions: ['.wheel'] }
       )
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Wheel saved',
-        background: 'variant-filled-primary'
+        description: 'Wheel saved'
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toastStore.trigger({
-          ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
   }
+
+  function close() {
+    dialog.close()
+  }
 </script>
 
-{#if $modalStore[0]}
+<AppDialog bind:this={dialog}>
   <article class="card w-modal-slim shadow-xl overflow-hidden">
     <header class="p-4 text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
       <h1>Save a wheel</h1>
     </header>
 
-    <form
-      onsubmit={save}
-      class="px-4 flex flex-col gap-4"
-    >
+    <form onsubmit={save} class="px-4 flex flex-col gap-4">
       <label class="label">
         <span>File name</span>
 
@@ -74,19 +77,11 @@
     </form>
 
     <footer class="p-4 flex justify-end gap-2 md:gap-4">
-      <button
-        class="btn variant-soft"
-        onclick={modalStore.close}
-      >
-        Cancel
-      </button>
+      <button class="btn preset-tonal" onclick={close}> Cancel </button>
 
-      <button
-        class="btn variant-filled-primary"
-        onclick={save}
-      >
+      <button class="btn preset-filled-primary-500" onclick={save}>
         Save
       </button>
     </footer>
   </article>
-{/if}
+</AppDialog>

@@ -1,47 +1,52 @@
 <script lang="ts">
-  import {
-    getModalStore, getToastStore, ProgressRadial
-  } from '@skeletonlabs/skeleton'
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { deleteWheel as apiDeleteWheel } from '$lib/utils/Api'
-  import { toastDefaults } from '$lib/utils/Toast'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  export function open(wheelPath: string, wheelTitle: string) {
+    path = wheelPath
+    title = wheelTitle
+    dialog.open()
+  }
 
-  const path: string = $modalStore[0].meta.path
-  const title: string = $modalStore[0].meta.title
-
+  let dialog: AppDialog = $state(null!)
+  let path = $state('')
+  let title = $state('')
   let loading = $state(false)
 
-  const deleteWheel = async () => {
+  async function deleteWheel() {
     if (loading) return
     loading = true
     const user = getCurrentUser()
     try {
-      if (!user) {
-        throw new Error('User not logged in')
-      }
+      if (!user) throw Error('User not logged in')
       await apiDeleteWheel(path, user.uid)
-      toastStore.trigger({ ...toastDefaults, message: 'Wheel deleted' })
+      toast.create({ ...toastDefaults, description: 'Wheel deleted' })
     } catch (error) {
-      if (error instanceof Error) {
-        toastStore.trigger({
-          ...toastDefaults,
-          background: 'variant-filled-error',
-          timeout: 5000,
-          message: error.message
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        duration: 5000,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
-      modalStore.close()
+      close()
     }
+  }
+
+  function close() {
+    dialog.close()
   }
 </script>
 
-{#if $modalStore[0]}
-  <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
+<AppDialog bind:this={dialog}>
+  <article
+    class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4"
+  >
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-trash"></i>
       <h1>Delete wheel</h1>
@@ -49,31 +54,24 @@
 
     <section class="flex flex-col gap-2">
       <p>Are you sure you want to delete this wheel?</p>
-      <div class="p-2 rounded flex gap-2 items-center bg-surface-50-900-token">
+      <div class="p-2 rounded-sm flex gap-2 items-center bg-surface-50-950">
         <span class="text-xl">"{title}"</span>
         <span class="text-sm">({path})</span>
       </div>
-      <p class="text-sm font-semibold text-error-700-200-token">
+      <p class="text-sm font-semibold text-error-800-200">
         This action cannot be undone.
       </p>
     </section>
 
     <footer class="flex justify-end gap-2">
-      <button
-        class="btn variant-filled"
-        onclick={modalStore.close}
-      >
-        Cancel
-      </button>
-      <button
-        class="btn variant-filled-error"
-        onclick={deleteWheel}
-      >
+      <button class="btn preset-filled" onclick={close}> Cancel </button>
+      <button class="btn preset-filled-error-500" onclick={deleteWheel}>
         {#if loading}
-          <ProgressRadial width="w-6" />
+          <Progress class="w-6" />
         {:else}
           Delete
         {/if}
       </button>
+    </footer>
   </article>
-{/if}
+</AppDialog>

@@ -1,14 +1,14 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
-  import { ProgressRadial } from '@skeletonlabs/skeleton'
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
   import { z } from 'zod'
   import { FirebaseError } from 'firebase/app'
   import { userSchema } from '$lib/utils/Schemas'
 
   let { onSubmit, formError, body, footerButtons }: {
-    onSubmit: (user: { email: string, password: string }) => Promise<void>,
-    formError: string | null,
-    body: Snippet,
+    onSubmit: (user: { email: string, password: string }) => Promise<void>
+    formError: string | null
+    body: Snippet
     footerButtons: Snippet
   } = $props()
 
@@ -16,10 +16,9 @@
   let loading = $state(false)
   let errors: Record<string, string[] | undefined> = $state({})
 
-  let passwordInput: HTMLInputElement = $state(null!)
   let showPassword = $state(false)
 
-  const submit = async (e: Event) => {
+  async function submit(e: Event) {
     e.preventDefault()
     if (loading) return
     loading = true
@@ -27,7 +26,7 @@
     const formData = new FormData(form)
     const user = {
       email: String(formData.get('email')),
-      password: String(formData.get('password'))
+      password: String(formData.get('password')),
     }
     try {
       userSchema.parse(user)
@@ -51,14 +50,10 @@
 </script>
 
 {#if formError}
-  <div class="alert variant-soft-error">{formError}</div>
+  <div class="alert preset-tonal-error">{formError}</div>
 {/if}
 
-<form
-  class="flex flex-col gap-4"
-  bind:this={form}
-  onsubmit={submit}
->
+<form class="flex flex-col gap-4" bind:this={form} onsubmit={submit}>
   <label class="label">
     <span class="required">Email</span>
     <input
@@ -71,7 +66,7 @@
     >
 
     {#if errors.email}
-      <span class="text-sm text-error-400-500-token">{errors.email[0]}</span>
+      <span class="text-sm text-error-500">{errors.email[0]}</span>
     {/if}
   </label>
 
@@ -79,27 +74,27 @@
     <span class="required">Password</span>
     <div class="input-group grid-cols-[1fr_auto]">
       <input
-        type={showPassword ? 'text' : 'password'}
+        type={showPassword ? "text" : "password"}
         name="password"
         minlength="8"
         maxlength="64"
         required
-        bind:this={passwordInput}
+        class="input"
       >
 
       <button
         type="button"
-        class="btn variant-soft rounded-none"
-        onclick={() => showPassword = !showPassword}
-        title={showPassword ? 'Hide password' : 'Show password'}
-        aria-label={showPassword ? 'Hide password' : 'Show password'}
+        class="btn preset-tonal rounded-none"
+        onclick={() => (showPassword = !showPassword)}
+        title={showPassword ? "Hide password" : "Show password"}
+        aria-label={showPassword ? "Hide password" : "Show password"}
       >
         <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'} w-6"></i>
       </button>
     </div>
 
     {#if errors.password}
-      <span class="text-sm text-error-400-500-token">{errors.password[0]}</span>
+      <span class="text-sm text-error-500">{errors.password[0]}</span>
     {/if}
   </label>
 
@@ -108,12 +103,9 @@
   <footer class="flex justify-end gap-2">
     {@render footerButtons()}
 
-    <button
-      class="btn variant-filled-primary"
-      aria-busy={loading}
-    >
+    <button class="btn preset-filled-primary-500" aria-busy={loading}>
       {#if loading}
-        <ProgressRadial width="w-6" />
+        <Progress class="w-6" />
       {:else}
         Submit
       {/if}

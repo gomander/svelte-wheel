@@ -23,7 +23,7 @@
 
 <div class="flex gap-2 sm:gap-4">
   <button
-    class="btn variant-filled flex-1"
+    class="btn preset-filled flex-1"
     onclick={sortWinners}
     aria-label="Sort"
   >
@@ -32,7 +32,7 @@
   </button>
 
   <button
-    class="btn variant-filled flex-1"
+    class="btn preset-filled flex-1"
     onclick={resetEntries}
     disabled={busyStore.spinning}
     aria-label="Reset"
@@ -42,7 +42,7 @@
   </button>
 
   <button
-    class="btn variant-filled flex-1"
+    class="btn preset-filled flex-1"
     onclick={clearWinners}
     aria-label="Clear"
   >

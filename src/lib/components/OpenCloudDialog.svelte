@@ -1,20 +1,46 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import {
-    Avatar, ProgressRadial, RadioGroup, RadioItem, getModalStore, getToastStore,
-    popup
-  } from '@skeletonlabs/skeleton'
+  import { Avatar, Progress, SegmentedControl } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
   import { getCurrentUser } from '$lib/utils/Firebase'
   import { getWheel, getWheels, type ApiWheelMeta } from '$lib/utils/Api'
-  import { toastDefaults } from '$lib/utils/Toast'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
+  export function open() {
+    loading = true
+    const user = getCurrentUser()
+    if (!user) {
+      onNotLoggedIn()
+      return
+    }
+    getWheels(user.uid)
+      .then((response) => {
+        if (!response.success) throw Error(response.error.message)
+        apiWheels = response.data.wheels
+        if (!apiWheels.length) throw Error('No saved wheels')
+      })
+      .catch((error) => {
+        toast.create({
+          ...toastDefaults,
+          description: getStringFromError(error),
+          type: 'error'
+        })
+        close()
+      })
+      .finally(() => {
+        loading = false
+      })
+    dialog.open()
+  }
 
+  let { onDelete, onNotLoggedIn }: {
+    onDelete: (path: string, title: string) => void
+    onNotLoggedIn: () => void
+  } = $props()
+
+  let dialog: AppDialog = $state(null!)
   let innerHeight = $state(0)
-
-  let form: HTMLFormElement = $state(null!)
   let loading = $state(false)
   let apiWheels: ApiWheelMeta[] = $state([])
   let selectedWheel: string = $state('')
@@ -22,90 +48,40 @@
   let sort: 'updated-desc' | 'updated-asc' | 'title-asc' | 'title-desc' = $state('updated-desc')
   let page = $state(0)
 
-
   const wheelImages: Record<string, string> = $state({})
 
-  const settingsPopup = { event: 'click', placement: 'left' } as const
-
-  const deleteWheel = (path: string) => {
-    modalStore.close()
-    modalStore.trigger({
-      type: 'component',
-      component: 'deleteWheelDialog',
-      meta: { path, title: apiWheels.find(wheel => wheel.path === path)?.title }
-    })
+  function deleteWheel(path: string) {
+    close()
+    onDelete(path, apiWheels.find((wheel) => wheel.path === path)!.title)
   }
 
-  onMount(async () => {
-    loading = true
-    const user = getCurrentUser()
-    try {
-      if (!user) {
-        modalStore.trigger({
-          type: 'component',
-          component: 'loginDialog',
-          meta: { next: 'openCloudDialog' }
-        })
-        throw new Error('User is not logged in')
-      }
-      const response = await getWheels(user.uid)
-      if (!response.success) {
-        throw new Error(response.error.message)
-      }
-      apiWheels = response.data.wheels
-      if (!apiWheels.length) {
-        throw new Error('No saved wheels')
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toastStore.trigger({
-          ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
-        })
-      }
-      modalStore.close()
-    } finally {
-      loading = false
-    }
-  })
-
-  const open = async (e: Event) => {
+  async function openWheel(e: Event) {
     e.preventDefault()
     if (!selectedWheel) return
     if (loading) return
     loading = true
-    const formData = new FormData(form)
-    const path = String(formData.get('wheel'))
     try {
       const user = getCurrentUser()
-      if (!user) {
-        throw new Error('User is not logged in')
-      }
-      const response = await getWheel(path, user.uid)
-      if (!response.success) {
-        throw new Error(response.error.message)
-      }
+      if (!user) throw Error('User is not logged in')
+      const response = await getWheel(selectedWheel, user.uid)
+      if (!response.success) throw Error(response.error.message)
       const { config, entries } = response.data.wheel
       wheelStore.config = config
       wheelStore.setNewEntries(entries)
-      wheelStore.winners =[]
-      wheelStore.path = path
-      modalStore.close()
-      toastStore.trigger({
+      wheelStore.winners = []
+      wheelStore.path = selectedWheel
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Wheel opened',
-        background: 'variant-filled-primary',
-        timeout: 1000
+        description: 'Wheel opened',
+        duration: 1000
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toastStore.trigger({
-          ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
@@ -128,23 +104,25 @@
         return 0
     }
   }))
-  let filteredWheels = $derived(sortedWheels.filter(
-    wheel => wheel.title.toLowerCase().includes(filter.toLowerCase())
+  let filteredWheels = $derived(sortedWheels.filter((wheel) =>
+    wheel.title.toLowerCase().includes(filter.toLowerCase())
   ))
   $effect(() => {
     while (
-      page && page > Math.ceil(filteredWheels.length / wheelsPerPage) - 1
+      page &&
+      page > Math.ceil(filteredWheels.length / wheelsPerPage) - 1
     ) {
       page--
     }
   })
   let pageWheels = $derived(filteredWheels.slice(
-    page * wheelsPerPage, page * wheelsPerPage + wheelsPerPage
+    page * wheelsPerPage,
+    page * wheelsPerPage + wheelsPerPage,
   ))
   $effect(() => {
     if (pageWheels.length) {
       Promise.all(
-        pageWheels.map(async wheel => {
+        pageWheels.map(async (wheel) => {
           if (wheel.path in wheelImages) return true
           wheelImages[wheel.path] = ''
           const response = await fetch(
@@ -163,29 +141,29 @@
       )
     }
   })
+
+  function close() {
+    dialog.close()
+  }
 </script>
 
 <svelte:window bind:innerHeight />
 
-{#if $modalStore[0]}
-  <article class="card w-modal p-4 shadow-xl overflow-hidden flex flex-col gap-4">
+<AppDialog bind:this={dialog}>
+  <article class="p-4 flex flex-col gap-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
       <h1>Open a wheel</h1>
     </header>
 
-    <form
-      bind:this={form}
-      onsubmit={open}
-      class="flex flex-col gap-2"
-    >
+    <form onsubmit={openWheel} class="flex flex-col gap-2">
       {#if apiWheels.length}
         {#if apiWheels.length > wheelsPerPage}
           <label class="input-group grid-cols-[auto_1fr]">
-            <div><i class="fas fa-search"></i></div>
+            <div class="ig-cell"><i class="fas fa-search"></i></div>
             <input
               type="search"
-              class="input"
+              class="ig-input"
               placeholder="Search..."
               bind:value={filter}
               aria-label="Search"
@@ -204,86 +182,95 @@
           </select>
         {/if}
 
-        <RadioGroup
-          rounded="rounded-container-token"
-          flexDirection="flex-col"
-          padding="p-1"
+        <SegmentedControl
+          class="rounded-container flex-col p-1"
+          orientation="vertical"
+          value={selectedWheel}
+          onValueChange={(e) => (selectedWheel = e.value!)}
         >
-          {#each pageWheels as wheel, i (wheel.path)}
-            {#if i !== 0}
-              <hr>
-            {/if}
-            <RadioItem
-              bind:group={selectedWheel}
-              name="wheel"
-              value={wheel.path}
-            >
-              <div class="flex items-center gap-2">
-                <Avatar
-                  src={wheelImages[wheel.path]}
-                  width="w-14"
-                  initials="?"
-                />
-                <div class="min-h-14 flex-1 flex flex-col justify-center">
-                  <div class="flex gap-2 justify-center items-center">
-                    <span class="text-lg font-semibold">{wheel.title}</span>
-                    {#if wheel.visibility === 'private'}
-                      <i class="fas fa-lock text-xs" title="Private"></i>
+          <SegmentedControl.Control>
+            <SegmentedControl.Indicator />
+            {#each pageWheels as wheel, i (wheel.path)}
+              {#if i !== 0}
+                <hr>
+              {/if}
+              <SegmentedControl.Item value={wheel.path}>
+                <SegmentedControl.ItemText
+                  class="w-full flex justify-evenly items-center gap-2"
+                >
+                  <Avatar class="w-14 h-14">
+                    <Avatar.Image src={wheelImages[wheel.path]} />
+                    <Avatar.Fallback>?</Avatar.Fallback>
+                  </Avatar>
+                  <div class="min-h-14 flex-1 flex flex-col justify-center">
+                    <div class="flex gap-2 justify-center items-center">
+                      <span class="text-lg font-semibold">{wheel.title}</span>
+                      {#if wheel.visibility === "private"}
+                        <i class="fas fa-lock text-xs" title="Private"></i>
+                      {/if}
+                    </div>
+                    {#if wheel.visibility === "public"}
+                      <div
+                        class="text-sm mt-1 flex gap-2 justify-center items-center"
+                      >
+                        <i class="fas fa-globe" title="Public"></i>
+                        <span>{wheel.path}</span>
+                      </div>
                     {/if}
                   </div>
-                  {#if wheel.visibility === 'public'}
-                    <div class="text-sm mt-1 flex gap-2 justify-center items-center">
-                      <i class="fas fa-globe" title="Public"></i>
-                      <span>{wheel.path}</span>
-                    </div>
-                  {/if}
-                </div>
-                <div>
-                  <button
-                    type="button"
-                    class="btn-icon btn-icon-sm"
-                    aria-label="Settings"
-                    use:popup={{ ...settingsPopup, target: `popup(${wheel.path})` }}
-                  >
-                    <i class="fas fa-ellipsis-v"></i>
-                  </button>
+                  <div>
+                    <button
+                      type="button"
+                      class="btn-icon btn-icon-sm"
+                      aria-label="Settings"
+                    >
+                      <!-- TODO: Open popup when clicked -->
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
 
-                  <div class="card p-2 rounded-xl" data-popup="popup({wheel.path})">
-                    <div class=" flex flex-col gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-sm variant-filled-error flex items-center gap-2"
-                        onclick={() => deleteWheel(wheel.path)}
-                      >
-                        <i class="fas fa-trash"></i> Delete wheel
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-sm variant-filled-warning flex items-center gap-2"
-                      >
-                        {#if wheel.visibility === 'private'}
-                          <i class="fas fa-lock-open"></i> Make public
-                        {:else}
-                          <i class="fas fa-lock"></i> Make private
-                        {/if}
-                      </button>
+                    <div
+                      class="card p-2 rounded-xl"
+                      data-popup="popup({wheel.path})"
+                    >
+                      <div class=" flex flex-col gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm preset-filled-error-500 flex items-center gap-2"
+                          onclick={() => deleteWheel(wheel.path)}
+                        >
+                          <i class="fas fa-trash"></i> Delete wheel
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-sm preset-filled-warning-500 flex items-center gap-2"
+                        >
+                          {#if wheel.visibility === "private"}
+                            <i class="fas fa-lock-open"></i> Make public
+                          {:else}
+                            <i class="fas fa-lock"></i> Make private
+                          {/if}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </RadioItem>
-          {/each}
+                </SegmentedControl.ItemText>
+                <SegmentedControl.ItemHiddenInput />
+              </SegmentedControl.Item>
+            {/each}
+          </SegmentedControl.Control>
           {#if !pageWheels.length}
             <div class="flex justify-center items-center min-h-14">
               No wheels found
             </div>
           {:else if filteredWheels.length > wheelsPerPage}
-            <div style="height: {4 * (wheelsPerPage - pageWheels.length)}rem"></div>
+            <div
+              style="height: {4 * (wheelsPerPage - pageWheels.length)}rem"
+            ></div>
           {/if}
-        </RadioGroup>
+        </SegmentedControl>
       {:else if loading}
         <div class="flex justify-center">
-          <ProgressRadial width="w-12" />
+          <Progress class="w-12" />
         </div>
       {:else}
         <p class="text-center">No wheels found</p>
@@ -293,7 +280,7 @@
         <div class="flex justify-evenly items-center">
           <button
             type="button"
-            class="btn variant-soft"
+            class="btn preset-tonal"
             disabled={page === 0}
             onclick={() => page--}
             aria-label="Previous page"
@@ -306,8 +293,9 @@
           </span>
           <button
             type="button"
-            class="btn variant-soft"
-            disabled={page >= Math.ceil(filteredWheels.length / wheelsPerPage) - 1}
+            class="btn preset-tonal"
+            disabled={page >=
+              Math.ceil(filteredWheels.length / wheelsPerPage) - 1}
             onclick={() => page++}
             aria-label="Next page"
             title="Next page"
@@ -318,19 +306,12 @@
       {/if}
 
       <footer class="flex justify-end gap-2">
-        <button
-          type="button"
-          class="btn variant-soft"
-          onclick={modalStore.close}
-        >
+        <button type="button" class="btn preset-tonal" onclick={close}>
           Cancel
         </button>
-        <button
-          class="btn variant-filled-primary"
-          disabled={!selectedWheel}
-        >
+        <button class="btn preset-filled-primary-500" disabled={!selectedWheel}>
           {#if loading}
-            <ProgressRadial width="w-6" />
+            <Progress class="w-6" />
           {:else}
             Open
           {/if}
@@ -338,4 +319,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>

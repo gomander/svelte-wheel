@@ -1,102 +1,102 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import {
-    ProgressRadial, getModalStore, getToastStore
-  } from '@skeletonlabs/skeleton'
+  import { Progress } from '@skeletonlabs/skeleton-svelte'
   import wheelStore from '$lib/stores/WheelStore'
-  import { getCurrentUser } from '$lib/utils/Firebase'
   import { createWheel, getWheel, updateWheel } from '$lib/utils/Api'
-  import { toastDefaults } from '$lib/utils/Toast'
+  import { getCurrentUser } from '$lib/utils/Firebase'
+  import { getStringFromError } from '$lib/utils/General'
+  import { toast, toastDefaults } from '$lib/utils/Toast'
+  import AppDialog from '$lib/components/AppDialog.svelte'
 
-  const modalStore = getModalStore()
-  const toastStore = getToastStore()
-
-  let title = $state(wheelStore.config.title)
-  let loading = $state(false)
-  let saveMode: 'overwrite' | 'new' = $state('new')
-
-  onMount(async () => {
+  export function open() {
     const user = getCurrentUser()
     if (!user) {
-      modalStore.close()
-      modalStore.trigger({
-        type: 'component',
-        component: 'loginDialog',
-        meta: { next: 'saveCloudDialog' }
-      })
+      onNotLoggedIn()
       return
     }
     if (wheelStore.path) {
       loading = true
-      try {
-        const response = await getWheel(wheelStore.path, user.uid)
-        if (!response.success) {
+      getWheel(wheelStore.path, user.uid)
+        .then((response) => {
+          if (!response.success) throw Error(response.error.message)
+          saveMode = 'overwrite'
+        })
+        .catch((error) => {
+          toast.create({
+            ...toastDefaults,
+            description: getStringFromError(error),
+            type: 'error'
+          })
           wheelStore.path = null
-          return
-        }
-        saveMode = 'overwrite'
-      } catch (error) {
-        wheelStore.path = null
-      } finally {
-        loading = false
-      }
+        })
+        .finally(() => {
+          loading = false
+        })
     }
-  })
+    dialog.open()
+  }
 
-  const save = async (e: Event) => {
+  let { onNotLoggedIn }: { onNotLoggedIn: () => void } = $props()
+
+  let title = $state(wheelStore.config.title)
+  let loading = $state(false)
+  let saveMode: 'overwrite' | 'new' = $state('new')
+  let dialog: AppDialog = $state(null!)
+
+  async function save(e: Event) {
     e.preventDefault()
     if (loading) return
     loading = true
     try {
-      if (!title) {
-        throw new Error('Title is required')
-      }
+      if (!title) throw Error('Title is required')
       const user = getCurrentUser()
-      if (!user) {
-        throw new Error('User is not logged in')
-      }
+      if (!user) throw Error('User is not logged in')
       if (saveMode === 'new') {
-        const response = await createWheel({
-          wheel: {
-            config: { ...wheelStore.config, title },
-            entries: wheelStore.entries
+        const response = await createWheel(
+          {
+            wheel: {
+              config: { ...wheelStore.config, title },
+              entries: wheelStore.entries
+            },
+            visibility: 'private',
+            uid: user.uid
           },
-          visibility: 'private',
-          uid: user.uid
-        }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
       }
       if (saveMode === 'overwrite' && wheelStore.path) {
-        const response = await updateWheel(wheelStore.path, {
-          wheel: {
-            config: { ...wheelStore.config, title },
-            entries: wheelStore.entries
+        const response = await updateWheel(
+          wheelStore.path,
+          {
+            wheel: {
+              config: { ...wheelStore.config, title },
+              entries: wheelStore.entries
+            },
+            uid: user.uid
           },
-          uid: user.uid
-        }, user.uid)
-        if (!response.success) {
-          throw new Error(response.error.message)
-        }
+          user.uid
+        )
+        if (!response.success) throw Error(response.error.message)
       }
-      modalStore.close()
-      toastStore.trigger({
+      close()
+      toast.create({
         ...toastDefaults,
-        message: 'Wheel saved',
-        background: 'variant-filled-primary'
+        description: 'Wheel saved',
+        type: 'success'
       })
     } catch (error) {
-      if (error instanceof Error) {
-        toastStore.trigger({
-          ...toastDefaults,
-          message: error.message,
-          background: 'variant-filled-error'
-        })
-      }
+      toast.create({
+        ...toastDefaults,
+        description: getStringFromError(error),
+        type: 'error'
+      })
     } finally {
       loading = false
     }
+  }
+
+  function close() {
+    dialog.close()
   }
 
   // TODO: When wheelStore has a path, the user should be shown as much metadata
@@ -105,17 +105,14 @@
   // one that would be shown in the open cloud dialog.
 </script>
 
-{#if $modalStore[0]}
-  <article class="card w-modal-slim p-4 shadow-xl overflow-hidden flex flex-col gap-4">
+<AppDialog bind:this={dialog}>
+  <article class="p-4">
     <header class="text-2xl font-semibold flex items-center gap-2">
       <i class="fas fa-floppy-disk"></i>
       <h1>Save a wheel</h1>
     </header>
 
-    <form
-      onsubmit={save}
-      class="flex flex-col gap-4"
-    >
+    <form onsubmit={save} class="flex flex-col gap-4">
       {#if wheelStore.path}
         <div class="flex flex-col gap-2">
           <label class="flex items-center gap-2">
@@ -138,7 +135,7 @@
               bind:group={saveMode}
               checked
               class="radio"
-            >
+            />
             <span>Save a new wheel</span>
           </label>
         </div>
@@ -153,24 +150,17 @@
           bind:value={title}
           placeholder="Enter a title for your wheel"
           class="input"
-        >
+        />
       </label>
 
       <footer class="flex justify-end gap-2">
-        <button
-          type="button"
-          class="btn variant-soft"
-          onclick={modalStore.close}
-        >
+        <button type="button" class="btn preset-tonal" onclick={close}>
           Cancel
         </button>
 
-        <button
-          class="btn variant-filled-primary"
-          aria-busy={loading}
-        >
+        <button class="btn preset-filled-primary-500" aria-busy={loading}>
           {#if loading}
-            <ProgressRadial width="w-6" />
+            <Progress class="w-6" />
           {:else}
             Save
           {/if}
@@ -178,4 +168,4 @@
       </footer>
     </form>
   </article>
-{/if}
+</AppDialog>
